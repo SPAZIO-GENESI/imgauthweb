@@ -585,14 +585,36 @@
     resultWrap.classList.remove("show");
 
     try {
-      const fd = new FormData();
-      fd.append("image", selectedFile);
-      const res = await fetch(WORKER_HASH_URL, { method: "POST", body: fd, mode: "cors" });
+      // Converti il file in base64 usando FileReader (senza ... e senza Uint8Array)
+      const b64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64 = reader.result.split(",")[1]; // rimuove "data:image/...;base64,"
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(selectedFile);
+      });
+
+      // Invia JSON al Worker
+      const res = await fetch(WORKER_HASH_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: selectedFile.name,
+          type: selectedFile.type,
+          image: b64
+        })
+      });
+
       const d = await res.json();
+
       if (!res.ok) {
         showErr(d.error || "Errore " + res.status);
         return;
       }
+
+      
 
       lastData = d;
       document.getElementById("rHash").textContent        = d.sha256;
