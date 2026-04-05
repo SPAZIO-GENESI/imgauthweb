@@ -389,6 +389,8 @@
     L'hash certifica l'esistenza e l'originalità del file nel momento esatto del calcolo.
   </p>
   <p class="notice">Se spedite una PEC a voi stessi con questo pdf allegato unite alla PROVA MATEMATICA anche una PROVA LEGALE del possesso</p>
+  <p class="notice">Il servizio fornisce attestazione crittografica di impronta digitale (hash) di file informatici.<br>
+    Non costituisce registrazione di diritto d'autore né certificazione legale della titolarità dell'opera.</p>
 </header>
 
 <main>
@@ -512,9 +514,12 @@
      =========================== -->
 
 <script>
-  const WORKER_HASH_URL   = "https://imgauth.spaziogenesi.org/api/hash";
-  const WORKER_VERIFY_URL = "https://imgauth.spaziogenesi.org/api/verify";
-  const WORKER_PDF_URL    = "https://imgauth.spaziogenesi.org/api/cert-pdf";
+  const WORKER_DEV = "https://test-pdf-certificato-imgauth.it-e3f.workers.dev";
+  const WORKER_PROD   = "https://imgauth.spaziogenesi.org";
+  const WORKER_HASH_URL   = WORKER_DEV + "/api/hash";
+  const WORKER_VERIFY_URL = WORKER_DEV + "/api/verify";
+  const WORKER_PDF_URL    = WORKER_DEV + "/api/cert-pdf";
+  
 
   // --- ELEMENTI GENERAZIONE HASH ---
   const fileInput   = document.getElementById("fileInput");
