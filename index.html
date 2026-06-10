@@ -514,11 +514,10 @@
      =========================== -->
 
 <script>
-  const WORKER_DEV = "https://test-pdf-certificato-imgauth.it-e3f.workers.dev";
-  const WORKER_PROD   = "https://imgauth.spaziogenesi.org";
-  const WORKER_HASH_URL   = WORKER_DEV + "/api/hash";
-  const WORKER_VERIFY_URL = WORKER_DEV + "/api/verify";
-  const WORKER_PDF_URL    = WORKER_DEV + "/api/cert-pdf";
+  const WORKER_BASE       = "https://imgauth.spaziogenesi.org";
+  const WORKER_HASH_URL   = WORKER_BASE + "/api/hash";
+  const WORKER_VERIFY_URL = WORKER_BASE + "/api/verify";
+  const WORKER_PDF_URL    = WORKER_BASE + "/api/cert-pdf";
   
 
   // --- ELEMENTI GENERAZIONE HASH ---
