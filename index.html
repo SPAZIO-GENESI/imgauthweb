@@ -420,6 +420,9 @@
 
   <div class="error-msg" id="errorMsg"></div>
 
+  <!-- Verifica anti-bot: richiesta per generare l'attestazione (hash + firma) -->
+  <div id="turnstileWidget" style="margin-top:1.2rem;"></div>
+
   <div class="btn-row">
     <button class="primary" id="attestBtn" disabled>
       <span class="spinner"></span>
@@ -449,9 +452,6 @@
       <strong>Stringa di attestazione</strong>
       <span id="rAttestation"></span>
     </div>
-
-    <!-- Verifica anti-bot: necessaria per generare il certificato PDF firmato -->
-    <div id="turnstileWidget" style="margin-top:1.2rem;"></div>
 
     <div style="display:flex; gap:0.6rem; margin-top:1.2rem;">
       <button class="btn-download" id="downloadBtn">Scarica certificato .txt</button>
@@ -545,15 +545,17 @@
     if (tsRendered || !turnstileEnabled() || !window.turnstile) return;
     const el = document.getElementById("turnstileWidget");
     if (!el) return;
-    window.turnstile.render(el, { sitekey: TURNSTILE_SITEKEY, action: "cert-pdf" });
+    window.turnstile.render(el, { sitekey: TURNSTILE_SITEKEY, action: "genera-attestazione" });
     tsRendered = true;
   }
-  // Chiamata da Turnstile quando l'API è pronta (vedi ?onload= nello <script>)
+  // Chiamata da Turnstile quando l'API è pronta (vedi ?onload= nello <script>);
+  // fallback su DOM pronto nel caso l'API risultasse già caricata.
   window.onloadTurnstileCallback = ensureTurnstile;
+  document.addEventListener("DOMContentLoaded", ensureTurnstile);
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.2.0";
+  const APP_VERSION = "1.3.0";
   (function showVersion() {
     const el = document.getElementById("appVersion");
     if (!el) return;
@@ -668,6 +670,17 @@
   // --- GENERAZIONE HASH / ATTESTAZIONE ---
   attestBtn.addEventListener("click", async () => {
     if (!selectedFile) return;
+
+    // Token anti-bot Turnstile: il worker lo richiede per emettere l'attestazione.
+    let tsToken = "";
+    if (turnstileEnabled()) {
+      tsToken = (window.turnstile && window.turnstile.getResponse()) || "";
+      if (!tsToken) {
+        showErr("Completa la verifica anti-bot qui sopra, poi riprova.");
+        return;
+      }
+    }
+
     attestBtn.classList.add("loading");
     attestBtn.disabled = true;
     btnLabel.textContent = "Elaborazione…";
@@ -693,7 +706,8 @@
         body: JSON.stringify({
           name: selectedFile.name,
           type: selectedFile.type,
-          image: b64
+          image: b64,
+          turnstile_token: tsToken
         })
       });
 
@@ -719,7 +733,6 @@
       document.getElementById("rAttestation").textContent = d.attestazione;
 
       resultWrap.classList.add("show");
-      ensureTurnstile(); // mostra la challenge anti-bot accanto al pulsante PDF
       resultWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } catch (e) {
       showErr("Impossibile raggiungere il worker. Verificare WORKER_HASH_URL. (" + e.message + ")");
@@ -727,6 +740,8 @@
       attestBtn.classList.remove("loading");
       attestBtn.disabled = false;
       btnLabel.textContent = "Genera attestazione SHA-256";
+      // Il token Turnstile è monouso: resetta il widget per una nuova attestazione.
+      if (turnstileEnabled() && window.turnstile) window.turnstile.reset();
     }
   });
 
@@ -782,22 +797,13 @@
   // --- DOWNLOAD PDF DAL WORKER ---
   downloadPdfBtn.addEventListener("click", async () => {
     if (!lastData) return;
-
-    // Token anti-bot Turnstile: il worker lo richiede per emettere il certificato.
-    let tsToken = "";
-    if (turnstileEnabled()) {
-      tsToken = (window.turnstile && window.turnstile.getResponse()) || "";
-      if (!tsToken) {
-        alert("Completa la verifica anti-bot qui sopra, poi riprova.");
-        return;
-      }
-    }
-
+    // Nessuna challenge qui: l'attestazione (lastData) esiste solo dopo la verifica
+    // anti-bot fatta a monte su "Genera attestazione"; il token HMAC lo dimostra.
     try {
       const res = await fetch(WORKER_PDF_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...lastData, turnstile_token: tsToken }),
+        body: JSON.stringify(lastData),
       });
       if (!res.ok) {
         const errBody = await res.json().catch(() => ({ error: res.status }));
@@ -813,9 +819,6 @@
       URL.revokeObjectURL(url);
     } catch (e) {
       alert("Errore di rete durante il download del PDF: " + e.message);
-    } finally {
-      // Il token Turnstile è monouso: resetta il widget per un eventuale nuovo download.
-      if (turnstileEnabled() && window.turnstile) window.turnstile.reset();
     }
   });
 
