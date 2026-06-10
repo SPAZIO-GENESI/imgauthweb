@@ -385,7 +385,7 @@
   <p class="tagline">Certificazione crittografica dell'opera digitale</p>
   <div class="divider"></div>
   <p class="notice">
-    Carica un'immagine per generare la sua impronta SHA-256 con timestamp UTC.<br>
+    Carica un file di qualsiasi formato per generare la sua impronta SHA-256 con timestamp UTC.<br>
     L'hash certifica l'esistenza e l'originalità del file nel momento esatto del calcolo.
   </p>
   <p class="notice">Se spedite una PEC a voi stessi con questo pdf allegato unite alla PROVA MATEMATICA anche una PROVA LEGALE del possesso</p>
@@ -402,9 +402,9 @@
   <label class="field-label">Seleziona l'opera da certificare:</label>
 
   <div class="drop-zone" id="dropZone">
-    <input type="file" id="fileInput" accept="image/*">
+    <input type="file" id="fileInput">
     <p class="drop-primary">Trascina il file qui, o clicca per selezionare</p>
-    <p class="drop-hint">JPEG · PNG · GIF · WEBP · TIFF · BMP · SVG</p>
+    <p class="drop-hint">Qualsiasi formato di file</p>
   </div>
 
   <div class="preview-row" id="previewRow">
@@ -465,7 +465,7 @@
   <label class="field-label">Verifica corrispondenza hash ↔ file:</label>
 
   <div class="drop-zone" id="verifyDropZone">
-    <input type="file" id="verifyFileInput" accept="image/*">
+    <input type="file" id="verifyFileInput">
     <p class="drop-primary">Trascina il file da verificare, o clicca per selezionare</p>
     <p class="drop-hint">Il file deve essere lo stesso usato per l'hash dichiarato</p>
   </div>
@@ -586,14 +586,34 @@
     return (b/1048576).toFixed(2) + " MB";
   }
 
+  // Miniatura: immagine reale per i file immagine, altrimenti un'icona generica
+  // con l'estensione (accettiamo file di qualsiasi formato).
+  function fileIconDataUri(ext) {
+    const svg =
+      "<svg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'>" +
+      "<rect width='56' height='56' rx='4' fill='#eee' stroke='#ddd'/>" +
+      "<text x='28' y='33' font-family='Inter,sans-serif' font-size='11' fill='#888' text-anchor='middle'>" +
+      (ext || "FILE") + "</text></svg>";
+    return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  }
+
+  function setThumb(imgEl, f) {
+    if (f.type && f.type.startsWith("image/")) {
+      const fr = new FileReader();
+      fr.onload = e => { imgEl.src = e.target.result; };
+      fr.readAsDataURL(f);
+    } else {
+      const ext = (f.name.split(".").pop() || "").toUpperCase().slice(0, 5);
+      imgEl.src = fileIconDataUri(ext);
+    }
+  }
+
   // --- CARICAMENTO FILE PRINCIPALE (HASH) ---
   function loadFile(f) {
     selectedFile = f;
     previewName.textContent = f.name;
-    previewMeta.textContent = f.type + " · " + fmt(f.size);
-    const fr = new FileReader();
-    fr.onload = e => { previewImg.src = e.target.result; };
-    fr.readAsDataURL(f);
+    previewMeta.textContent = (f.type || "tipo sconosciuto") + " · " + fmt(f.size);
+    setThumb(previewImg, f);
     previewRow.classList.add("show");
     attestBtn.disabled = false;
     resultWrap.classList.remove("show");
@@ -767,10 +787,8 @@
   function loadVerifyFile(f) {
     verifyFile = f;
     verifyPreviewName.textContent = f.name;
-    verifyPreviewMeta.textContent = f.type + " · " + fmt(f.size);
-    const fr = new FileReader();
-    fr.onload = e => { verifyPreviewImg.src = e.target.result; };
-    fr.readAsDataURL(f);
+    verifyPreviewMeta.textContent = (f.type || "tipo sconosciuto") + " · " + fmt(f.size);
+    setThumb(verifyPreviewImg, f);
     verifyPreviewRow.classList.add("show");
     verifyErrorMsg.classList.remove("show");
     verifyResultWrap.classList.remove("show");
