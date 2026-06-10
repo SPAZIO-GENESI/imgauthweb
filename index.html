@@ -418,10 +418,11 @@
     </div>
   </div>
 
-  <div class="error-msg" id="errorMsg"></div>
-
   <!-- Verifica anti-bot: richiesta per generare l'attestazione (hash + firma) -->
   <div id="turnstileWidget" style="margin-top:1.2rem;"></div>
+
+  <!-- Messaggio d'errore subito sopra il pulsante: su mobile resta vicino all'azione -->
+  <div class="error-msg" id="errorMsg"></div>
 
   <div class="btn-row">
     <button class="primary" id="attestBtn" disabled>
@@ -555,7 +556,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.3.0";
+  const APP_VERSION = "1.3.1";
   (function showVersion() {
     const el = document.getElementById("appVersion");
     if (!el) return;
