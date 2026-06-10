@@ -717,7 +717,8 @@
         body: JSON.stringify(lastData),
       });
       if (!res.ok) {
-        alert("Errore generazione PDF: " + res.status);
+        const errBody = await res.json().catch(() => ({ error: res.status }));
+        alert("Errore generazione PDF: " + (errBody.error || res.status));
         return;
       }
       const blob = await res.blob();
