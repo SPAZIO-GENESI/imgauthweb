@@ -516,7 +516,7 @@
 </main>
 
 <footer>
-  &copy; <a href="https://spaziogenesi.org/">Spazio Genesi</a> – Attestazione SHA-256 v1 - realizzato da <a href="https://tangram.page">Tangram.page</a>
+  &copy; <a href="https://spaziogenesi.org/">Spazio Genesi</a> – Attestazione SHA-256 · <span id="appVersion"></span> - realizzato da <a href="https://tangram.page">Tangram.page</a>
 </footer>
 
 
@@ -529,7 +529,20 @@
   const WORKER_HASH_URL   = WORKER_BASE + "/api/hash";
   const WORKER_VERIFY_URL = WORKER_BASE + "/api/verify";
   const WORKER_PDF_URL    = WORKER_BASE + "/api/cert-pdf";
-  
+
+  // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
+  // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
+  const APP_VERSION = "1.1.0";
+  (function showVersion() {
+    const el = document.getElementById("appVersion");
+    if (!el) return;
+    el.textContent = "interfaccia v" + APP_VERSION;
+    fetch(WORKER_BASE + "/ping")
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => { if (d && d.version) el.textContent += " · motore v" + d.version; })
+      .catch(() => {});
+  })();
+
 
   // --- ELEMENTI GENERAZIONE HASH ---
   const fileInput   = document.getElementById("fileInput");
