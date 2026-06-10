@@ -483,6 +483,16 @@
     <input id="verifyHashInput" type="text" style="width:100%; padding:0.5rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem;">
   </div>
 
+  <div style="margin-top: 0.9rem;">
+    <label class="field-label" for="verifyAttestInput">Stringa di attestazione (opzionale, per verifica HMAC):</label>
+    <input id="verifyAttestInput" type="text" placeholder="SHA-256:abc123...@2026-..." style="width:100%; padding:0.5rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; color:#888;">
+  </div>
+
+  <div style="margin-top: 0.6rem;">
+    <label class="field-label" for="verifyHmacInput">Firma HMAC (opzionale):</label>
+    <input id="verifyHmacInput" type="text" placeholder="base64..." style="width:100%; padding:0.5rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; color:#888;">
+  </div>
+
   <div class="error-msg" id="verifyErrorMsg"></div>
 
   <div class="btn-row" style="margin-top:1.1rem;">
@@ -500,6 +510,7 @@
     </div>
 
     <p id="verifyOutcome" style="font-size:0.8rem; margin-top:0.4rem;"></p>
+    <p id="verifyHmacOutcome" style="font-size:0.8rem; margin-top:0.3rem;"></p>
   </div>
 
 </main>
@@ -541,13 +552,16 @@
   const verifyPreviewImg  = document.getElementById("verifyPreviewImg");
   const verifyPreviewName = document.getElementById("verifyPreviewName");
   const verifyPreviewMeta = document.getElementById("verifyPreviewMeta");
-  const verifyHashInput   = document.getElementById("verifyHashInput");
-  const verifyErrorMsg    = document.getElementById("verifyErrorMsg");
-  const verifyBtn         = document.getElementById("verifyBtn");
-  const verifyBtnLabel    = document.getElementById("verifyBtnLabel");
-  const verifyResultWrap  = document.getElementById("verifyResultWrap");
-  const verifyHashCalc    = document.getElementById("verifyHashCalc");
-  const verifyOutcome     = document.getElementById("verifyOutcome");
+  const verifyHashInput    = document.getElementById("verifyHashInput");
+  const verifyAttestInput  = document.getElementById("verifyAttestInput");
+  const verifyHmacInput    = document.getElementById("verifyHmacInput");
+  const verifyErrorMsg     = document.getElementById("verifyErrorMsg");
+  const verifyBtn          = document.getElementById("verifyBtn");
+  const verifyBtnLabel     = document.getElementById("verifyBtnLabel");
+  const verifyResultWrap   = document.getElementById("verifyResultWrap");
+  const verifyHashCalc     = document.getElementById("verifyHashCalc");
+  const verifyOutcome      = document.getElementById("verifyOutcome");
+  const verifyHmacOutcome  = document.getElementById("verifyHmacOutcome");
 
   let selectedFile = null;
   let lastData = null;
@@ -639,6 +653,9 @@
       
 
       lastData = d;
+      // Auto-fill campi verifica HMAC con i dati appena calcolati
+      verifyAttestInput.value = d.attestazione || "";
+      verifyHmacInput.value   = d.hmac || "";
       document.getElementById("rHash").textContent        = d.sha256;
       document.getElementById("rFilename").textContent    = d.opera;
       document.getElementById("rSize").textContent        = fmt(d.dimensione_bytes);
@@ -791,6 +808,8 @@
       const fd = new FormData();
       fd.append("image", verifyFile);
       fd.append("hash", verifyHashInput.value.trim());
+      if (verifyAttestInput.value.trim()) fd.append("attestazione", verifyAttestInput.value.trim());
+      if (verifyHmacInput.value.trim())   fd.append("hmac", verifyHmacInput.value.trim());
 
       const res = await fetch(WORKER_VERIFY_URL, { method: "POST", body: fd });
       const d = await res.json();
@@ -802,11 +821,20 @@
 
       verifyHashCalc.textContent = d.hash_calcolato;
       if (d.coincide) {
-        verifyOutcome.textContent = "Esito: l'hash dichiarato coincide con l'hash calcolato per il file fornito.";
+        verifyOutcome.textContent = "Hash: coincide con il file fornito.";
         verifyOutcome.style.color = "#2e7d32";
       } else {
-        verifyOutcome.textContent = "Esito: l'hash dichiarato NON coincide con l'hash calcolato per il file fornito.";
+        verifyOutcome.textContent = "Hash: NON coincide con il file fornito.";
         verifyOutcome.style.color = "#c0392b";
+      }
+      if (d.hmac_valido === true) {
+        verifyHmacOutcome.textContent = "HMAC: firma del server verificata — attestazione autentica.";
+        verifyHmacOutcome.style.color = "#2e7d32";
+      } else if (d.hmac_valido === false) {
+        verifyHmacOutcome.textContent = "HMAC: firma NON valida — attestazione non riconosciuta dal server.";
+        verifyHmacOutcome.style.color = "#c0392b";
+      } else {
+        verifyHmacOutcome.textContent = "";
       }
       verifyResultWrap.classList.add("show");
       verifyResultWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
