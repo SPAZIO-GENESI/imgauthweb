@@ -795,6 +795,20 @@
 
   verifyHashInput.addEventListener("input", updateVerifyBtnState);
 
+  // --- PRE-COMPILAZIONE DA URL (?hash=...) ---
+  // Quando si apre la pagina via QR code del certificato, il parametro hash
+  // è già nell'URL: lo usiamo per pre-compilare il campo di verifica.
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    const hashParam = params.get("hash");
+    if (hashParam && /^[0-9a-f]{64}$/i.test(hashParam)) {
+      verifyHashInput.value = hashParam;
+      updateVerifyBtnState();
+      document.getElementById("verifyDropZone")
+        .scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  })();
+
   // --- VERIFICA HASH: CHIAMATA AL WORKER ---
   verifyBtn.addEventListener("click", async () => {
     if (!verifyFile || !verifyHashInput.value.trim()) return;
