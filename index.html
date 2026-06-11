@@ -490,6 +490,14 @@
       <button class="btn-download" id="downloadBtn">Scarica certificato .txt</button>
       <button class="btn-download" id="downloadPdfBtn">Scarica PDF</button>
     </div>
+
+    <!-- Prova blockchain: disponibile dopo la generazione del PDF (è in quel
+         momento che il motore ancora l'hash via OpenTimestamps) -->
+    <div id="otsRow" style="display:none; margin-top:0.9rem; font-size:0.78rem; color:#666;">
+      Ancoraggio blockchain (Bitcoin): <a id="otsLink" href="#">scarica la prova OpenTimestamps (.ots)</a>
+      — si consolida in poche ore con la conferma on-chain; verificabile con l'opera originale su
+      <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">opentimestamps.org</a>
+    </div>
   </div>
 
 
@@ -600,7 +608,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.4.0";
+  const APP_VERSION = "1.5.0";
   (function showVersion() {
     const el = document.getElementById("appVersion");
     if (!el) return;
@@ -796,6 +804,10 @@
       document.getElementById("rIssuer").textContent      = d.emesso_da;
       document.getElementById("rAttestation").textContent = d.attestazione;
 
+      // Il link alla prova blockchain vale per il PDF precedente: nascondilo
+      // finché non viene generato il PDF di QUESTA attestazione.
+      document.getElementById("otsRow").style.display = "none";
+
       resultWrap.classList.add("show");
       resultWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } catch (e) {
@@ -896,6 +908,12 @@
       a.download = "attestazione-" + lastData.sha256.slice(0, 12) + ".pdf";
       a.click();
       URL.revokeObjectURL(url);
+
+      // La prova OpenTimestamps nasce insieme al PDF: mostra il link al download
+      const otsRow  = document.getElementById("otsRow");
+      const otsLink = document.getElementById("otsLink");
+      otsLink.href = WORKER_BASE + "/api/ots?hash=" + lastData.sha256;
+      otsRow.style.display = "block";
     } catch (e) {
       alert("Errore di rete durante il download del PDF: " + e.message);
     }
