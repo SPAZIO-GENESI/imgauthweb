@@ -418,6 +418,34 @@
     </div>
   </div>
 
+  <!-- Dati dell'opera (facoltativi): auto-dichiarazioni stampate sul certificato
+       e vincolate alla firma HMAC (non alterabili dopo l'emissione) -->
+  <details id="metaDetails" style="margin-top:1.1rem; border:1px solid #eee; border-radius:6px; padding:0.7rem 0.9rem;">
+    <summary style="cursor:pointer; font-size:0.85rem; color:#555; font-weight:400;">Dati dell'opera — facoltativi (titolo, autore, anno, note)</summary>
+    <p style="font-size:0.72rem; color:#999; margin-top:0.5rem; line-height:1.45;">
+      Questi dati compaiono sul certificato come dichiarazioni dell'autore e vengono
+      vincolati alla firma di sicurezza: non saranno modificabili dopo l'emissione.
+    </p>
+    <div style="margin-top:0.7rem; display:grid; gap:0.6rem;">
+      <div>
+        <label class="field-label" for="metaTitolo">Titolo dell'opera:</label>
+        <input id="metaTitolo" type="text" maxlength="150" style="width:100%; padding:0.5rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem;">
+      </div>
+      <div>
+        <label class="field-label" for="metaAutore">Autore / pseudonimo:</label>
+        <input id="metaAutore" type="text" maxlength="100" style="width:100%; padding:0.5rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem;">
+      </div>
+      <div>
+        <label class="field-label" for="metaAnno">Anno o versione:</label>
+        <input id="metaAnno" type="text" maxlength="50" placeholder="es. 2026, seconda stesura" style="width:100%; padding:0.5rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem;">
+      </div>
+      <div>
+        <label class="field-label" for="metaNote">Note:</label>
+        <input id="metaNote" type="text" maxlength="300" placeholder="es. tecnica, committente, contesto" style="width:100%; padding:0.5rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem;">
+      </div>
+    </div>
+  </details>
+
   <!-- Verifica anti-bot: richiesta per generare l'attestazione (hash + firma) -->
   <div id="turnstileWidget" style="margin-top:1.2rem;"></div>
 
@@ -443,6 +471,10 @@
 
     <table class="meta-table">
       <tr><td>Opera</td><td id="rFilename"></td></tr>
+      <tr id="rowTitolo" style="display:none;"><td>Titolo (dichiarato)</td><td id="rTitolo"></td></tr>
+      <tr id="rowAutore" style="display:none;"><td>Autore (dichiarato)</td><td id="rAutore"></td></tr>
+      <tr id="rowAnno" style="display:none;"><td>Anno/versione</td><td id="rAnno"></td></tr>
+      <tr id="rowNote" style="display:none;"><td>Note (dichiarate)</td><td id="rNote"></td></tr>
       <tr><td>Dimensione</td><td id="rSize"></td></tr>
       <tr><td>Tipo file</td><td id="rMime"></td></tr>
       <tr><td>Timestamp</td><td id="rTimestamp"></td></tr>
@@ -500,6 +532,18 @@
     <input id="verifyHmacInput" type="text" placeholder="base64..." style="width:100%; padding:0.5rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; color:#888;">
   </div>
 
+  <!-- Se il certificato riporta dati dichiarati, la firma HMAC li copre:
+       vanno reinseriti identici (copiali dai "Dettagli tecnici" del PDF) -->
+  <details id="verifyMetaDetails" style="margin-top:0.6rem; border:1px solid #eee; border-radius:6px; padding:0.6rem 0.9rem;">
+    <summary style="cursor:pointer; font-size:0.8rem; color:#777;">Dati dichiarati sul certificato (solo se presenti, per la verifica HMAC)</summary>
+    <div style="margin-top:0.6rem; display:grid; gap:0.5rem;">
+      <input id="vMetaTitolo" type="text" maxlength="150" placeholder="Titolo dell'opera" style="width:100%; padding:0.45rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.78rem; color:#666;">
+      <input id="vMetaAutore" type="text" maxlength="100" placeholder="Autore / pseudonimo" style="width:100%; padding:0.45rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.78rem; color:#666;">
+      <input id="vMetaAnno" type="text" maxlength="50" placeholder="Anno o versione" style="width:100%; padding:0.45rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.78rem; color:#666;">
+      <input id="vMetaNote" type="text" maxlength="300" placeholder="Note" style="width:100%; padding:0.45rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.78rem; color:#666;">
+    </div>
+  </details>
+
   <div class="error-msg" id="verifyErrorMsg"></div>
 
   <div class="btn-row" style="margin-top:1.1rem;">
@@ -556,7 +600,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.3.1";
+  const APP_VERSION = "1.4.0";
   (function showVersion() {
     const el = document.getElementById("appVersion");
     if (!el) return;
@@ -700,7 +744,8 @@
         reader.readAsDataURL(selectedFile);
       });
 
-      // Invia JSON al Worker
+      // Invia JSON al Worker. I dati dell'opera (facoltativi) vengono
+      // normalizzati dal server e vincolati alla firma HMAC dell'attestazione.
       const res = await fetch(WORKER_HASH_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -708,7 +753,11 @@
           name: selectedFile.name,
           type: selectedFile.type,
           image: b64,
-          turnstile_token: tsToken
+          turnstile_token: tsToken,
+          titolo: document.getElementById("metaTitolo").value,
+          autore: document.getElementById("metaAutore").value,
+          anno:   document.getElementById("metaAnno").value,
+          note:   document.getElementById("metaNote").value
         })
       });
 
@@ -722,9 +771,23 @@
       
 
       lastData = d;
-      // Auto-fill campi verifica HMAC con i dati appena calcolati
+      // Auto-fill campi verifica HMAC con i dati appena calcolati.
+      // I dati dichiarati arrivano dal server in forma canonica (normalizzata):
+      // sono QUELLI i valori coperti dalla firma, da usare per la verifica.
       verifyAttestInput.value = d.attestazione || "";
       verifyHmacInput.value   = d.hmac || "";
+      document.getElementById("vMetaTitolo").value = d.titolo || "";
+      document.getElementById("vMetaAutore").value = d.autore || "";
+      document.getElementById("vMetaAnno").value   = d.anno   || "";
+      document.getElementById("vMetaNote").value   = d.note   || "";
+
+      // Righe "dichiarato" nella tabella risultato: visibili solo se compilate
+      const metaRows = [["rowTitolo","rTitolo",d.titolo], ["rowAutore","rAutore",d.autore], ["rowAnno","rAnno",d.anno], ["rowNote","rNote",d.note]];
+      for (const [rowId, cellId, val] of metaRows) {
+        document.getElementById(rowId).style.display = val ? "" : "none";
+        document.getElementById(cellId).textContent = val || "";
+      }
+
       document.getElementById("rHash").textContent        = d.sha256;
       document.getElementById("rFilename").textContent    = d.opera;
       document.getElementById("rSize").textContent        = fmt(d.dimensione_bytes);
@@ -770,7 +833,7 @@
   // --- DOWNLOAD TXT ---
   downloadBtn.addEventListener("click", () => {
     if (!lastData) return;
-    const txt = [
+    const lines = [
       "SPAZIO GENESI ETS — CERTIFICATO DI ATTESTAZIONE OPERA",
       "=".repeat(54),
       "",
@@ -780,6 +843,20 @@
       "SHA-256:            " + lastData.sha256,
       "Timestamp ISO:      " + lastData.timestamp_iso,
       "Timestamp leggibile:" + lastData.timestamp_leggibile,
+    ];
+    // Dati dichiarati (se presenti): coperti dalla firma HMAC, vanno
+    // reinseriti identici per una futura verifica della firma.
+    const declared = [
+      ["Titolo (dichiarato):   ", lastData.titolo],
+      ["Autore (dichiarato):   ", lastData.autore],
+      ["Anno/versione:         ", lastData.anno],
+      ["Note (dichiarate):     ", lastData.note],
+    ].filter(([, v]) => v);
+    if (declared.length) {
+      lines.push("", "Dati dell'opera dichiarati dall'autore (vincolati alla firma HMAC):");
+      for (const [label, v] of declared) lines.push(label + v);
+    }
+    lines.push(
       "",
       "Stringa di attestazione:",
       lastData.attestazione,
@@ -787,7 +864,8 @@
       "Firma HMAC (server): " + (lastData.hmac || "n/d"),
       "",
       "Emesso da: " + lastData.emesso_da,
-    ].join("\n");
+    );
+    const txt = lines.join("\n");
 
     const a = document.createElement("a");
     a.href = "data:text/plain;charset=utf-8," + encodeURIComponent(txt);
@@ -895,6 +973,12 @@
       fd.append("hash", verifyHashInput.value.trim());
       if (verifyAttestInput.value.trim()) fd.append("attestazione", verifyAttestInput.value.trim());
       if (verifyHmacInput.value.trim())   fd.append("hmac", verifyHmacInput.value.trim());
+      // Dati dichiarati: se il certificato li riportava, la firma HMAC li copre
+      // e devono essere forniti identici perché la verifica riesca.
+      for (const [field, id] of [["titolo","vMetaTitolo"], ["autore","vMetaAutore"], ["anno","vMetaAnno"], ["note","vMetaNote"]]) {
+        const v = document.getElementById(id).value.trim();
+        if (v) fd.append(field, v);
+      }
 
       const res = await fetch(WORKER_VERIFY_URL, { method: "POST", body: fd });
       const d = await res.json();
