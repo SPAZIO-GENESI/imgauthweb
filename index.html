@@ -572,6 +572,43 @@
     <p id="verifyHmacOutcome" style="font-size:0.8rem; margin-top:0.3rem;"></p>
   </div>
 
+  <!-- Come verificare l'ancoraggio blockchain (OpenTimestamps) -->
+  <details style="margin-top:1.6rem; border:1px solid #eee; border-radius:6px; padding:0.6rem 0.9rem;">
+    <summary style="cursor:pointer; font-size:0.8rem; color:#777;">Verifica blockchain (OpenTimestamps) — come si fa</summary>
+    <div style="font-size:0.8rem; color:#666; line-height:1.6; margin-top:0.6rem;">
+      <p style="margin:0 0 0.6rem;">
+        I certificati emessi dalla versione 1.7 in poi ancorano l'impronta dell'opera nella
+        blockchain di Bitcoin tramite il protocollo aperto OpenTimestamps: una prova di
+        esistenza indipendente dai nostri server, che nessuno può retrodatare.
+      </p>
+      <ol style="margin:0 0 0.6rem; padding-left:1.2rem;">
+        <li style="margin-bottom:0.35rem;">
+          <strong>Procurati la prova <code>.ots</code></strong>: la scarichi dal link che compare
+          dopo "Scarica PDF", dall'indirizzo stampato nei "Dettagli tecnici" del certificato,
+          oppure — se hai inserito qui sopra l'hash dichiarato —
+          <a href="#" id="otsVerifyLink">scaricala per l'hash inserito</a>.
+        </li>
+        <li style="margin-bottom:0.35rem;">
+          Vai su <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">opentimestamps.org</a>,
+          riquadro <em>Stamp&nbsp;&amp;&nbsp;verify</em>.
+        </li>
+        <li style="margin-bottom:0.35rem;">
+          Trascina nel riquadro il file <code>.ots</code> e poi, quando richiesto, l'opera
+          originale (il file esatto che hai attestato).
+        </li>
+        <li>
+          Esito atteso: <em>"Bitcoin attests data existed as of …"</em> con la data garantita
+          dalla blockchain. Nelle prime ore dopo l'emissione può comparire
+          <em>"Pending confirmation"</em>: la conferma definitiva matura con il blocco Bitcoin.
+        </li>
+      </ol>
+      <p style="margin:0;">
+        La verifica funziona anche offline e fra decenni: la prova dipende solo dal file
+        <code>.ots</code>, dall'opera originale e dalla blockchain pubblica di Bitcoin.
+      </p>
+    </div>
+  </details>
+
 </main>
 
 <footer>
@@ -608,7 +645,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.5.0";
+  const APP_VERSION = "1.5.1";
   (function showVersion() {
     const el = document.getElementById("appVersion");
     if (!el) return;
@@ -917,6 +954,17 @@
     } catch (e) {
       alert("Errore di rete durante il download del PDF: " + e.message);
     }
+  });
+
+  // --- VERIFICA BLOCKCHAIN: scarica la prova .ots per l'hash inserito ---
+  document.getElementById("otsVerifyLink").addEventListener("click", (ev) => {
+    ev.preventDefault();
+    const hash = (verifyHashInput.value || "").trim().toLowerCase();
+    if (!/^[0-9a-f]{64}$/.test(hash)) {
+      alert("Inserisci prima l'hash dichiarato (64 caratteri esadecimali) nel campo qui sopra.");
+      return;
+    }
+    window.open(WORKER_BASE + "/api/ots?hash=" + hash, "_blank");
   });
 
   // --- VERIFICA HASH: CARICAMENTO FILE ---
