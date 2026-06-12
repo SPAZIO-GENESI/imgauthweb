@@ -52,7 +52,7 @@
     line-height: 1.2;
   }
 
-  header h1 span { font-style: italic; }
+  header h1 span { font-style: italic; color: #8B6914; }
 
   .tagline {
     margin-top: 0.6rem;
@@ -64,8 +64,8 @@
 
   .divider {
     width: 48px;
-    height: 1px;
-    background: #ccc;
+    height: 1.5px;
+    background: #8B6914;
     margin: 1.6rem auto 0;
   }
 
@@ -395,13 +395,13 @@
   .tabs button { flex: 1; padding: 0.75rem 0.5rem; background: #f9f9f7; border: none;
     font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500;
     letter-spacing: 0.03em; color: #777; cursor: pointer; }
-  .tabs button.attiva { background: #111; color: #fff; }
+  .tabs button.attiva { background: var(--oro); color: #fff; }
   .tabs button:not(.attiva):hover { color: #111; }
   .tab-nascosta { display: none; }
 
   .passo { display: flex; gap: 0.8rem; align-items: baseline; margin: 1.7rem 0 0.6rem; }
   .passo .n { flex: 0 0 auto; width: 1.5rem; height: 1.5rem; border-radius: 50%;
-    background: #111; color: #fff; font-size: 0.78rem; font-weight: 500;
+    background: var(--oro); color: #fff; font-size: 0.78rem; font-weight: 500;
     display: inline-flex; align-items: center; justify-content: center; transform: translateY(0.18rem); }
   .passo h2 { font-family: 'EB Garamond', serif; font-weight: 500; font-size: 1.18rem; color: #111; }
   .passo .hint { font-size: 0.76rem; color: #999; margin-left: auto; }
