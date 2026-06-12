@@ -428,6 +428,8 @@
     font-family: 'Inter', sans-serif; font-size: 0.92rem; font-weight: 600; letter-spacing: 0.03em;
     cursor: pointer; width: 100%; }
   .azione-primaria:hover { background: var(--oro-scuro); }
+  .azione-primaria:disabled { cursor: progress; opacity: 0.85; }
+  .azione-primaria.loading #pdfBtnIcon { display: none; }
   .azione-secondaria { display: flex; align-items: center; justify-content: center; gap: 0.5rem;
     padding: 0.7rem 1.2rem; background: #fff; color: #111; border: 1.5px solid #111;
     border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 500;
@@ -628,8 +630,9 @@
     <!-- Gerarchia azioni: PDF dominante, txt secondario, prova blockchain terziaria -->
     <div class="azioni">
       <button class="azione-primaria" id="downloadPdfBtn">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Scarica il certificato PDF
+        <span class="spinner"></span>
+        <svg id="pdfBtnIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span id="pdfBtnLabel">Scarica il certificato PDF</span>
       </button>
       <button class="azione-secondaria" id="downloadBtn">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -974,7 +977,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.7.2";
+  const APP_VERSION = "1.7.3";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
@@ -1275,6 +1278,13 @@
     if (!lastData) return;
     // Nessuna challenge qui: l'attestazione (lastData) esiste solo dopo la verifica
     // anti-bot fatta a monte su "Genera attestazione"; il token HMAC lo dimostra.
+    // Spinner + etichetta d'attesa: la prima richiesta dopo inattività può impiegare
+    // alcuni secondi (cold start del worker/firma + ancoraggio OpenTimestamps).
+    const pdfBtnLabel = document.getElementById("pdfBtnLabel");
+    const labelOriginale = pdfBtnLabel.textContent;
+    downloadPdfBtn.classList.add("loading");
+    downloadPdfBtn.disabled = true;
+    pdfBtnLabel.textContent = "Generazione del certificato in corso…";
     try {
       const res = await fetch(WORKER_PDF_URL, {
         method: "POST",
@@ -1301,6 +1311,10 @@
       otsRow.style.display = "block";
     } catch (e) {
       alert("Errore di rete durante il download del PDF: " + e.message);
+    } finally {
+      downloadPdfBtn.classList.remove("loading");
+      downloadPdfBtn.disabled = false;
+      pdfBtnLabel.textContent = labelOriginale;
     }
   });
 
