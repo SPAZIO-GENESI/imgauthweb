@@ -474,6 +474,10 @@
   a.badge:hover { border-color: var(--oro); color: var(--oro); }
   .nota-box { margin-top: 1.4rem; padding: 0.8rem 1rem; background: #f9f9f7;
     border: 1px solid #e5e5e0; border-radius: 6px; font-size: 0.8rem; color: #666; line-height: 1.6; }
+
+  #donaLink { transition: background 0.15s, transform 0.15s, box-shadow 0.15s; }
+  #donaLink:hover { background: var(--oro-scuro) !important;
+    box-shadow: 0 4px 14px rgba(139,105,20,0.4) !important; transform: translateY(-1px); }
 </style>
   <!-- Matomo -->
   <script>
@@ -917,9 +921,10 @@
 <!-- Microdonazioni: visibile solo quando PAYPAL_DONATE_URL è configurato (vedi JS) -->
 <div id="donaRow" style="display:none; text-align:center; padding: 0 1.5rem 1.6rem;">
   <a id="donaLink" href="#" target="_blank" rel="noopener noreferrer"
-     style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.55rem 1.2rem;
-            border:1px solid #8B6914; border-radius:999px; font-size:0.8rem; color:#8B6914;
-            text-decoration:none; background:#fffdf7;">
+     style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.8rem 1.7rem;
+            border:none; border-radius:999px; font-size:0.92rem; font-weight:600; color:#fff;
+            text-decoration:none; background:#8B6914; box-shadow:0 2px 10px rgba(139,105,20,0.3);
+            letter-spacing:0.02em;">
     ☕ Ti è stato utile? Sostieni il progetto con un caffè
   </a>
   <p style="font-size:0.68rem; color:#aaa; margin-top:0.45rem;">donazione libera via PayPal — il servizio resta gratuito per tutti</p>
@@ -969,7 +974,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.7.1";
+  const APP_VERSION = "1.7.2";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
