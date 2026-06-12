@@ -441,6 +441,39 @@
 
   footer .riga-brand { display: flex; align-items: center; justify-content: center;
     gap: 0.5rem; margin-bottom: 0.5rem; color: #555; }
+
+  /* ── Scheda Istruzioni: testo + garanzie a tendina (specchio di /servizi) ── */
+  .istr p { font-size: 0.88rem; color: #555; line-height: 1.65; margin: 0.7rem 0; }
+  .istr p strong, .istr li strong { color: #111; font-weight: 600; }
+  .istr ol.passi { margin: 0.6rem 0 0.6rem 1.3rem; font-size: 0.88rem; color: #555; line-height: 1.65; }
+  .istr ol.passi li { margin: 0.35rem 0; }
+  .istr a { color: var(--oro); text-decoration: none; }
+  .istr a:hover { text-decoration: underline; }
+  .istr video { width: 100%; border-radius: 8px; border: 1px solid #e5e5e0; margin: 0.8rem 0 0.4rem; }
+  .istr h3 { font-family: 'EB Garamond', serif; font-weight: 500; font-size: 1.25rem; color: #111; margin: 1.8rem 0 0.2rem; }
+  .garanzie { border-top: 1px solid #e5e5e0; margin-top: 0.7rem; }
+  details.g { border-bottom: 1px solid #e5e5e0; }
+  details.g summary { cursor: pointer; list-style: none; display: flex; align-items: baseline;
+    gap: 0.7rem; padding: 0.8rem 0.1rem; user-select: none; }
+  details.g summary::-webkit-details-marker { display: none; }
+  details.g summary .segno { flex: 0 0 auto; width: 1rem; color: var(--oro); font-weight: 600;
+    transition: transform 0.18s ease; text-align: center; }
+  details.g[open] summary .segno { transform: rotate(45deg); }
+  details.g summary .titolo { font-weight: 600; font-size: 0.9rem; color: #111; }
+  details.g summary:hover .titolo { color: var(--oro); }
+  details.g summary .breve { color: #888; font-size: 0.8rem; font-weight: 300; }
+  details.g .corpo { padding: 0 0.1rem 1rem 1.7rem; font-size: 0.83rem; color: #666; line-height: 1.65; }
+  details.g .corpo p { margin: 0.4rem 0; font-size: 0.83rem; }
+  details.g .corpo ol { margin: 0.4rem 0 0.4rem 1.2rem; }
+  details.g .corpo li { margin: 0.25rem 0; }
+  .badge-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem;
+    padding-top: 0.6rem; margin-top: 0.5rem; border-top: 1px solid #efefec; }
+  .badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.22rem 0.65rem;
+    border: 1px solid #e5e5e0; border-radius: 999px; background: #f9f9f7; font-size: 0.72rem;
+    color: #333; text-decoration: none; }
+  a.badge:hover { border-color: var(--oro); color: var(--oro); }
+  .nota-box { margin-top: 1.4rem; padding: 0.8rem 1rem; background: #f9f9f7;
+    border: 1px solid #e5e5e0; border-radius: 6px; font-size: 0.8rem; color: #666; line-height: 1.6; }
 </style>
   <!-- Matomo -->
   <script>
@@ -488,6 +521,7 @@
   <div class="tabs">
     <button id="tabBtnAttesta" class="attiva" type="button" onclick="mostraTab('attesta')">Attesta la tua opera</button>
     <button id="tabBtnVerifica" type="button" onclick="mostraTab('verifica')">Verifica un certificato</button>
+    <button id="tabBtnIstruzioni" type="button" onclick="mostraTab('istruzioni')">Istruzioni</button>
   </div>
 
   <!-- ===========================
@@ -729,6 +763,155 @@
 
   </section>
 
+  <!-- ===========================
+       SEZIONE ISTRUZIONI
+       (specchio della sezione attestazione di spaziogenesi.org/servizi:
+        se aggiorni una, aggiorna l'altra)
+       =========================== -->
+  <section id="tabIstruzioni" class="tab-nascosta istr">
+
+    <p>
+      Questo servizio genera l'<em>impronta digitale</em> della tua opera — qualsiasi file,
+      fino a 100&nbsp;MB — e la lega a una data certa con un certificato PDF firmato.
+      Conservando l'attestazione potrai sempre provare che quel preciso file esisteva,
+      immutato, in quel momento: utile prima di pubblicare, partecipare a un concorso
+      o consegnare una bozza.
+    </p>
+
+    <p><strong>Come si usa</strong> — tre passi:</p>
+    <ol class="passi">
+      <li><strong>Trascina il file</strong> nella scheda "Attesta la tua opera".</li>
+      <li>Il sistema calcola l'impronta: <strong>scarica il certificato PDF</strong> (o il .txt) e conservalo.</li>
+      <li>In qualsiasi momento, <strong>verifica</strong>: ricarichi il file nella scheda "Verifica" e il servizio conferma che è identico.</li>
+    </ol>
+
+    <p><strong>Video guida</strong> — il servizio completo in meno di due minuti:</p>
+    <video controls preload="none" playsinline
+      poster="https://spaziogenesi.org/assets/video/guida-attestazione-poster.jpg"
+      aria-label="Video guida al servizio di attestazione">
+      <source src="https://spaziogenesi.org/assets/video/guida-attestazione.mp4" type="video/mp4">
+      Il tuo browser non supporta la riproduzione video:
+      <a href="https://spaziogenesi.org/assets/video/guida-attestazione.mp4">scarica il video</a>.
+    </video>
+
+    <h3>Le garanzie, in breve</h3>
+    <p style="font-size:0.8rem; margin-top:0.1rem;">Ogni riga è un vantaggio: aprila per leggere come funziona e come si verifica.</p>
+
+    <div class="garanzie">
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Impronta digitale unica</span><br>
+          <span class="breve">Un codice di 64 caratteri identifica il tuo file in modo univoco e irripetibile.</span></span></summary>
+        <div class="corpo">
+          <p>L'impronta (hash <strong>SHA-256</strong>) è calcolata dai nostri server sui byte esatti del
+          file: basta che cambi un solo pixel — o una virgola — e l'impronta diventa completamente diversa.
+          Per questo dimostra che il file non è stato modificato.</p>
+          <p>Funziona con qualsiasi formato: immagini, video, audio, documenti, modelli 3D, archivi.</p>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Data certa, garantita da terzi</span><br>
+          <span class="breve">La data di emissione è certificata da un'autorità indipendente riconosciuta da Adobe.</span></span></summary>
+        <div class="corpo">
+          <p>Il certificato PDF include una <strong>marca temporale</strong> emessa da DigiCert, autorità
+          presente nella lista di fiducia di Adobe: la data non la dichiariamo noi, la attesta una terza parte.</p>
+          <p><strong>Come si verifica:</strong> apri il PDF in Adobe Acrobat → pannello Firme →
+          "La firma include una marca temporale incorporata".</p>
+          <div class="badge-row">
+            <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-8 8.5-4.5-1-8-3.5-8-8.5V6l8-3 8 3z"/><path d="m9 12 2 2 4-4"/></svg>DigiCert · Timestamp Authority</span>
+            <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Adobe Approved Trust List</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Ancorata nella blockchain di Bitcoin</span><br>
+          <span class="breve">L'impronta viene registrata anche su Bitcoin: nessuno può retrodatarla, nemmeno noi.</span></span></summary>
+        <div class="corpo">
+          <p>Quando generi il certificato, l'impronta viene registrata nella blockchain di Bitcoin tramite
+          il protocollo aperto <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">OpenTimestamps</a>:
+          una prova di esistenza che non dipende dai nostri server.</p>
+          <p><strong>Come si verifica:</strong></p>
+          <ol>
+            <li>Scarica il file di prova <code>.ots</code> (il link compare dopo "Scarica il certificato PDF").</li>
+            <li>Vai su <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">opentimestamps.org</a>, riquadro <em>Stamp&nbsp;&amp;&nbsp;verify</em>.</li>
+            <li>Trascina il file <code>.ots</code> e l'opera originale: otterrai <em>"Bitcoin attests data existed as of…"</em>.</li>
+          </ol>
+          <p>La conferma definitiva matura in poche ore dall'emissione.</p>
+          <div class="badge-row">
+            <span class="badge"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#F7931A"/><text x="12" y="16.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff" font-family="Arial" transform="rotate(14 12 12)">&#8383;</text></svg>Bitcoin</span>
+            <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>OpenTimestamps</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">La tua opera non viene conservata</span><br>
+          <span class="breve">Il file serve solo a calcolare l'impronta: non viene memorizzato né ceduto a nessuno.</span></span></summary>
+        <div class="corpo">
+          <p>Il file viene elaborato in memoria il tempo di calcolarne l'impronta e poi scartato:
+          <strong>non viene salvato, né ceduto a terzi</strong>, né usato per altri scopi. Nei nostri
+          archivi resta soltanto il certificato PDF — che contiene l'impronta, non l'opera — e la prova blockchain.</p>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Codice aperto, verificabile da chiunque</span><br>
+          <span class="breve">Tutto il codice del servizio è pubblico: non devi crederci sulla parola.</span></span></summary>
+        <div class="corpo">
+          <p>"Open source" significa che il codice che fa funzionare il servizio è pubblicato integralmente:
+          chiunque — anche un esperto di tua fiducia — può leggerlo e verificare che faccia esattamente ciò
+          che dichiara, comprese le promesse sulla non conservazione dei file. La fiducia non te la chiediamo:
+          te la dimostriamo.</p>
+          <p>Le chiavi crittografiche non sono nel codice: pubblicarlo non indebolisce nulla.</p>
+          <div class="badge-row">
+            <a class="badge" href="https://github.com/SPAZIO-GENESI/imgauth" target="_blank" rel="noopener noreferrer"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Motore</a>
+            <a class="badge" href="https://github.com/SPAZIO-GENESI/imgauthweb" target="_blank" rel="noopener noreferrer"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Interfaccia</a>
+            <a class="badge" href="https://github.com/SPAZIO-GENESI/autart-signer" target="_blank" rel="noopener noreferrer"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Firma</a>
+            <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Licenze GNU AGPL-3.0 · MIT</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Verifica gratuita, per sempre, per chiunque</span><br>
+          <span class="breve">Chi riceve il tuo certificato può controllarlo in un click, senza registrarsi né pagare.</span></span></summary>
+        <div class="corpo">
+          <p>Ogni certificato contiene un <strong>QR code</strong> e un link che aprono questa pagina con
+          l'impronta già compilata: chi lo riceve carica il file e ottiene subito l'esito. La verifica
+          resterà sempre gratuita e aperta a tutti — è ciò che dà valore al certificato.</p>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Certificato PDF firmato</span><br>
+          <span class="breve">Ogni attestazione produce un certificato firmato digitalmente, con QR di verifica.</span></span></summary>
+        <div class="corpo">
+          <p>Il certificato è firmato digitalmente da <strong>Spazio Genesi ETS</strong> con un certificato
+          valido ma autonomo (emesso dall'associazione): la data è già garantita dalla marca temporale di
+          terza parte e dalla blockchain. Prossimamente il servizio potrà evolvere con un
+          <strong>sigillo elettronico riconosciuto</strong> anche per l'identità dell'emittente.</p>
+          <p>Se hai dichiarato titolo, autore, anno o note, questi dati sono "sigillati" nella firma di
+          sicurezza: dopo l'emissione nessuno può modificarli.</p>
+        </div>
+      </details>
+
+    </div>
+
+    <div class="nota-box">
+      <strong style="color:#111;">Nota.</strong> Il servizio fornisce un'attestazione crittografica,
+      <em>non</em> una registrazione di copyright né una prova legale di proprietà.
+      Per saperne di più: <a href="https://spaziogenesi.org/servizi#attestazione">la pagina del servizio</a>
+      e la <a href="https://spaziogenesi.org/changelog-attestazione">cronologia dei miglioramenti</a>.
+    </div>
+
+    <div class="btn-row" style="margin-top:1.4rem;">
+      <button class="primary" type="button" onclick="mostraTab('attesta'); window.scrollTo({top:0, behavior:'smooth'});">Attesta ora la tua opera</button>
+    </div>
+
+  </section>
+
 </main>
 
 <footer>
@@ -775,14 +958,15 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.6.0";
+  const APP_VERSION = "1.7.0";
 
-  // --- TAB ATTESTA / VERIFICA ---
+  // --- TAB ATTESTA / VERIFICA / ISTRUZIONI ---
+  const TABS = { attesta: "Attesta", verifica: "Verifica", istruzioni: "Istruzioni" };
   function mostraTab(quale) {
-    document.getElementById("tabAttesta").classList.toggle("tab-nascosta", quale !== "attesta");
-    document.getElementById("tabVerifica").classList.toggle("tab-nascosta", quale !== "verifica");
-    document.getElementById("tabBtnAttesta").classList.toggle("attiva", quale === "attesta");
-    document.getElementById("tabBtnVerifica").classList.toggle("attiva", quale === "verifica");
+    for (const [k, nome] of Object.entries(TABS)) {
+      document.getElementById("tab" + nome).classList.toggle("tab-nascosta", quale !== k);
+      document.getElementById("tabBtn" + nome).classList.toggle("attiva", quale === k);
+    }
   }
   (function showVersion() {
     const el = document.getElementById("appVersion");
