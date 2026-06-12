@@ -914,6 +914,17 @@
 
 </main>
 
+<!-- Microdonazioni: visibile solo quando PAYPAL_DONATE_URL è configurato (vedi JS) -->
+<div id="donaRow" style="display:none; text-align:center; padding: 0 1.5rem 1.6rem;">
+  <a id="donaLink" href="#" target="_blank" rel="noopener noreferrer"
+     style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.55rem 1.2rem;
+            border:1px solid #8B6914; border-radius:999px; font-size:0.8rem; color:#8B6914;
+            text-decoration:none; background:#fffdf7;">
+    ☕ Ti è stato utile? Sostieni il progetto con un caffè
+  </a>
+  <p style="font-size:0.68rem; color:#aaa; margin-top:0.45rem;">donazione libera via PayPal — il servizio resta gratuito per tutti</p>
+</div>
+
 <footer>
   <div class="riga-brand">
     <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 580 481" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
@@ -959,6 +970,16 @@
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
   const APP_VERSION = "1.7.0";
+
+  // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
+  // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
+  // Finché è vuoto, il pulsantino resta nascosto.
+  const PAYPAL_DONATE_URL = "";
+  (function showDona() {
+    if (!PAYPAL_DONATE_URL) return;
+    document.getElementById("donaLink").href = PAYPAL_DONATE_URL;
+    document.getElementById("donaRow").style.display = "block";
+  })();
 
   // --- TAB ATTESTA / VERIFICA / ISTRUZIONI ---
   const TABS = { attesta: "Attesta", verifica: "Verifica", istruzioni: "Istruzioni" };
