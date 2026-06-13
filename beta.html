@@ -25,6 +25,9 @@
 <!-- Turnstile: challenge anti-bot richiesta solo per l'emissione del certificato PDF -->
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback" async defer></script>
 
+<!-- pdf.js: lettura lato client del certificato PDF in fase di verifica (Feature 2) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -678,14 +681,27 @@
     </div>
   </div>
 
-  <div class="passo"><span class="n">2</span><h2>Inserisci l'impronta dichiarata</h2><span class="hint">già compilata se arrivi dal QR</span></div>
-  <div>
-    <input id="verifyHashInput" type="text" placeholder="es. cdf242cec64d65e0…  (64 caratteri, dal certificato)" style="width:100%; padding:0.55rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; font-family:'Courier New',monospace;">
+  <div class="passo"><span class="n">2</span><h2>Carica il certificato PDF</h2><span class="hint">lo leggiamo in automatico</span></div>
+  <div class="drop-zone" id="certDropZone">
+    <input type="file" id="certFileInput" accept="application/pdf,.pdf">
+    <p class="drop-primary">Trascina qui il certificato PDF, o clicca per sceglierlo</p>
+    <p class="drop-hint">ne leggiamo impronta, firma e dati dichiarati</p>
   </div>
 
-  <!-- Campi tecnici a richiesta: stringa di attestazione + firma HMAC + dati dichiarati.
-       Se il certificato riporta dati dichiarati, la firma HMAC li copre:
-       vanno reinseriti identici (copiali dai "Dettagli tecnici" del PDF) -->
+  <!-- Esito della lettura automatica del certificato -->
+  <div id="certReadBox" style="display:none; margin-top:0.9rem; padding:0.8rem 1rem; background:#f7f7f5; border:1px solid #e8e8e3; border-radius:6px; font-size:0.8rem; line-height:1.55;"></div>
+
+  <!-- Alternativa: chi non ha il PDF (es. arriva dal QR) inserisce l'impronta a mano -->
+  <details id="manualHashDetails" class="opz" style="margin-top:0.9rem;">
+    <summary>Non hai il certificato PDF? Inserisci l'impronta manualmente</summary>
+    <div style="margin-top:0.7rem;">
+      <input id="verifyHashInput" type="text" placeholder="es. cdf242cec64d65e0…  (64 caratteri, dal certificato)" style="width:100%; padding:0.55rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; font-family:'Courier New',monospace;">
+    </div>
+  </details>
+
+  <!-- Campi tecnici: auto-compilati leggendo il PDF; restano visibili per
+       trasparenza e come fallback se la lettura automatica fallisse. La firma
+       HMAC copre anche i dati dichiarati: vanno identici per la verifica. -->
   <details id="verifyAdvanced" class="opz" style="margin-top:0.9rem;">
     <summary>Verifica avanzata: firma di sicurezza e dati dichiarati (dal certificato)</summary>
     <div style="margin-top: 0.8rem;">
@@ -711,20 +727,22 @@
 
   <div class="btn-row" style="margin-top:1.1rem;">
     <button class="primary" id="verifyBtn" disabled>
-      <span id="verifyBtnLabel">Verifica hash</span>
+      <span id="verifyBtnLabel">Verifica il certificato</span>
     </button>
   </div>
 
   <div class="result-wrap" id="verifyResultWrap">
-    <p class="result-section-title">Esito verifica</p>
-
-    <div class="hash-block">
-      <div class="hash-label-small">Hash calcolato</div>
-      <div class="hash-string" id="verifyHashCalc"></div>
+    <div class="risultato-card">
+      <p class="result-section-title" style="border:none; margin-bottom:0.8rem;">Esito della verifica</p>
+      <div id="verdictRows" style="display:flex; flex-direction:column; gap:0.55rem;"></div>
+      <details class="tecnici" style="margin-top:1rem;">
+        <summary>Dettagli tecnici della verifica</summary>
+        <div class="hash-block" style="margin-top:0.6rem;">
+          <div class="hash-label-small">Hash calcolato dal file caricato</div>
+          <div class="hash-string" id="verifyHashCalc"></div>
+        </div>
+      </details>
     </div>
-
-    <p id="verifyOutcome" style="font-size:0.8rem; margin-top:0.4rem;"></p>
-    <p id="verifyHmacOutcome" style="font-size:0.8rem; margin-top:0.3rem;"></p>
   </div>
 
   <!-- Come verificare l'ancoraggio blockchain (OpenTimestamps) -->
@@ -1048,8 +1066,6 @@
   const verifyBtnLabel     = document.getElementById("verifyBtnLabel");
   const verifyResultWrap   = document.getElementById("verifyResultWrap");
   const verifyHashCalc     = document.getElementById("verifyHashCalc");
-  const verifyOutcome      = document.getElementById("verifyOutcome");
-  const verifyHmacOutcome  = document.getElementById("verifyHmacOutcome");
 
   let selectedFile = null;
   let lastData = null;
@@ -1311,7 +1327,9 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "attestazione-" + lastData.sha256.slice(0, 12) + ".pdf";
+      // Nome coerente col recupero (worker: certificato-<hash>.pdf) e con la
+      // dicitura dell'interfaccia ("certificato PDF"): è lo stesso documento.
+      a.download = "certificato-" + lastData.sha256.slice(0, 12) + ".pdf";
       a.click();
       URL.revokeObjectURL(url);
 
@@ -1383,6 +1401,152 @@
 
   verifyHashInput.addEventListener("input", updateVerifyBtnState);
 
+  // --- LETTURA AUTOMATICA DEL CERTIFICATO PDF (Feature 2) ---
+  // Estrae dal PDF (con pdf.js, interamente lato client) impronta, stringa di
+  // attestazione, firma HMAC e dati dichiarati: chi riceve un certificato ne
+  // verifica l'AUTENTICITÀ (firma + data) oltre alla corrispondenza del file,
+  // senza ricopiare nulla a mano dai "Dettagli tecnici".
+  const certDropZone  = document.getElementById("certDropZone");
+  const certFileInput = document.getElementById("certFileInput");
+  const certReadBox   = document.getElementById("certReadBox");
+
+  function pdfjsReady() {
+    if (!window.pdfjsLib) return false;
+    if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    }
+    return true;
+  }
+
+  // Ricostruisce il testo del PDF riga per riga (raggruppando i frammenti per
+  // coordinata y), poi estrae i campi. I campi senza spazi (attestazione, HMAC)
+  // si cercano sul testo "compatto" (whitespace rimosso): robusto rispetto a come
+  // pdf.js spezza i frammenti. I dati dichiarati si leggono dal blocco delimitato.
+  async function extractCertFields(file) {
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
+    const lines = [];
+    for (let p = 1; p <= pdf.numPages; p++) {
+      const page = await pdf.getPage(p);
+      const tc = await page.getTextContent();
+      const byY = new Map();
+      for (const it of tc.items) {
+        if (!it.str) continue;
+        const y = Math.round(it.transform[5]);
+        if (!byY.has(y)) byY.set(y, []);
+        byY.get(y).push({ x: it.transform[4], s: it.str });
+      }
+      for (const y of [...byY.keys()].sort((a, b) => b - a)) {
+        const txt = byY.get(y).sort((a, b) => a.x - b.x).map(o => o.s).join("");
+        if (txt.trim()) lines.push(txt);
+      }
+    }
+    const tight = lines.join("\n").replace(/\s+/g, "");
+    const out = { hash:"", attestazione:"", hmac:"", titolo:"", autore:"", anno:"", note:"" };
+
+    const att = tight.match(/SHA-256:([0-9a-f]{64})@(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)/i);
+    if (att) { out.hash = att[1].toLowerCase(); out.attestazione = "SHA-256:" + out.hash + "@" + att[2]; }
+
+    let hm = tight.match(/FirmaHMAC\(server\):([A-Za-z0-9+/]{43}=)/);
+    if (!hm) hm = tight.match(/([A-Za-z0-9+/]{43}=)/); // fallback: unica stringa base64 con padding
+    if (hm) out.hmac = hm[1];
+
+    // Dati dichiarati: blocco compreso tra l'intestazione e l'avvertenza; gestisce
+    // i valori andati a capo (li riaccoda al campo corrente).
+    const start = lines.findIndex(l => /Dati dichiarati dall.?autore/i.test(l));
+    const end   = lines.findIndex(l => /Dati forniti dall.?autore al momento/i.test(l));
+    if (start >= 0 && end > start) {
+      const acc = { titolo: [], autore: [], anno: [], note: [] };
+      const labels = [["titolo",/^Titolo:\s*(.*)$/],["autore",/^Autore:\s*(.*)$/],
+                      ["anno",/^Anno\/versione:\s*(.*)$/],["note",/^Note:\s*(.*)$/]];
+      let cur = null;
+      for (const raw of lines.slice(start + 1, end)) {
+        const l = raw.trim(); if (!l) continue;
+        let matched = false;
+        for (const [k, re] of labels) {
+          const m = l.match(re);
+          if (m) { cur = k; acc[k].push(m[1]); matched = true; break; }
+        }
+        if (!matched && cur) acc[cur].push(l);
+      }
+      for (const k of ["titolo","autore","anno","note"]) {
+        const v = acc[k].join(" ").replace(/\s+/g, " ").trim();
+        if (v) out[k] = v;
+      }
+    }
+    return out;
+  }
+
+  function applyCertFields(f) {
+    verifyHashInput.value   = f.hash || "";
+    verifyAttestInput.value = f.attestazione || "";
+    verifyHmacInput.value   = f.hmac || "";
+    document.getElementById("vMetaTitolo").value = f.titolo || "";
+    document.getElementById("vMetaAutore").value = f.autore || "";
+    document.getElementById("vMetaAnno").value   = f.anno   || "";
+    document.getElementById("vMetaNote").value   = f.note   || "";
+    updateVerifyBtnState();
+    updateRecoverState();
+  }
+
+  async function loadCertPdf(f) {
+    certReadBox.style.display = "block";
+    certReadBox.style.color = "#666";
+    certReadBox.textContent = "Lettura del certificato in corso…";
+    if (!pdfjsReady()) {
+      certReadBox.style.color = "#c0392b";
+      certReadBox.textContent = "Lettore PDF non ancora pronto: attendi un istante e riprova.";
+      return;
+    }
+    try {
+      const f2 = await extractCertFields(f);
+      if (!f2.hash) {
+        certReadBox.style.color = "#c0392b";
+        certReadBox.innerHTML = "Non riesco a leggere un'impronta valida da questo PDF. " +
+          "Assicurati che sia un certificato emesso da questo servizio, oppure inserisci l'impronta manualmente qui sotto.";
+        return;
+      }
+      applyCertFields(f2);
+      const bits = ["impronta SHA-256"];
+      if (f2.hmac) bits.push("firma di sicurezza");
+      const meta = [f2.titolo && "titolo", f2.autore && "autore", f2.anno && "anno", f2.note && "note"].filter(Boolean);
+      if (meta.length) bits.push("dati dichiarati (" + meta.join(", ") + ")");
+      certReadBox.style.color = "#1e7e34";
+      certReadBox.innerHTML = "✓ Letto dal certificato: " + bits.join(", ") +
+        ".<br><span style='color:#777'>Ora carica il file dell'opera (passo 1), poi premi «Verifica il certificato».</span>";
+    } catch (e) {
+      certReadBox.style.color = "#c0392b";
+      certReadBox.textContent = "Impossibile leggere questo PDF. Inserisci l'impronta manualmente qui sotto.";
+    }
+  }
+
+  certFileInput.addEventListener("change", () => { if (certFileInput.files[0]) loadCertPdf(certFileInput.files[0]); });
+  certDropZone.addEventListener("dragover", e => { e.preventDefault(); certDropZone.classList.add("over"); });
+  certDropZone.addEventListener("dragleave", () => certDropZone.classList.remove("over"));
+  certDropZone.addEventListener("drop", e => {
+    e.preventDefault(); certDropZone.classList.remove("over");
+    const f = e.dataTransfer.files[0];
+    if (f) { certFileInput.files = e.dataTransfer.files; loadCertPdf(f); }
+  });
+
+  // Riga d'esito (semaforo) per la card di verifica
+  function verdictRow(state, text) {
+    const fg = { ok:"#1e7e34", bad:"#c0392b", warn:"#8a6d00", info:"#555" };
+    const bg = { ok:"#eef7ef", bad:"#fdecea", warn:"#fbf6e7", info:"#f4f4f2" };
+    const ic = { ok:"✓", bad:"✕", warn:"!", info:"i" };
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex; align-items:flex-start; gap:0.6rem; padding:0.6rem 0.8rem; " +
+      "border-radius:6px; font-size:0.84rem; line-height:1.45; background:" + bg[state] + "; color:" + fg[state] + ";";
+    const b = document.createElement("span");
+    b.textContent = ic[state];
+    b.style.cssText = "flex:0 0 auto; width:1.2rem; height:1.2rem; border-radius:50%; background:" + fg[state] +
+      "; color:#fff; font-size:0.72rem; font-weight:700; display:inline-flex; align-items:center; justify-content:center; margin-top:0.05rem;";
+    const s = document.createElement("span"); s.textContent = text;
+    row.appendChild(b); row.appendChild(s);
+    return row;
+  }
+
   // --- PRE-COMPILAZIONE DA URL (?hash=...) ---
   // Quando si apre la pagina via QR code del certificato, il parametro hash
   // è già nell'URL: lo usiamo per pre-compilare il campo di verifica.
@@ -1392,6 +1556,11 @@
     if (hashParam && /^[0-9a-f]{64}$/i.test(hashParam)) {
       verifyHashInput.value = hashParam;
       updateVerifyBtnState();
+      updateRecoverState();
+      // Chi arriva dal QR ha l'impronta ma di solito non il PDF: apri la sezione
+      // manuale così vede il campo già compilato.
+      const mh = document.getElementById("manualHashDetails");
+      if (mh) mh.open = true;
       // Chi arriva dal QR/link del certificato vuole verificare: apri quella scheda
       mostraTab("verifica");
       document.getElementById("verifyDropZone")
@@ -1399,7 +1568,7 @@
     }
   })();
 
-  // --- VERIFICA HASH: CHIAMATA AL WORKER ---
+  // --- VERIFICA DEL CERTIFICATO: file + dati (auto-letti dal PDF o manuali) ---
   verifyBtn.addEventListener("click", async () => {
     if (!verifyFile || !verifyHashInput.value.trim()) return;
 
@@ -1407,6 +1576,8 @@
     verifyBtnLabel.textContent = "Verifica in corso…";
     verifyErrorMsg.classList.remove("show");
     verifyResultWrap.classList.remove("show");
+    const rows = document.getElementById("verdictRows");
+    rows.innerHTML = "";
 
     try {
       const fd = new FormData();
@@ -1416,9 +1587,10 @@
       if (verifyHmacInput.value.trim())   fd.append("hmac", verifyHmacInput.value.trim());
       // Dati dichiarati: se il certificato li riportava, la firma HMAC li copre
       // e devono essere forniti identici perché la verifica riesca.
+      let hasMeta = false;
       for (const [field, id] of [["titolo","vMetaTitolo"], ["autore","vMetaAutore"], ["anno","vMetaAnno"], ["note","vMetaNote"]]) {
         const v = document.getElementById(id).value.trim();
-        if (v) fd.append(field, v);
+        if (v) { fd.append(field, v); hasMeta = true; }
       }
 
       const res = await fetch(WORKER_VERIFY_URL, { method: "POST", body: fd });
@@ -1428,32 +1600,46 @@
         verifyErrorMsg.classList.add("show");
         return;
       }
-
       verifyHashCalc.textContent = d.hash_calcolato;
-      if (d.coincide) {
-        verifyOutcome.textContent = "Hash: coincide con il file fornito.";
-        verifyOutcome.style.color = "#2e7d32";
-      } else {
-        verifyOutcome.textContent = "Hash: NON coincide con il file fornito.";
-        verifyOutcome.style.color = "#c0392b";
-      }
+
+      // 1) Corrispondenza opera ↔ certificato
+      rows.appendChild(verdictRow(d.coincide ? "ok" : "bad",
+        d.coincide ? "L'opera corrisponde al certificato."
+                   : "L'opera NON corrisponde a questo certificato."));
+
+      // 2) Autenticità (firma HMAC del server) + integrità dei dati dichiarati
       if (d.hmac_valido === true) {
-        verifyHmacOutcome.textContent = "HMAC: firma del server verificata — attestazione autentica.";
-        verifyHmacOutcome.style.color = "#2e7d32";
+        rows.appendChild(verdictRow("ok", "Certificato autentico, emesso da Spazio Genesi."));
+        if (hasMeta) rows.appendChild(verdictRow("ok", "Dati dichiarati integri: non alterati dopo l'emissione."));
       } else if (d.hmac_valido === false) {
-        verifyHmacOutcome.textContent = "HMAC: firma NON valida — attestazione non riconosciuta dal server.";
-        verifyHmacOutcome.style.color = "#c0392b";
+        rows.appendChild(verdictRow("bad", "Firma di sicurezza NON valida: certificato non riconosciuto o dati alterati."));
+        if (hasMeta) rows.appendChild(verdictRow("info", "Se hai caricato il PDF, controlla i dati letti nei «Dettagli tecnici» (passo 2): un errore di lettura può invalidare la firma."));
       } else {
-        verifyHmacOutcome.textContent = "";
+        rows.appendChild(verdictRow("info", "Firma non verificata: manca la firma di sicurezza. Carica il certificato PDF (passo 2) per il controllo completo."));
       }
+
+      // 3) Ancoraggio blockchain (OpenTimestamps): presenza della prova .ots
+      const otsPlaceholder = verdictRow("info", "Controllo dell'ancoraggio blockchain…");
+      rows.appendChild(otsPlaceholder);
+      try {
+        const otsRes = await fetch(WORKER_BASE + "/api/ots?hash=" + verifyHashInput.value.trim().toLowerCase());
+        if (otsRes.ok) {
+          otsPlaceholder.replaceWith(verdictRow("ok", "Esistenza ancorata nella blockchain di Bitcoin (OpenTimestamps)."));
+        } else {
+          otsPlaceholder.replaceWith(verdictRow("info", "Nessun ancoraggio blockchain per questa impronta (certificati anteriori alla v1.7)."));
+        }
+      } catch {
+        otsPlaceholder.replaceWith(verdictRow("info", "Ancoraggio blockchain non verificabile in questo momento."));
+      }
+
       verifyResultWrap.classList.add("show");
       verifyResultWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } catch (e) {
-      verifyErrorMsg.textContent = "Errore: impossibile raggiungere il worker. (" + e.message + ")";
+      verifyErrorMsg.textContent = "Errore: impossibile raggiungere il worker.";
       verifyErrorMsg.classList.add("show");
     } finally {
       verifyBtn.disabled = false;
-      verifyBtnLabel.textContent = "Verifica hash";
+      verifyBtnLabel.textContent = "Verifica il certificato";
     }
   });
 
