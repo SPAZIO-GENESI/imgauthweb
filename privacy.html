@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informativa privacy — Servizio di attestazione | Spazio Genesi</title>
+<meta name="description" content="Informativa sul trattamento dei dati personali (art. 13 GDPR) del servizio di attestazione delle opere digitali di Spazio Genesi ETS.">
+<meta name="robots" content="noindex, follow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --oro: #8B6914; }
+  body { font-family: 'Inter', system-ui, sans-serif; font-weight: 300; background: #fff; color: #1a1a1a; line-height: 1.65; }
+  header { text-align: center; padding: 2.6rem 1.5rem 0; }
+  header h1 { font-family: 'EB Garamond', Georgia, serif; font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 400; }
+  header h1 span { font-style: italic; color: var(--oro); }
+  .sub { margin-top: 0.6rem; font-size: 0.82rem; color: #777; }
+  .divider { width: 48px; height: 1.5px; background: var(--oro); margin: 1.4rem auto 0; }
+  main { max-width: 760px; margin: 0 auto; padding: 2.4rem 1.5rem 4rem; }
+  h2 { font-family: 'EB Garamond', serif; font-weight: 500; font-size: 1.3rem; color: #111; margin: 2.2rem 0 0.7rem; }
+  h3 { font-size: 0.95rem; font-weight: 600; color: #222; margin: 1.3rem 0 0.4rem; }
+  p, li { font-size: 0.9rem; color: #444; margin: 0.5rem 0; }
+  ul, ol { padding-left: 1.4rem; }
+  li { margin: 0.3rem 0; }
+  strong { color: #111; font-weight: 600; }
+  a { color: var(--oro); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code { font-family: 'Courier New', monospace; font-size: 0.82rem; background: #f4f4f2; padding: 1px 5px; border-radius: 3px; }
+  .box { border: 1px solid #e5e5e0; border-radius: 8px; padding: 1rem 1.2rem; margin: 0.8rem 0; background: #fcfbf9; }
+  .box h3 { margin-top: 0; }
+  .meta { font-size: 0.8rem; color: #888; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.83rem; margin: 0.8rem 0; }
+  th, td { border: 1px solid #e5e5e0; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: #f7f7f5; font-weight: 600; color: #222; }
+  .nota { background: #fbf7ec; border: 1px solid #e8dcc0; border-radius: 8px; padding: 0.9rem 1.1rem; color: #5a4a22; font-size: 0.86rem; }
+  footer { text-align: center; padding: 1.6rem; font-size: 0.78rem; color: #aaa; border-top: 1px solid #eee; }
+  footer a { color: #888; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Informativa <span>privacy</span></h1>
+  <p class="sub">Servizio di attestazione delle opere digitali — ai sensi dell'art. 13 del Regolamento UE 2016/679 (GDPR)</p>
+  <div class="divider"></div>
+</header>
+
+<main>
+
+  <p class="meta">Ultimo aggiornamento: giugno 2026. La presente informativa riguarda specificamente il
+  servizio di attestazione disponibile su <strong>attestazione.spaziogenesi.org</strong>. Per il sito
+  istituzionale vedi l'<a href="https://spaziogenesi.org/privacy-policy">informativa generale</a>.</p>
+
+  <h2>1. Titolare del trattamento</h2>
+  <p>
+    <strong>Spazio Genesi ETS</strong><br>
+    Sede legale: Via Francesco Caracciolo 14, 00167 Roma (RM)<br>
+    Sede operativa: Galleria Commerciale Via Roma 215, primo piano — L'Aquila (AQ) 67100<br>
+    Codice fiscale: 96602450585<br>
+    Email: <a href="mailto:info@spaziogenesi.org">info@spaziogenesi.org</a> ·
+    PEC: <a href="mailto:spaziogenesi@pec.it">spaziogenesi@pec.it</a>
+  </p>
+
+  <h2>2. Principio di fondo: l'opera non viene conservata</h2>
+  <p>
+    Il servizio calcola l'<strong>impronta digitale (SHA-256)</strong> del file che carichi e rilascia
+    un certificato. <strong>Il file dell'opera non viene memorizzato</strong>: è elaborato in memoria
+    solo per il tempo necessario a calcolarne l'impronta, poi viene scartato. Anche se il file contenesse
+    dati personali (o categorie particolari), questi <strong>non vengono conservati</strong> dal servizio.
+  </p>
+
+  <h2>3. Quali dati trattiamo, perché e con quale base giuridica</h2>
+
+  <div class="box">
+    <h3>3.1 Impronta, marca temporale e firma</h3>
+    <p>Dal file calcoliamo l'impronta SHA-256 e generiamo data/ora, stringa di attestazione e firma di
+    sicurezza (HMAC). Sono dati tecnici del certificato.</p>
+    <p class="meta"><strong>Base giuridica:</strong> erogazione del servizio richiesto dall'utente (art. 6.1.b)
+    e legittimo interesse all'integrità del servizio (art. 6.1.f).</p>
+  </div>
+
+  <div class="box">
+    <h3>3.2 Dati dichiarati dall'autore (facoltativi)</h3>
+    <p>Puoi indicare <strong>titolo, autore, anno, note</strong>. Sono <strong>facoltativi</strong>: se li
+    inserisci compaiono sul certificato e vengono <strong>archiviati nel certificato PDF</strong>. Il campo
+    "autore" può contenere un nome reale e quindi un dato personale. Tali dati sono vincolati alla firma
+    (non alterabili dopo l'emissione, per integrità).</p>
+    <p class="meta"><strong>Base giuridica:</strong> erogazione del servizio richiesto (art. 6.1.b).
+    Sei tu a decidere se inserirli.</p>
+  </div>
+
+  <div class="box">
+    <h3>3.3 Indirizzo IP (anti-abuso e anti-bot)</h3>
+    <p>L'indirizzo IP viene trattato per il <strong>rate-limiting</strong> (prevenzione di abusi) e per la
+    verifica anti-bot <strong>Cloudflare Turnstile</strong> all'emissione dell'attestazione. Non viene usato
+    per profilarti.</p>
+    <p class="meta"><strong>Base giuridica:</strong> legittimo interesse alla sicurezza del servizio (art. 6.1.f).</p>
+  </div>
+
+  <div class="box">
+    <h3>3.4 Statistiche di visita (Matomo)</h3>
+    <p>Usiamo <strong>Matomo</strong>, strumento di analisi <strong>auto-ospitato</strong> su nostra
+    infrastruttura, configurato con <strong>indirizzo IP anonimizzato</strong> e in modalità
+    <strong>senza cookie</strong>. Raccoglie solo statistiche aggregate, non condivise con terzi a fini
+    commerciali. Per questo <strong>non è richiesto il consenso</strong> e il servizio non mostra un banner cookie.</p>
+    <p class="meta"><strong>Base giuridica:</strong> legittimo interesse al miglioramento del servizio (art. 6.1.f).
+    <strong>Conservazione:</strong> 13 mesi.</p>
+  </div>
+
+  <h2>4. Conservazione e residenza dei dati</h2>
+  <ul>
+    <li><strong>File dell'opera:</strong> non conservato (vedi §2).</li>
+    <li><strong>Certificato PDF + prova OpenTimestamps (.ots):</strong> archiviati per consentire il recupero
+    e la verifica nel tempo. Conservazione a tempo indeterminato salvo richiesta di cancellazione (vedi §7).</li>
+    <li><strong>Dove:</strong> l'archivio dei certificati risiede su storage <strong>Cloudflare R2 in
+    giurisdizione Unione Europea</strong> (residenza dei dati nell'UE). Il motore di elaborazione
+    (Cloudflare Workers) processa le richieste all'edge in modo transitorio.</li>
+  </ul>
+
+  <h2>5. Destinatari (responsabili del trattamento e soggetti coinvolti)</h2>
+  <p>I dati non sono ceduti né venduti. Per erogare il servizio ci avvaliamo di:</p>
+  <table>
+    <tr><th>Soggetto</th><th>Ruolo</th><th>Dati coinvolti</th></tr>
+    <tr><td>Cloudflare, Inc.</td><td>Motore (Workers), archivio (R2 — UE), anti-bot (Turnstile)</td><td>Impronta, certificato, IP</td></tr>
+    <tr><td>Microsoft Azure</td><td>Firmatario crittografico del PDF; host dell'analitica Matomo</td><td>Certificato PDF (in firma)</td></tr>
+    <tr><td>GitHub, Inc. (Microsoft)</td><td>Hosting dell'interfaccia (GitHub Pages)</td><td>Dati tecnici di navigazione</td></tr>
+    <tr><td>DigiCert, Inc.</td><td>Autorità di marca temporale (RFC 3161)</td><td>Solo l'hash/firma da marcare — nessun dato personale</td></tr>
+    <tr><td>OpenTimestamps (calendar pubblici)</td><td>Ancoraggio in blockchain Bitcoin</td><td>Solo un hash <code>sha256(impronta‖nonce)</code> — nessun dato personale</td></tr>
+  </table>
+  <p>Inoltre, autorità pubbliche nei soli casi previsti dalla legge.</p>
+
+  <h2>6. Trasferimenti fuori dall'UE</h2>
+  <p>Cloudflare, Microsoft, GitHub e DigiCert hanno sede negli Stati Uniti. Gli eventuali trasferimenti
+  avvengono nel rispetto delle garanzie GDPR (clausole contrattuali standard / decisioni di adeguatezza).
+  L'<strong>archivio dei certificati è mantenuto in giurisdizione UE</strong>; l'elaborazione all'edge è
+  transitoria e non comporta conservazione fuori dall'UE.</p>
+
+  <h2>7. Immutabilità, blockchain e diritto alla cancellazione</h2>
+  <div class="nota">
+    Punto importante e specifico di questo servizio:
+    <ul style="margin-top:0.5rem;">
+      <li>Nella <strong>blockchain di Bitcoin</strong> viene registrato <strong>solo un hash</strong>
+      (<code>sha256(impronta‖nonce)</code>): non è un dato personale, è irreversibile e
+      <strong>non può né deve essere cancellato</strong> (non contiene informazioni personali).</li>
+      <li>Il <strong>certificato PDF archiviato</strong> può invece contenere dati personali (autore,
+      nome del file): su tua richiesta <strong>lo cancelliamo dal nostro archivio</strong> (diritto
+      all'oblio, art. 17). La firma vincola i dati per integrità, ma non impedisce la rimozione della copia archiviata.</li>
+    </ul>
+  </div>
+
+  <h2>8. I tuoi diritti (artt. 15–22 GDPR)</h2>
+  <p>Hai diritto di accesso, rettifica, cancellazione, limitazione, portabilità, opposizione al trattamento
+  basato sul legittimo interesse, e — ove applicabile — revoca del consenso. Per esercitarli scrivi a
+  <a href="mailto:info@spaziogenesi.org">info@spaziogenesi.org</a> (indicando, se possibile, l'impronta
+  SHA-256 del certificato interessato). Puoi proporre reclamo al
+  <a href="https://www.garanteprivacy.it" target="_blank" rel="noopener noreferrer">Garante per la protezione dei dati personali</a>.</p>
+
+  <h2>9. Responsabilità dell'utente</h2>
+  <p>Caricando un file dichiari di averne titolo e di avere il diritto di trattarne il contenuto. Se inserisci
+  dati personali di terzi nei campi dichiarati, sei responsabile della loro liceità. Il servizio non verifica
+  la titolarità dell'opera: fornisce un'attestazione crittografica di esistenza, non una prova legale di proprietà.</p>
+
+  <h2>10. Minori</h2>
+  <p>Il servizio non è diretto a minori di 14 anni e non raccoglie consapevolmente i loro dati.</p>
+
+  <h2>11. Modifiche</h2>
+  <p>La presente informativa può essere aggiornata; la data di "Ultimo aggiornamento" indica la versione vigente.</p>
+
+</main>
+
+<footer>
+  <a href="/">← Torna al servizio di attestazione</a> ·
+  <a href="https://spaziogenesi.org/privacy-policy">Informativa generale del sito</a>
+</footer>
+
+</body>
+</html>

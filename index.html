@@ -489,7 +489,9 @@
   <!-- Matomo -->
   <script>
     var _paq = window._paq = window._paq || [];
-    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    /* Analitica senza cookie + IP anonimizzato (lato server): nessun consenso
+       richiesto, nessun banner. Vedi privacy.html § 3.4. */
+    _paq.push(['disableCookies']);
     _paq.push(['trackPageView']);
     _paq.push(['enableLinkTracking']);
     (function() {
@@ -1052,6 +1054,7 @@
   </div>
   <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a> ·
   <a href="https://spaziogenesi.org/changelog-attestazione">Cronologia dei miglioramenti</a> ·
+  <a href="/privacy.html">Privacy</a> ·
   <span id="appVersion"></span> · realizzato da <a href="https://tangram.page">Tangram.page</a>
 </footer>
 
@@ -1085,7 +1088,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.9.4";
+  const APP_VERSION = "1.9.5";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
