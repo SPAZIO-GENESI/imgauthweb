@@ -1597,9 +1597,12 @@
   }
 
   // --- PRE-COMPILAZIONE DA URL (?hash=...) ---
-  // Quando si apre la pagina via QR code del certificato, il parametro hash
-  // è già nell'URL: lo usiamo per pre-compilare il campo di verifica.
-  (function () {
+  // Quando si apre la pagina via QR code o link del certificato, il parametro hash
+  // è già nell'URL: lo usiamo per pre-compilare il campo di verifica. La funzione è
+  // INVOCATA in fondo allo script (vedi più sotto), così tutte le definizioni che usa
+  // — inclusa updateRecoverState e le sue costanti — esistono già al momento della
+  // chiamata (evita un ReferenceError che rompeva l'apertura da QR/link).
+  function prefillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const hashParam = params.get("hash");
     if (hashParam && /^[0-9a-f]{64}$/i.test(hashParam)) {
@@ -1615,7 +1618,7 @@
       document.getElementById("verifyDropZone")
         .scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  })();
+  }
 
   // --- VERIFICA DEL CERTIFICATO: file + dati (auto-letti dal PDF o manuali) ---
   verifyBtn.addEventListener("click", async () => {
@@ -1763,6 +1766,10 @@
       updateRecoverState();
     }
   });
+
+  // Pre-compilazione da ?hash= (QR/link del certificato): invocata QUI, in fondo,
+  // quando tutte le funzioni e costanti referenziate sono già definite.
+  prefillFromUrl();
 </script>
 
 
