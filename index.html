@@ -485,6 +485,22 @@
   #donaLink { transition: background 0.15s, transform 0.15s, box-shadow 0.15s; }
   #donaLink:hover { background: var(--oro-scuro) !important;
     box-shadow: 0 4px 14px rgba(139,105,20,0.4) !important; transform: translateY(-1px); }
+
+  /* ── Stato semaforico dei servizi ── */
+  .svc-panel { border: 1px solid #e5e5e0; border-radius: 8px; overflow: hidden; margin-top: 0.6rem; }
+  .svc-row { display: flex; align-items: center; gap: 0.6rem; padding: 0.62rem 0.9rem;
+    font-size: 0.85rem; color: #333; border-top: 1px solid #efefec; }
+  .svc-row:first-child { border-top: none; }
+  .svc-dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; background: #c4c4c4;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.03); }
+  .svc-dot.ok { background: #1e7e34; }
+  .svc-dot.down { background: #c0392b; }
+  .svc-dot.degraded { background: #d4a017; }
+  .svc-dot.na { background: #c4c4c4; }
+  .svc-state { margin-left: auto; font-size: 0.74rem; color: #999; }
+  .svc-checked { font-size: 0.74rem; color: #aaa; margin-top: 0.5rem; }
+  .svc-footer { display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem;
+    font-size: 0.78rem; color: #777; }
 </style>
   <!-- Matomo -->
   <script>
@@ -1016,6 +1032,17 @@
 
     </div>
 
+    <h3>Stato dei servizi</h3>
+    <p style="font-size:0.8rem; margin-top:0.1rem;">Controllo in tempo reale dei componenti del servizio:
+    se qualcosa è temporaneamente non disponibile, lo vedi qui (e l'interfaccia te lo segnala).</p>
+    <div class="svc-panel" id="svcPanel">
+      <div class="svc-row"><span class="svc-dot na" data-svc="worker"></span><span>Generazione dell'attestazione</span><span class="svc-state" data-svc-state="worker">—</span></div>
+      <div class="svc-row"><span class="svc-dot na" data-svc="signer"></span><span>Firma del certificato (PDF)</span><span class="svc-state" data-svc-state="signer">—</span></div>
+      <div class="svc-row"><span class="svc-dot na" data-svc="archive"></span><span>Archivio e recupero certificati</span><span class="svc-state" data-svc-state="archive">—</span></div>
+      <div class="svc-row"><span class="svc-dot na" data-svc="anchor"></span><span>Ancoraggio blockchain</span><span class="svc-state" data-svc-state="anchor">—</span></div>
+    </div>
+    <p class="svc-checked" id="svcChecked">Ultimo controllo: —</p>
+
     <div class="nota-box">
       <strong style="color:#111;">Nota.</strong> Il servizio fornisce un'attestazione crittografica,
       <em>non</em> una registrazione di copyright né una prova legale di proprietà.
@@ -1052,6 +1079,8 @@
     </svg>
     <span>Spazio Genesi ETS</span>
   </div>
+  <div class="svc-footer" id="svcFooter" title="Stato dei servizi"><span class="svc-dot na"></span><span id="svcFooterText">Stato dei servizi…</span></div>
+  <br>
   <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a> ·
   <a href="https://spaziogenesi.org/changelog-attestazione">Cronologia dei miglioramenti</a> ·
   <a href="/privacy.html">Privacy</a> ·
@@ -1088,7 +1117,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.9.5";
+  const APP_VERSION = "1.10.0";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
@@ -1820,7 +1849,8 @@
 
   function updateRecoverState() {
     const hashOk = HEX64_RE.test(verifyHashInput.value.trim().toLowerCase());
-    recoverBtn.disabled = !(verifyFile || hashOk);
+    // Il recupero legge dall'archivio: se è giù (da /api/status) lo inibiamo.
+    recoverBtn.disabled = !(verifyFile || hashOk) || window.__svcArchiveDown === true;
   }
   verifyHashInput.addEventListener("input", updateRecoverState);
 
@@ -1885,6 +1915,93 @@
   // Pre-compilazione da ?hash= (QR/link del certificato): invocata QUI, in fondo,
   // quando tutte le funzioni e costanti referenziate sono già definite.
   prefillFromUrl();
+
+  // --- STATO SEMAFORICO DEI SERVIZI (/api/status) ---
+  // Mostra lo stato live nel footer e nel pannello "Stato dei servizi" (Istruzioni),
+  // e pilota la UX inibendo le azioni le cui componenti sono indisponibili.
+  // Principio prudente: si inibisce SOLO su un "down" certo; se lo stato non è
+  // raggiungibile, neutro (grigio) e nessun blocco.
+  const WORKER_STATUS_URL = WORKER_BASE + "/api/status";
+  const SVC_LABELS = { ok: "operativo", down: "non disponibile", degraded: "rallentato", "n/d": "non rilevato", na: "non rilevato" };
+
+  let svcPdfNote = null;
+  function ensurePdfNote() {
+    if (svcPdfNote) return svcPdfNote;
+    const btn = document.getElementById("downloadPdfBtn");
+    if (!btn || !btn.parentNode) return null;
+    svcPdfNote = document.createElement("p");
+    svcPdfNote.className = "microcopy";
+    svcPdfNote.style.cssText = "display:none; color:#c0392b;";
+    btn.parentNode.insertBefore(svcPdfNote, btn);
+    return svcPdfNote;
+  }
+
+  function applyServiceGating(st) {
+    const signerDown  = !!st && st.signer === "down";
+    const archiveDown = !!st && st.archive === "down";
+    window.__svcArchiveDown = archiveDown;
+    if (typeof updateRecoverState === "function") updateRecoverState();
+
+    const btn = document.getElementById("downloadPdfBtn");
+    if (!btn) return;
+    const note = ensurePdfNote();
+    if ((signerDown || archiveDown) && !btn.classList.contains("loading")) {
+      btn.disabled = true;
+      if (note) {
+        note.textContent = archiveDown
+          ? "Archivio temporaneamente non disponibile: puoi comunque generare l'attestazione e scaricare il .txt; riprova più tardi per il certificato PDF."
+          : "Firma del certificato temporaneamente non disponibile: puoi scaricare il .txt; riprova più tardi per il PDF.";
+        note.style.display = "block";
+      }
+    } else {
+      if (!btn.classList.contains("loading")) btn.disabled = false;
+      if (note) note.style.display = "none";
+    }
+  }
+
+  function renderServiceStatus(st) {
+    const keys = ["worker", "signer", "archive", "anchor"];
+    let down = 0, degraded = 0, na = 0;
+    for (const k of keys) {
+      const dot = document.querySelector('.svc-dot[data-svc="' + k + '"]');
+      const lab = document.querySelector('[data-svc-state="' + k + '"]');
+      const v = st ? (st[k] || "n/d") : "na";
+      const cls = v === "ok" ? "ok" : v === "down" ? "down" : v === "degraded" ? "degraded" : "na";
+      if (dot) dot.className = "svc-dot " + cls;
+      if (lab) lab.textContent = SVC_LABELS[v] || "non rilevato";
+      if (cls === "down") down++; else if (cls === "degraded") degraded++; else if (cls === "na") na++;
+    }
+    const checked = document.getElementById("svcChecked");
+    if (checked) checked.textContent = st
+      ? "Ultimo controllo: " + new Date().toLocaleTimeString("it-IT")
+      : "Ultimo controllo: stato non raggiungibile";
+
+    const fdot = document.querySelector("#svcFooter .svc-dot");
+    const ftxt = document.getElementById("svcFooterText");
+    let fcls = "ok", ftext = "Servizi operativi";
+    if (!st || na === keys.length) { fcls = "na"; ftext = "Stato dei servizi non disponibile"; }
+    else if (down > 0) { fcls = "down"; ftext = "Disservizio parziale in corso"; }
+    else if (degraded > 0) { fcls = "degraded"; ftext = "Servizi operativi (un componente rallentato)"; }
+    if (fdot) fdot.className = "svc-dot " + fcls;
+    if (ftxt) ftxt.textContent = ftext;
+  }
+
+  async function pollServiceStatus() {
+    let st = null;
+    try {
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 12000);
+      const r = await fetch(WORKER_STATUS_URL, { signal: ctrl.signal });
+      clearTimeout(to);
+      if (r.ok) st = await r.json();
+    } catch { /* lasciamo st = null → neutro, nessun blocco */ }
+    renderServiceStatus(st);
+    applyServiceGating(st);
+  }
+
+  pollServiceStatus();
+  setInterval(pollServiceStatus, 180000); // 180s: traffico basso, nessun bisogno di poll frequenti
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) pollServiceStatus(); });
 </script>
 
 
