@@ -691,63 +691,80 @@
        =========================== -->
   <section id="tabVerifica" class="tab-nascosta">
 
-  <div class="passo"><span class="n">1</span><h2>Carica il file da controllare</h2></div>
+  <!-- Contesto: comparare solo quando si arriva dal QR/link del certificato -->
+  <div id="verifyContext" style="display:none; margin-bottom:1.3rem; padding:0.85rem 1.1rem; background:#fbf7ec; border:1px solid #e8dcc0; border-radius:8px; font-size:0.85rem; color:#5a4a22; line-height:1.6;"></div>
 
-  <div class="drop-zone" id="verifyDropZone">
-    <input type="file" id="verifyFileInput">
-    <p class="drop-primary">Trascina qui il file ricevuto, o clicca per sceglierlo</p>
-    <p class="drop-hint">deve essere il file originale, non il certificato PDF</p>
+  <!-- I due input: opera e certificato. Ordine ed enfasi cambiano via JS secondo
+       come si arriva (QR/link → opera in primo piano, certificato facoltativo;
+       a freddo → certificato in primo piano). Vedi setupVerifyMode nel JS. -->
+  <div id="verifyBlocks" style="display:flex; flex-direction:column;">
+
+    <!-- BLOCCO OPERA -->
+    <div id="workBlock" style="order:1;">
+      <div class="passo"><h2 id="workHeading">Carica il file da controllare</h2></div>
+      <div class="drop-zone" id="verifyDropZone">
+        <input type="file" id="verifyFileInput">
+        <p class="drop-primary">Trascina qui il file ricevuto, o clicca per sceglierlo</p>
+        <p class="drop-hint">deve essere il file originale, non il certificato PDF</p>
+      </div>
+      <div class="preview-row" id="verifyPreviewRow">
+        <img class="preview-thumb" id="verifyPreviewImg" src="" alt="">
+        <div class="preview-info">
+          <div class="preview-fname" id="verifyPreviewName"></div>
+          <div class="preview-fmeta" id="verifyPreviewMeta"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCCO CERTIFICATO PDF — <details>: aperto/in primo piano a freddo,
+         richiudibile e facoltativo quando si arriva da QR/link. -->
+    <details id="certBlock" style="order:2; margin-top:1.2rem; border:1px solid #e5e5e0; border-radius:8px; padding:0.75rem 1rem;">
+      <summary id="certSummary" style="cursor:pointer; font-weight:500; color:#222; font-size:0.95rem;">Carica il certificato PDF</summary>
+      <div style="margin-top:0.9rem;">
+        <div class="drop-zone" id="certDropZone">
+          <input type="file" id="certFileInput" accept="application/pdf,.pdf">
+          <p class="drop-primary">Trascina qui il certificato PDF, o clicca per sceglierlo</p>
+          <p class="drop-hint">ne leggiamo impronta, firma e dati dichiarati</p>
+        </div>
+
+        <!-- Esito della lettura automatica del certificato -->
+        <div id="certReadBox" style="display:none; margin-top:0.9rem; padding:0.8rem 1rem; background:#f7f7f5; border:1px solid #e8e8e3; border-radius:6px; font-size:0.8rem; line-height:1.55;"></div>
+
+        <!-- Alternativa: chi non ha il PDF inserisce l'impronta a mano -->
+        <details id="manualHashDetails" class="opz" style="margin-top:0.9rem;">
+          <summary>Non hai il certificato PDF? Inserisci l'impronta manualmente</summary>
+          <div style="margin-top:0.7rem;">
+            <input id="verifyHashInput" type="text" placeholder="es. cdf242cec64d65e0…  (64 caratteri, dal certificato)" style="width:100%; padding:0.55rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; font-family:'Courier New',monospace;">
+          </div>
+        </details>
+
+        <!-- Campi tecnici: auto-compilati leggendo il PDF; restano visibili per
+             trasparenza e come fallback se la lettura automatica fallisse. La firma
+             HMAC copre anche i dati dichiarati: vanno identici per la verifica. -->
+        <details id="verifyAdvanced" class="opz" style="margin-top:0.9rem;">
+          <summary>Verifica avanzata: firma di sicurezza e dati dichiarati (dal certificato)</summary>
+          <div style="margin-top: 0.8rem;">
+            <label class="field-label" for="verifyAttestInput">Stringa di attestazione:</label>
+            <input id="verifyAttestInput" type="text" placeholder="SHA-256:abc123...@2026-..." style="width:100%; padding:0.5rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; color:#888;">
+          </div>
+          <div style="margin-top: 0.6rem;">
+            <label class="field-label" for="verifyHmacInput">Firma HMAC:</label>
+            <input id="verifyHmacInput" type="text" placeholder="base64..." style="width:100%; padding:0.5rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; color:#888;">
+          </div>
+          <details id="verifyMetaDetails" style="margin-top:0.8rem; border:1px solid #eee; border-radius:6px; padding:0.6rem 0.9rem;">
+            <summary style="cursor:pointer; font-size:0.8rem; color:#777;">Dati dichiarati sul certificato (solo se presenti)</summary>
+            <div style="margin-top:0.6rem; display:grid; gap:0.5rem;">
+              <input id="vMetaTitolo" type="text" maxlength="150" placeholder="Titolo dell'opera" style="width:100%; padding:0.45rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.78rem; color:#666;">
+              <input id="vMetaAutore" type="text" maxlength="100" placeholder="Autore / pseudonimo" style="width:100%; padding:0.45rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.78rem; color:#666;">
+              <input id="vMetaAnno" type="text" maxlength="50" placeholder="Anno o versione" style="width:100%; padding:0.45rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.78rem; color:#666;">
+              <input id="vMetaNote" type="text" maxlength="300" placeholder="Note" style="width:100%; padding:0.45rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.78rem; color:#666;">
+            </div>
+          </details>
+        </details>
+      </div>
+    </details>
+
   </div>
-
-  <div class="preview-row" id="verifyPreviewRow">
-    <img class="preview-thumb" id="verifyPreviewImg" src="" alt="">
-    <div class="preview-info">
-      <div class="preview-fname" id="verifyPreviewName"></div>
-      <div class="preview-fmeta" id="verifyPreviewMeta"></div>
-    </div>
-  </div>
-
-  <div class="passo"><span class="n">2</span><h2>Carica il certificato PDF</h2><span class="hint">lo leggiamo in automatico</span></div>
-  <div class="drop-zone" id="certDropZone">
-    <input type="file" id="certFileInput" accept="application/pdf,.pdf">
-    <p class="drop-primary">Trascina qui il certificato PDF, o clicca per sceglierlo</p>
-    <p class="drop-hint">ne leggiamo impronta, firma e dati dichiarati</p>
-  </div>
-
-  <!-- Esito della lettura automatica del certificato -->
-  <div id="certReadBox" style="display:none; margin-top:0.9rem; padding:0.8rem 1rem; background:#f7f7f5; border:1px solid #e8e8e3; border-radius:6px; font-size:0.8rem; line-height:1.55;"></div>
-
-  <!-- Alternativa: chi non ha il PDF (es. arriva dal QR) inserisce l'impronta a mano -->
-  <details id="manualHashDetails" class="opz" style="margin-top:0.9rem;">
-    <summary>Non hai il certificato PDF? Inserisci l'impronta manualmente</summary>
-    <div style="margin-top:0.7rem;">
-      <input id="verifyHashInput" type="text" placeholder="es. cdf242cec64d65e0…  (64 caratteri, dal certificato)" style="width:100%; padding:0.55rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; font-family:'Courier New',monospace;">
-    </div>
-  </details>
-
-  <!-- Campi tecnici: auto-compilati leggendo il PDF; restano visibili per
-       trasparenza e come fallback se la lettura automatica fallisse. La firma
-       HMAC copre anche i dati dichiarati: vanno identici per la verifica. -->
-  <details id="verifyAdvanced" class="opz" style="margin-top:0.9rem;">
-    <summary>Verifica avanzata: firma di sicurezza e dati dichiarati (dal certificato)</summary>
-    <div style="margin-top: 0.8rem;">
-      <label class="field-label" for="verifyAttestInput">Stringa di attestazione:</label>
-      <input id="verifyAttestInput" type="text" placeholder="SHA-256:abc123...@2026-..." style="width:100%; padding:0.5rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; color:#888;">
-    </div>
-    <div style="margin-top: 0.6rem;">
-      <label class="field-label" for="verifyHmacInput">Firma HMAC:</label>
-      <input id="verifyHmacInput" type="text" placeholder="base64..." style="width:100%; padding:0.5rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; color:#888;">
-    </div>
-  <details id="verifyMetaDetails" style="margin-top:0.8rem; border:1px solid #eee; border-radius:6px; padding:0.6rem 0.9rem;">
-    <summary style="cursor:pointer; font-size:0.8rem; color:#777;">Dati dichiarati sul certificato (solo se presenti)</summary>
-    <div style="margin-top:0.6rem; display:grid; gap:0.5rem;">
-      <input id="vMetaTitolo" type="text" maxlength="150" placeholder="Titolo dell'opera" style="width:100%; padding:0.45rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.78rem; color:#666;">
-      <input id="vMetaAutore" type="text" maxlength="100" placeholder="Autore / pseudonimo" style="width:100%; padding:0.45rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.78rem; color:#666;">
-      <input id="vMetaAnno" type="text" maxlength="50" placeholder="Anno o versione" style="width:100%; padding:0.45rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.78rem; color:#666;">
-      <input id="vMetaNote" type="text" maxlength="300" placeholder="Note" style="width:100%; padding:0.45rem 0.6rem; border:1px solid #ddd; border-radius:4px; font-size:0.78rem; color:#666;">
-    </div>
-  </details>
-  </details>
 
   <div class="error-msg" id="verifyErrorMsg"></div>
 
@@ -1032,7 +1049,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.9.0";
+  const APP_VERSION = "1.9.1";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
@@ -1596,27 +1613,61 @@
     return row;
   }
 
+  // --- MODALITÀ DELLA SCHEDA VERIFICA (consapevole dell'ingresso) ---
+  // Da QR/link del certificato (?hash=): l'utente ha già un certificato e gli serve
+  //   solo controllare che un file corrisponda → file dell'opera in primo piano,
+  //   certificato PDF facoltativo (richiudibile) per verificare anche la firma.
+  // A freddo (nessun ?hash): verifica completa → certificato PDF in primo piano
+  //   (lo leggiamo noi) + file dell'opera da confrontare.
+  function setupVerifyMode(mode, hash) {
+    const ctx         = document.getElementById("verifyContext");
+    const workBlock   = document.getElementById("workBlock");
+    const certBlock   = document.getElementById("certBlock");
+    const certSummary = document.getElementById("certSummary");
+    const workHeading = document.getElementById("workHeading");
+    if (!ctx || !workBlock || !certBlock) return;
+    if (mode === "qr") {
+      workBlock.style.order = "1";
+      certBlock.style.order = "2";
+      certBlock.open = false;
+      workHeading.textContent = "Carica il file dell'opera da controllare";
+      certSummary.textContent = "Verifica anche la firma del certificato (facoltativo)";
+      ctx.style.display = "block";
+      ctx.innerHTML =
+        "Stai verificando il certificato con impronta " +
+        "<code style=\"font-size:0.78rem; word-break:break-all;\">" + hash + "</code>.<br>" +
+        "Carica il file dell'opera qui sotto per controllare che corrisponda. " +
+        "Vuoi la verifica completa, anche di firma e data? Aggiungi il certificato PDF.";
+    } else {
+      certBlock.style.order = "1";
+      workBlock.style.order = "2";
+      certBlock.open = true;
+      workHeading.textContent = "Carica il file dell'opera da confrontare";
+      certSummary.textContent = "Carica il certificato PDF — lo leggiamo noi";
+      ctx.style.display = "none";
+    }
+  }
+
   // --- PRE-COMPILAZIONE DA URL (?hash=...) ---
   // Quando si apre la pagina via QR code o link del certificato, il parametro hash
-  // è già nell'URL: lo usiamo per pre-compilare il campo di verifica. La funzione è
-  // INVOCATA in fondo allo script (vedi più sotto), così tutte le definizioni che usa
-  // — inclusa updateRecoverState e le sue costanti — esistono già al momento della
-  // chiamata (evita un ReferenceError che rompeva l'apertura da QR/link).
+  // è già nell'URL: lo usiamo per pre-compilare il campo di verifica e impostare la
+  // modalità "da QR". La funzione è INVOCATA in fondo allo script, così tutte le
+  // definizioni che usa esistono già (evita il ReferenceError che rompeva il QR).
   function prefillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const hashParam = params.get("hash");
     if (hashParam && /^[0-9a-f]{64}$/i.test(hashParam)) {
-      verifyHashInput.value = hashParam;
+      const h = hashParam.toLowerCase();
+      verifyHashInput.value = h;
       updateVerifyBtnState();
       updateRecoverState();
-      // Chi arriva dal QR ha l'impronta ma di solito non il PDF: apri la sezione
-      // manuale così vede il campo già compilato.
-      const mh = document.getElementById("manualHashDetails");
-      if (mh) mh.open = true;
+      setupVerifyMode("qr", h);
       // Chi arriva dal QR/link del certificato vuole verificare: apri quella scheda
       mostraTab("verifica");
       document.getElementById("verifyDropZone")
         .scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      setupVerifyMode("cold");
     }
   }
 
