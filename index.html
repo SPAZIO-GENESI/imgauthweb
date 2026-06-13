@@ -656,7 +656,7 @@
     </div>
 
     <!-- Badge "Opera attestata" da incorporare nel proprio sito o profilo -->
-    <details class="tecnici" id="badgeDetails" style="margin-top:1.4rem;">
+    <details class="tecnici" id="badgeDetails" style="margin-top:1.4rem; display:none;">
       <summary>Badge "Opera attestata" per il tuo sito o profilo</summary>
       <div style="margin-top:0.8rem; font-size:0.8rem; color:#666; line-height:1.6;">
         <p style="margin:0 0 0.7rem;">Mostra che l'opera è attestata e rendi la verifica
@@ -1072,7 +1072,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.9.2";
+  const APP_VERSION = "1.9.3";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
@@ -1285,13 +1285,13 @@
       document.getElementById("rIssuer").textContent      = d.emesso_da;
       document.getElementById("rAttestation").textContent = d.attestazione;
 
-      // Il link alla prova blockchain vale per il PDF precedente: nascondilo
-      // finché non viene generato il PDF di QUESTA attestazione.
+      // Il link alla prova blockchain e il badge valgono per il PDF precedente:
+      // nascondili finché non viene generato il PDF di QUESTA attestazione.
+      // ⚠️ Il badge si popola DOPO "Scarica il certificato PDF" (vedi downloadPdfBtn):
+      // è quel passo a creare l'archivio (cert + prova .ots) da cui il badge legge.
+      // Popolarlo qui, prima, darebbe un badge "non attestata" (e la cache lo terrebbe).
       document.getElementById("otsRow").style.display = "none";
-
-      // Badge "Opera attestata" embeddabile: l'immagine SVG è servita dal worker
-      // (verde solo se l'hash risulta in archivio); il link porta alla verifica.
-      fillBadge("badge", d.sha256);
+      document.getElementById("badgeDetails").style.display = "none";
 
       resultWrap.classList.add("show");
       resultWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -1438,6 +1438,11 @@
       const otsLink = document.getElementById("otsLink");
       otsLink.href = WORKER_BASE + "/api/ots?hash=" + lastData.sha256;
       otsRow.style.display = "block";
+
+      // Ora l'opera è archiviata (cert + prova .ots): popola e mostra il badge.
+      // È qui — non a "Genera attestazione" — che il badge risulta "attestata".
+      fillBadge("badge", lastData.sha256);
+      document.getElementById("badgeDetails").style.display = "";
     } catch (e) {
       alert("Errore di rete durante il download del PDF: " + e.message);
     } finally {
