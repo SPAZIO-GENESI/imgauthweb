@@ -648,6 +648,26 @@
       <p class="microcopy">Il certificato PDF è il documento da conservare, insieme al file originale dell'opera.<br>
       Suggerimento: invialo via PEC a te stessə — alla prova matematica aggiungi una prova legale del possesso.</p>
     </div>
+
+    <!-- Badge "Opera attestata" da incorporare nel proprio sito o profilo -->
+    <details class="tecnici" id="badgeDetails" style="margin-top:1.4rem;">
+      <summary>Badge "Opera attestata" per il tuo sito o profilo</summary>
+      <div style="margin-top:0.8rem; font-size:0.8rem; color:#666; line-height:1.6;">
+        <p style="margin:0 0 0.7rem;">Mostra che l'opera è attestata e rendi la verifica
+        raggiungibile in un click. Il badge resta verde finché l'opera risulta nei nostri
+        archivi; chi lo clicca arriva alla pagina di verifica con l'impronta già inserita.</p>
+        <p style="margin:0 0 0.4rem; color:#888;">Anteprima:</p>
+        <p style="margin:0 0 0.9rem;"><img id="badgePreview" alt="Opera attestata — Spazio Genesi" height="28"></p>
+
+        <label class="field-label">Codice HTML (per siti web):</label>
+        <textarea id="badgeHtml" readonly rows="3" style="width:100%; font-family:'Courier New',monospace; font-size:0.72rem; padding:0.5rem; border:1px solid #ddd; border-radius:4px; resize:vertical;"></textarea>
+        <button class="azione-secondaria" type="button" onclick="copyBadge('badgeHtml', this)" style="margin-top:0.4rem;">Copia codice HTML</button>
+
+        <label class="field-label" style="margin-top:0.9rem;">Markdown (per GitHub, README e simili):</label>
+        <textarea id="badgeMd" readonly rows="2" style="width:100%; font-family:'Courier New',monospace; font-size:0.72rem; padding:0.5rem; border:1px solid #ddd; border-radius:4px; resize:vertical;"></textarea>
+        <button class="azione-secondaria" type="button" onclick="copyBadge('badgeMd', this)" style="margin-top:0.4rem;">Copia Markdown</button>
+      </div>
+    </details>
     </div>
   </div>
 
@@ -1006,7 +1026,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.8.0-beta.1";
+  const APP_VERSION = "1.9.0-beta.1";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
@@ -1223,6 +1243,18 @@
       // finché non viene generato il PDF di QUESTA attestazione.
       document.getElementById("otsRow").style.display = "none";
 
+      // Badge "Opera attestata" embeddabile: l'immagine SVG è servita dal worker
+      // (verde solo se l'hash risulta in archivio); il link porta alla verifica.
+      const verifyPageUrl = "https://attestazione.spaziogenesi.org?hash=" + d.sha256;
+      const badgeImgUrl   = WORKER_BASE + "/api/badge?hash=" + d.sha256;
+      document.getElementById("badgePreview").src = badgeImgUrl;
+      document.getElementById("badgeHtml").value =
+        '<a href="' + verifyPageUrl + '" target="_blank" rel="noopener">\n' +
+        '  <img src="' + badgeImgUrl + '" alt="Opera attestata — Spazio Genesi" height="28">\n' +
+        '</a>';
+      document.getElementById("badgeMd").value =
+        '[![Opera attestata — Spazio Genesi](' + badgeImgUrl + ')](' + verifyPageUrl + ')';
+
       resultWrap.classList.add("show");
       resultWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } catch (e) {
@@ -1256,6 +1288,18 @@
     });
   }
   window.copyHash = copyHash; // per l'onclick inline
+
+  // --- COPIA SNIPPET BADGE ---
+  function copyBadge(id, btn) {
+    const ta = document.getElementById(id);
+    if (!ta) return;
+    navigator.clipboard.writeText(ta.value).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = "Copiato ✓";
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    });
+  }
+  window.copyBadge = copyBadge; // per l'onclick inline
 
   // --- DOWNLOAD TXT ---
   downloadBtn.addEventListener("click", () => {
