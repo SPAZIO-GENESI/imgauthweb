@@ -785,6 +785,29 @@
           <div class="hash-string" id="verifyHashCalc"></div>
         </div>
       </details>
+
+      <!-- Badge "Opera attestata": compare solo dopo una verifica con esito di
+           corrispondenza positivo, usando l'impronta verificata. Permette di
+           ottenere il codice da incorporare anche a chi non ha appena emesso il
+           certificato (ma lo sta verificando). -->
+      <details class="tecnici" id="vBadgeDetails" style="margin-top:1rem; display:none;">
+        <summary>Badge "Opera attestata" per il tuo sito o profilo</summary>
+        <div style="margin-top:0.8rem; font-size:0.8rem; color:#666; line-height:1.6;">
+          <p style="margin:0 0 0.7rem;">Incorpora questo distintivo nel tuo sito o profilo:
+          mostra che l'opera è attestata e, con un click, porta alla verifica. Resta verde
+          finché l'opera risulta nei nostri archivi.</p>
+          <p style="margin:0 0 0.4rem; color:#888;">Anteprima:</p>
+          <p style="margin:0 0 0.9rem;"><img id="vBadgePreview" alt="Opera attestata — Spazio Genesi" height="28"></p>
+
+          <label class="field-label">Codice HTML (per siti web):</label>
+          <textarea id="vBadgeHtml" readonly rows="3" style="width:100%; font-family:'Courier New',monospace; font-size:0.72rem; padding:0.5rem; border:1px solid #ddd; border-radius:4px; resize:vertical;"></textarea>
+          <button class="azione-secondaria" type="button" onclick="copyBadge('vBadgeHtml', this)" style="margin-top:0.4rem;">Copia codice HTML</button>
+
+          <label class="field-label" style="margin-top:0.9rem;">Markdown (per GitHub, README e simili):</label>
+          <textarea id="vBadgeMd" readonly rows="2" style="width:100%; font-family:'Courier New',monospace; font-size:0.72rem; padding:0.5rem; border:1px solid #ddd; border-radius:4px; resize:vertical;"></textarea>
+          <button class="azione-secondaria" type="button" onclick="copyBadge('vBadgeMd', this)" style="margin-top:0.4rem;">Copia Markdown</button>
+        </div>
+      </details>
     </div>
   </div>
 
@@ -1049,7 +1072,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.9.1";
+  const APP_VERSION = "1.9.2";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
@@ -1268,15 +1291,7 @@
 
       // Badge "Opera attestata" embeddabile: l'immagine SVG è servita dal worker
       // (verde solo se l'hash risulta in archivio); il link porta alla verifica.
-      const verifyPageUrl = "https://attestazione.spaziogenesi.org?hash=" + d.sha256;
-      const badgeImgUrl   = WORKER_BASE + "/api/badge?hash=" + d.sha256;
-      document.getElementById("badgePreview").src = badgeImgUrl;
-      document.getElementById("badgeHtml").value =
-        '<a href="' + verifyPageUrl + '" target="_blank" rel="noopener">\n' +
-        '  <img src="' + badgeImgUrl + '" alt="Opera attestata — Spazio Genesi" height="28">\n' +
-        '</a>';
-      document.getElementById("badgeMd").value =
-        '[![Opera attestata — Spazio Genesi](' + badgeImgUrl + ')](' + verifyPageUrl + ')';
+      fillBadge("badge", d.sha256);
 
       resultWrap.classList.add("show");
       resultWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -1311,6 +1326,24 @@
     });
   }
   window.copyHash = copyHash; // per l'onclick inline
+
+  // --- BADGE: popola anteprima + snippet HTML/Markdown per un dato hash ---
+  // prefix = "badge" (scheda Attesta) o "vBadge" (esito Verifica): popola gli
+  // elementi <prefix>Preview / <prefix>Html / <prefix>Md se presenti.
+  function fillBadge(prefix, hash) {
+    const verifyPageUrl = "https://attestazione.spaziogenesi.org?hash=" + hash;
+    const badgeImgUrl   = WORKER_BASE + "/api/badge?hash=" + hash;
+    const img    = document.getElementById(prefix + "Preview");
+    const htmlEl = document.getElementById(prefix + "Html");
+    const mdEl   = document.getElementById(prefix + "Md");
+    if (img) img.src = badgeImgUrl;
+    if (htmlEl) htmlEl.value =
+      '<a href="' + verifyPageUrl + '" target="_blank" rel="noopener">\n' +
+      '  <img src="' + badgeImgUrl + '" alt="Opera attestata — Spazio Genesi" height="28">\n' +
+      '</a>';
+    if (mdEl) mdEl.value =
+      '[![Opera attestata — Spazio Genesi](' + badgeImgUrl + ')](' + verifyPageUrl + ')';
+  }
 
   // --- COPIA SNIPPET BADGE ---
   function copyBadge(id, btn) {
@@ -1704,6 +1737,16 @@
         return;
       }
       verifyHashCalc.textContent = d.hash_calcolato;
+
+      // Badge incorporabile: mostrato SOLO se la corrispondenza è confermata
+      // (impronta verificata). Usa l'hash effettivo del file appena verificato.
+      const vBadge = document.getElementById("vBadgeDetails");
+      if (d.coincide) {
+        fillBadge("vBadge", d.hash_calcolato);
+        vBadge.style.display = "";
+      } else {
+        vBadge.style.display = "none";
+      }
 
       // 1) Corrispondenza opera ↔ certificato
       rows.appendChild(verdictRow(d.coincide ? "ok" : "bad",
