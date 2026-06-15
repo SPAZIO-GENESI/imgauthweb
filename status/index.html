@@ -83,9 +83,10 @@
     <span><i style="background:var(--nd)"></i> Nessun dato</span>
   </div>
   <p class="updated" id="updated"></p>
-  <p class="note">Le barre mostrano lo stato giornaliero degli ultimi 90 giorni (lo storico si
-  riempie nel tempo: i giorni precedenti all'attivazione del monitoraggio risultano "nessun dato").
-  La pagina si aggiorna automaticamente.</p>
+  <p class="note">Lo <strong>stato attuale</strong> (banner e indicazione accanto a ogni componente) è
+  aggiornato quasi in tempo reale (ogni pochi minuti). Le <strong>barre</strong> mostrano lo stato
+  giornaliero degli ultimi 90 giorni (lo storico si riempie nel tempo: i giorni precedenti
+  all'attivazione del monitoraggio risultano "nessun dato"). La pagina si aggiorna automaticamente.</p>
 </main>
 
 <footer>
@@ -114,15 +115,35 @@
     return `${g}/${m}/${y}`;
   }
 
-  function render(data) {
+  const norm = (v) => (["ok", "down", "degraded"].includes(v) ? v : "nodata");
+
+  // Stato attuale complessivo dai dati LIVE (/api/status): peggiore tra i critici.
+  function overallFromLive(s) {
+    let o = "ok";
+    for (const k of ["worker", "signer", "archive"]) {
+      const v = norm(s[k]);
+      if (v === "down") o = "down";
+      else if (v === "degraded" && o !== "down") o = "degraded";
+      else if (v === "nodata" && o === "ok") o = "nodata";
+    }
+    return o;
+  }
+
+  // live = /api/status (stato ADESSO, ~3 min) · hist = /api/status-history (barre 90 gg)
+  function render(live, hist) {
     const banner = document.getElementById("banner");
     const bannerText = document.getElementById("bannerText");
-    banner.className = "banner " + (data.overall || "nodata");
-    bannerText.textContent = BANNER_TEXT[data.overall] || BANNER_TEXT.nodata;
+    const overall = live ? overallFromLive(live) : (hist ? hist.overall : "nodata");
+    banner.className = "banner " + (overall || "nodata");
+    bannerText.textContent = BANNER_TEXT[overall] || BANNER_TEXT.nodata;
 
     const cont = document.getElementById("components");
     cont.innerHTML = "";
-    for (const c of data.components) {
+    const comps = (hist && hist.components) ? hist.components : [];
+    for (const c of comps) {
+      // Stato ATTUALE del componente: dal live se disponibile, altrimenti dal rollup di oggi.
+      const cur = norm(live && live[c.key] ? live[c.key] : c.current);
+
       const wrap = document.createElement("div");
       wrap.className = "comp";
 
@@ -132,8 +153,8 @@
       name.className = "comp-name";
       name.textContent = c.label;
       const state = document.createElement("span");
-      state.className = "comp-state " + (c.current || "nodata");
-      state.textContent = STATE_LABEL[c.current] || STATE_LABEL.nodata;
+      state.className = "comp-state " + cur;
+      state.textContent = STATE_LABEL[cur] || STATE_LABEL.nodata;
       head.appendChild(name); head.appendChild(state);
 
       const bars = document.createElement("div");
@@ -148,7 +169,7 @@
       const meta = document.createElement("div");
       meta.className = "bars-meta";
       const left = document.createElement("span");
-      left.textContent = data.window_days + " giorni fa";
+      left.textContent = (hist ? hist.window_days : 90) + " giorni fa";
       const mid = document.createElement("span");
       mid.className = "uptime";
       mid.textContent = (c.uptime === null || c.uptime === undefined) ? "uptime — (dati in raccolta)" : ("uptime " + c.uptime + "%");
@@ -160,23 +181,31 @@
       cont.appendChild(wrap);
     }
 
-    document.getElementById("updated").textContent = "Ultimo controllo dei servizi: " + fmtDate(data.updated);
+    const liveTime = live && live.checked_at ? fmtDate(live.checked_at) : "—";
+    document.getElementById("updated").textContent =
+      "Stato attuale al " + liveTime + " · le barre mostrano lo storico giornaliero (90 giorni)";
   }
 
   async function load() {
+    let live = null, hist = null;
     try {
-      const r = await fetch(WORKER_BASE + "/api/status-history", { cache: "no-store" });
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      render(await r.json());
-    } catch (e) {
+      const [a, b] = await Promise.all([
+        fetch(WORKER_BASE + "/api/status", { cache: "no-store" }).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(WORKER_BASE + "/api/status-history", { cache: "no-store" }).then(r => r.ok ? r.json() : null).catch(() => null),
+      ]);
+      live = a; hist = b;
+    } catch {}
+    if (!live && !hist) {
       document.getElementById("bannerText").textContent = "Stato non disponibile in questo momento.";
       document.getElementById("banner").className = "banner nodata";
       document.getElementById("updated").innerHTML = '<span class="err">Impossibile contattare il servizio di stato.</span>';
+      return;
     }
+    render(live, hist);
   }
 
   load();
-  setInterval(load, 180000); // aggiorna ogni 3 minuti
+  setInterval(load, 180000); // ricontrolla ogni 3 minuti (stato attuale near-real-time)
   document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
 </script>
 
