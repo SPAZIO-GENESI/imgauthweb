@@ -1032,22 +1032,14 @@
 
     </div>
 
-    <h3>Stato dei servizi</h3>
-    <p style="font-size:0.8rem; margin-top:0.1rem;">Controllo in tempo reale dei componenti del servizio:
-    se qualcosa è temporaneamente non disponibile, lo vedi qui (e l'interfaccia te lo segnala).</p>
-    <div class="svc-panel" id="svcPanel">
-      <div class="svc-row"><span class="svc-dot na" data-svc="worker"></span><span>Generazione dell'attestazione</span><span class="svc-state" data-svc-state="worker">—</span></div>
-      <div class="svc-row"><span class="svc-dot na" data-svc="signer"></span><span>Firma del certificato (PDF)</span><span class="svc-state" data-svc-state="signer">—</span></div>
-      <div class="svc-row"><span class="svc-dot na" data-svc="archive"></span><span>Archivio e recupero certificati</span><span class="svc-state" data-svc-state="archive">—</span></div>
-      <div class="svc-row"><span class="svc-dot na" data-svc="anchor"></span><span>Ancoraggio blockchain</span><span class="svc-state" data-svc-state="anchor">—</span></div>
-    </div>
-    <p class="svc-checked" id="svcChecked">Ultimo controllo: —</p>
+    <p style="font-size:0.85rem; margin-top:1.4rem;">Stato dei servizi in tempo reale e storico a 90 giorni:
+    <a href="/status/" style="color:var(--oro);">pagina di stato</a>.</p>
 
     <div class="nota-box">
       <strong style="color:#111;">Nota.</strong> Il servizio fornisce un'attestazione crittografica,
       <em>non</em> una registrazione di copyright né una prova legale di proprietà.
       Per saperne di più: <a href="https://spaziogenesi.org/servizi#attestazione">la pagina del servizio</a>
-      e la <a href="/changelog.html">cronologia dei miglioramenti</a>.
+      e la <a href="/changelog/">cronologia dei miglioramenti</a>.
     </div>
 
     <div class="btn-row" style="margin-top:1.4rem;">
@@ -1082,7 +1074,7 @@
   <a class="svc-footer" id="svcFooter" href="/status/" title="Apri la pagina di stato del servizio"><span class="svc-dot na"></span><span id="svcFooterText">Stato dei servizi…</span></a>
   <br>
   <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a> ·
-  <a href="/changelog.html">Cronologia dei miglioramenti</a> ·
+  <a href="/changelog/">Cronologia dei miglioramenti</a> ·
   <a href="/privacy.html">Privacy</a> ·
   <span id="appVersion"></span> · realizzato da <a href="https://tangram.page">Tangram.page</a>
 </footer>
@@ -1117,7 +1109,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.11.0";
+  const APP_VERSION = "1.11.1";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").

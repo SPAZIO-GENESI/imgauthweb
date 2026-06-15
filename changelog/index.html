@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cronologia dei miglioramenti — Attestazione | Spazio Genesi</title>
+<meta name="description" content="Come evolve il servizio di attestazione delle opere digitali di Spazio Genesi: protezioni, correzioni e nuove funzioni, versione per versione.">
+<link rel="canonical" href="https://attestazione.spaziogenesi.org/changelog/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --oro: #8B6914; }
+  body { font-family: 'Inter', system-ui, sans-serif; font-weight: 300; background: #fff; color: #1a1a1a; line-height: 1.6; }
+  header { text-align: center; padding: 2.6rem 1.5rem 0; }
+  header h1 { font-family: 'EB Garamond', Georgia, serif; font-size: clamp(1.7rem, 4vw, 2.3rem); font-weight: 400; }
+  header h1 span { font-style: italic; color: var(--oro); }
+  .sub { margin-top: 0.6rem; font-size: 0.85rem; color: #777; max-width: 520px; margin-left: auto; margin-right: auto; }
+  .divider { width: 48px; height: 1.5px; background: var(--oro); margin: 1.4rem auto 0; }
+  main { max-width: 760px; margin: 0 auto; padding: 2.2rem 1.5rem 3rem; }
+  details.v { border-left: 3px solid var(--oro); background: #fffefb; border-radius: 0 6px 6px 0; }
+  details.v + details.v { margin-top: 0.5rem; }
+  details.v summary { cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: 0.7rem; padding: 0.75rem 1rem; }
+  details.v summary::-webkit-details-marker { display: none; }
+  details.v summary .seg { color: var(--oro); font-weight: 700; width: 0.9rem; flex: 0 0 auto; transition: transform 0.18s ease; text-align: center; }
+  details.v[open] summary .seg { transform: rotate(45deg); }
+  details.v summary .tit { flex: 1; font-weight: 600; color: #111; font-size: 0.92rem; }
+  details.v summary .data { font-size: 0.72rem; color: #999; white-space: nowrap; }
+  details.v .corpo { padding: 0.2rem 1rem 1rem 2.6rem; }
+  details.v .corpo ul { list-style: disc; padding-left: 1.1rem; }
+  details.v .corpo li { font-size: 0.86rem; color: #555; margin: 0.45rem 0; line-height: 1.6; }
+  details.v .corpo strong { color: #111; font-weight: 600; }
+  details.v .corpo a { color: var(--oro); text-decoration: none; }
+  details.v .corpo a:hover { text-decoration: underline; }
+  details.v .corpo code { font-family: 'Courier New', monospace; font-size: 0.8rem; background: #f4f4f2; padding: 1px 4px; border-radius: 3px; }
+  .nota { margin-top: 1.8rem; padding: 0.9rem 1.1rem; background: #f9f9f7; border: 1px solid #e5e5e0; border-radius: 6px; font-size: 0.82rem; color: #666; line-height: 1.6; }
+  footer { text-align: center; padding: 1.6rem; font-size: 0.78rem; color: #aaa; border-top: 1px solid #eee; }
+  footer a { color: #888; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Cronologia dei <span>miglioramenti</span></h1>
+  <p class="sub">Come evolve il servizio di attestazione. Ogni aggiornamento aggiunge protezioni, corregge problemi o rende l'uso più facile. Apri una versione per i dettagli.</p>
+  <div class="divider"></div>
+</header>
+
+<main>
+
+  <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.12 — Pagina di stato pubblica</span><span class="data">15 giugno 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Stato del servizio sempre consultabile.</strong> Una <a href="/status/">pagina di stato</a> pubblica mostra lo stato attuale e lo storico degli ultimi 90 giorni di ogni componente (generazione, firma, archivio, ancoraggio blockchain), con percentuale di disponibilità.</li>
+      <li><strong>Monitoraggio continuo.</strong> Il servizio si controlla da solo a intervalli regolari: in caso di disservizio l'interfaccia degrada con grazia (resta disponibile ciò che non dipende dal componente in panne) e il team viene avvisato automaticamente per intervenire.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.10 — Stato dei servizi in tempo reale e dati in Europa</span><span class="data">13 giugno 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Indicatore di stato.</strong> L'interfaccia controlla in tempo reale i componenti del servizio: se qualcosa è temporaneamente non disponibile te lo segnala e ti propone l'alternativa (es. scaricare il .txt mentre la firma del PDF è in manutenzione).</li>
+      <li><strong>Dati archiviati in Europa.</strong> Certificati e prove sono conservati su infrastruttura con residenza dei dati nell'Unione Europea (GDPR). L'opera in sé, come sempre, non viene conservata.</li>
+      <li><strong>Analitica senza cookie.</strong> Le statistiche di visita sono anonime e senza cookie: nessun banner, nessun tracciamento personale.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.9 — Verifica in un gesto, recupero e badge</span><span class="data">13 giugno 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Verifica trascinando il certificato.</strong> Chi riceve un certificato lo controlla in pochi secondi: trascina il file dell'opera e il certificato PDF e il servizio legge da solo impronta, firma e dati dichiarati, con un esito a semaforo — l'opera corrisponde? il certificato è autentico? la data è ancorata in Bitcoin? Niente più codici di 64 caratteri da ricopiare; il PDF è letto nel tuo browser.</li>
+      <li><strong>Smaschera i certificati falsi.</strong> Ora la verifica controlla anche la firma di sicurezza e la data: un certificato contraffatto o con una data inventata viene riconosciuto come non valido.</li>
+      <li><strong>Recupero del certificato smarrito.</strong> Hai perso il PDF? Carica di nuovo il file (l'impronta si calcola nel tuo browser) o inserisci l'impronta, e riscarica dal nostro archivio il certificato firmato, identico all'originale.</li>
+      <li><strong>Badge "Opera attestata".</strong> Dopo l'attestazione copi un distintivo da incorporare nel tuo sito o profilo (HTML o Markdown): mostra che l'opera è attestata e porta alla verifica. Resta verde solo finché l'opera è nei nostri archivi: non è falsificabile.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Codice aperto — il servizio diventa open source</span><span class="data">12 giugno 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Cosa significa "open source".</strong> Il codice che fa funzionare il servizio — interfaccia, motore che calcola le impronte e firmatario dei PDF — è pubblicato integralmente: chiunque può leggerlo e verificare che faccia esattamente ciò che dichiara.</li>
+      <li><strong>Dove si trova.</strong> Su GitHub con licenze riconosciute: <a href="https://github.com/SPAZIO-GENESI/imgauth" target="_blank" rel="noopener noreferrer">imgauth</a> (motore, AGPL-3.0), <a href="https://github.com/SPAZIO-GENESI/imgauthweb" target="_blank" rel="noopener noreferrer">imgauthweb</a> (interfaccia, MIT), <a href="https://github.com/SPAZIO-GENESI/autart-signer" target="_blank" rel="noopener noreferrer">autart-signer</a> (firma, AGPL-3.0).</li>
+      <li><strong>La sicurezza non dipende dal segreto del codice.</strong> Le chiavi crittografiche non sono nel codice pubblicato: vivono solo sui nostri server. Pubblicarlo non indebolisce nulla.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.7 — Ancoraggio blockchain e data certificata</span><span class="data">11 giugno 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>La tua opera è ancorata in Bitcoin.</strong> Quando generi il certificato, l'impronta viene registrata nella blockchain di Bitcoin tramite il protocollo aperto <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">OpenTimestamps</a>. Nessuno — nemmeno noi — può retrodatarla o cancellarla.</li>
+      <li><strong>Come si verifica.</strong> Col PDF scarichi una prova <code>.ots</code>: su <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">opentimestamps.org</a> trascini <code>.ots</code> e l'opera e ottieni "Bitcoin attests data existed as of…". La conferma matura in poche ore.</li>
+      <li><strong>Data certificata da terza parte.</strong> La firma del PDF include una marca temporale di autorità riconosciuta da Adobe (DigiCert): in Acrobat la data risulta attestata da terza parte indipendente.</li>
+      <li><strong>Tre garanzie indipendenti.</strong> Firma del server, marca temporale riconosciuta e registrazione in Bitcoin: per falsificare una data bisognerebbe comprometterle tutte e tre.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.6 — Titolo, autore e dati dell'opera</span><span class="data">11 giugno 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Dati dell'opera sul certificato.</strong> Puoi indicare titolo, autore o pseudonimo, anno e una nota: compaiono sul certificato accanto all'impronta. Sono facoltativi.</li>
+      <li><strong>Protetti contro le modifiche.</strong> I dati dichiarati sono "sigillati" nella firma: dopo l'emissione nessuno può cambiarli, e la verifica smaschererebbe un'alterazione.</li>
+      <li><strong>Certificato PDF più completo.</strong> In fondo c'è una sezione "Dettagli tecnici" con firma di sicurezza e versione del servizio.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.5 — Verifica più semplice</span><span class="data">10 giugno 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Link di verifica nel certificato.</strong> Il PDF contiene il link diretto alla verifica con l'impronta già compilata: basta cliccare o scansionare il QR.</li>
+      <li><strong>Protezione anti-bot rafforzata.</strong> Il controllo "sei una persona reale" avviene prima di creare l'attestazione.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.4 — Protezione anti-bot</span><span class="data">10 giugno 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Controllo automatico che tu sia umano.</strong> Un controllo prima di scaricare il certificato evita che il servizio sia usato da programmi automatici per generare attestazioni false.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.3 — Protezione contro abusi</span><span class="data">10 giugno 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Limite di velocità per IP.</strong> Il servizio limita quanti certificati la stessa persona può generare in un minuto, a difesa da attacchi automatici.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.2 — Firma di sicurezza</span><span class="data">10 giugno 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Impossibile falsificare il certificato.</strong> Ogni attestazione è firmata crittograficamente dal server: modificare hash, data o altri dati invaliderebbe la firma.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.1 — Versioni visibili e file di qualsiasi tipo</span><span class="data">10 giugno 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Versioni sempre visibili.</strong> Nel certificato leggi quale versione di interfaccia e motore è stata usata.</li>
+      <li><strong>File di qualsiasi formato.</strong> Non solo immagini: video, audio, documenti, archivi, modelli 3D, fino a 100 MB.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.0 — Lancio in produzione</span><span class="data">10 giugno 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Impronta digitale SHA-256.</strong> Carichi un file, il servizio calcola l'hash univoco e lo associa a data e ora (UTC): prova che quel file esisteva in quel momento.</li>
+      <li><strong>Certificato PDF e verifica.</strong> Scarichi l'attestazione in testo o PDF firmato; in ogni momento ricarichi il file e verifichi che l'hash corrisponda.</li>
+      <li><strong>QR code nel certificato.</strong> Un QR rimanda alla pagina di verifica: chiunque riceva il certificato può controllarlo.</li>
+    </ul></div>
+  </details>
+
+  <div class="nota">
+    <strong style="color:#111;">Come leggi questo changelog?</strong> In alto i miglioramenti più recenti,
+    in basso gli elementi di base. Ogni versione mantiene le funzionalità delle precedenti, aggiungendo
+    novità o protezioni.
+  </div>
+
+</main>
+
+<footer>
+  <a href="/">← Torna al servizio di attestazione</a> ·
+  <a href="/status/">Stato del servizio</a> ·
+  <a href="https://spaziogenesi.org">Spazio Genesi</a>
+</footer>
+
+</body>
+</html>
