@@ -138,8 +138,8 @@
     <h3 id="dayTitle">Dettaglio del giorno</h3>
     <div id="dayBody"></div>
     <div id="dayEvents"></div>
-    <p class="day-foot">In alto l'esito complessivo del giorno (lo <strong>stato peggiore</strong> per componente, controlli ogni ~30 min).
-    Sotto, i <strong>singoli eventi</strong> registrati: oltre a errori e disservizi, anche i <strong>rallentamenti</strong> che
+    <p class="day-foot">In alto l'<strong>esito del giorno</strong> per <em>questo</em> componente (lo stato peggiore osservato, controlli ogni ~30 min).
+    Sotto, i suoi <strong>singoli eventi</strong>: oltre a errori e disservizi, anche i <strong>rallentamenti</strong> che
     <em>non</em> hanno degradato il servizio (barra verde) — utili per capire cosa è migliorabile.</p>
   </div>
 </div>
@@ -266,7 +266,7 @@
           (s !== "nodata" ? " · clicca per il dettaglio" : "");
         if (s !== "nodata") {                       // (b) cliccabile solo se ha dati
           b.classList.add("clickable");
-          b.addEventListener("click", () => openDay(day.d));
+          b.addEventListener("click", () => openDay(day.d, c.key, c.label));
         }
         bars.appendChild(b);
       }
@@ -291,23 +291,22 @@
       "Stato attuale al " + liveTime + " · le barre mostrano lo storico giornaliero (90 giorni)";
   }
 
-  // (b) Finestra di dettaglio del giorno: esito di TUTTI i componenti in quella data.
-  function openDay(dateStr) {
+  // (b) Finestra di dettaglio: SOLO il servizio selezionato, nel giorno selezionato.
+  function openDay(dateStr, compKey, compLabel) {
     if (!_hist || !_hist.components) return;
-    document.getElementById("dayTitle").textContent = "Dettaglio del " + fmtDayIt(dateStr);
-    let html = "";
-    for (const c of _hist.components) {
-      const day = (c.days || []).find((x) => x.d === dateStr);
-      const s = (day && day.s) ? day.s : "nodata";
-      const exp = (DAY_EXPLAIN[c.key] && DAY_EXPLAIN[c.key][s]) || DAY_EXPLAIN._default[s] || "";
-      html += '<div class="day-row"><div class="dr-head"><span class="dot ' + s + '"></span>' +
-        esc(c.label) + ' — <span class="comp-state ' + s + '">' +
-        (STATE_LABEL[s] || STATE_LABEL.nodata) + '</span></div>' +
-        (exp ? '<div class="dr-exp">' + esc(exp) + '</div>' : '') + '</div>';
-    }
-    document.getElementById("dayBody").innerHTML = html;
+    const c = _hist.components.find((x) => x.key === compKey);
+    const label = compLabel || (c ? c.label : compKey);
+    document.getElementById("dayTitle").textContent = label + " — " + fmtDayIt(dateStr);
+    const day = c ? (c.days || []).find((x) => x.d === dateStr) : null;
+    const s = (day && day.s) ? day.s : "nodata";
+    const exp = (DAY_EXPLAIN[compKey] && DAY_EXPLAIN[compKey][s]) || DAY_EXPLAIN._default[s] || "";
+    document.getElementById("dayBody").innerHTML =
+      '<div class="day-row"><div class="dr-head"><span class="dot ' + s + '"></span>' +
+      'Esito del giorno — <span class="comp-state ' + s + '">' +
+      (STATE_LABEL[s] || STATE_LABEL.nodata) + '</span></div>' +
+      (exp ? '<div class="dr-exp">' + esc(exp) + '</div>' : '') + '</div>';
     document.getElementById("dayModal").classList.add("open");
-    loadDayEvents(dateStr); // (c) eventi fini del giorno da /api/health-log
+    loadDayEvents(dateStr, compKey, label); // (c) eventi fini SOLO di questo componente
   }
 
   // (c) Carica e mostra gli eventi fini del giorno (rallentamenti, degradi, errori)
@@ -327,30 +326,35 @@
     if (e.cause === "slow") return "lento (entro soglia)";
     return "ok";
   }
-  async function loadDayEvents(dateStr) {
+  async function loadDayEvents(dateStr, compKey, compLabel) {
     const box = document.getElementById("dayEvents");
-    const title = '<div class="ev-title">Eventi registrati nella giornata</div>';
+    const name = compLabel || CHECK_LABEL[compKey] || compKey;
+    const title = '<div class="ev-title">Eventi registrati — ' + esc(name) + '</div>';
     box.innerHTML = title + '<div class="ev-note">Caricamento…</div>';
+    // Il motore non ha una latenza misurata: è monitorato solo come raggiungibile o no.
+    if (compKey === "worker") {
+      box.innerHTML = title + '<div class="ev-note">Questo componente è monitorato solo come raggiungibile o non raggiungibile: non registra rallentamenti.</div>';
+      return;
+    }
     let data = null;
     try {
       data = await fetch(WORKER_BASE + "/api/health-log?day=" + encodeURIComponent(dateStr), { cache: "no-store" })
         .then((r) => (r.ok ? r.json() : null));
     } catch {}
     if (!data) { box.innerHTML = title + '<div class="ev-note err">Dettaglio degli eventi non disponibile al momento.</div>'; return; }
-    const evs = data.events || [];
+    // SOLO gli eventi di questo componente, così il dettaglio non è ambiguo.
+    const evs = (data.events || []).filter((e) => e.check === compKey);
     if (!evs.length) {
-      box.innerHTML = title + '<div class="ev-note">Nessun rallentamento o disservizio registrato: giornata regolare.</div>';
+      box.innerHTML = title + '<div class="ev-note">Nessun rallentamento o disservizio registrato per questo componente: giornata regolare.</div>';
       return;
     }
-    let html = '<div class="ev-title">Eventi registrati (' + evs.length + ')</div>';
+    let html = '<div class="ev-title">Eventi — ' + esc(name) + ' (' + evs.length + ')</div>';
     for (const e of evs) {
       const t = new Date(e.ts).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
-      const comp = CHECK_LABEL[e.check] || e.check;
       const cause = e.cause ? " · " + (CAUSE_LABEL[e.cause] || e.cause) : "";
       const lat = (e.latency != null ? " · " + e.latency + " ms" : "");
       html += '<div class="ev-row"><span class="dot ' + evDotClass(e) + '"></span>' +
         '<span class="ev-time">' + esc(t) + '</span> ' +
-        '<span class="ev-comp">' + esc(comp) + '</span> ' +
         '<span class="ev-state">' + esc(evStateText(e)) + '</span>' +
         '<span class="ev-lat">' + esc(lat + cause) + '</span></div>';
     }
