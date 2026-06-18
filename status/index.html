@@ -90,6 +90,17 @@
   .dr-exp { font-size: .8rem; color: #666; margin-top: .25rem; padding-left: 1rem; }
   .dot.ok{background:var(--ok)} .dot.down{background:var(--down)} .dot.degraded{background:var(--deg)} .dot.nodata{background:var(--nd)}
   .day-foot { font-size: .76rem; color: #999; margin-top: 1rem; padding-top: .8rem; border-top: 1px solid #f0f0ec; }
+
+  /* (c) eventi fini del giorno (rallentamenti/disservizi) da /api/health-log */
+  .ev-title { font-size: .8rem; font-weight: 500; color: #444; margin: 1.1rem 0 .5rem; padding-top: .9rem; border-top: 1px solid #f0f0ec; }
+  .ev-note { font-size: .82rem; color: #777; }
+  .ev-note.err { color: var(--down); }
+  .ev-row { display: flex; align-items: center; gap: .45rem; font-size: .82rem; color: #333; padding: .32rem 0; flex-wrap: wrap; }
+  .ev-row .dot { width: 9px; height: 9px; border-radius: 50%; flex: 0 0 auto; }
+  .ev-time { color: #666; font-variant-numeric: tabular-nums; }
+  .ev-comp { font-weight: 500; }
+  .ev-state { color: #555; }
+  .ev-lat { color: #999; font-size: .78rem; }
 </style>
 </head>
 <body>
@@ -126,8 +137,10 @@
     <button class="modal-close" id="dayClose" aria-label="Chiudi">&times;</button>
     <h3 id="dayTitle">Dettaglio del giorno</h3>
     <div id="dayBody"></div>
-    <p class="day-foot">Il monitoraggio salva lo <strong>stato peggiore</strong> di ciascuna giornata, per componente
-    (controlli automatici ogni ~30 minuti). Questo dettaglio mostra l'esito di tutti i componenti in quella data.</p>
+    <div id="dayEvents"></div>
+    <p class="day-foot">In alto l'esito complessivo del giorno (lo <strong>stato peggiore</strong> per componente, controlli ogni ~30 min).
+    Sotto, i <strong>singoli eventi</strong> registrati: oltre a errori e disservizi, anche i <strong>rallentamenti</strong> che
+    <em>non</em> hanno degradato il servizio (barra verde) — utili per capire cosa è migliorabile.</p>
   </div>
 </div>
 
@@ -294,6 +307,54 @@
     }
     document.getElementById("dayBody").innerHTML = html;
     document.getElementById("dayModal").classList.add("open");
+    loadDayEvents(dateStr); // (c) eventi fini del giorno da /api/health-log
+  }
+
+  // (c) Carica e mostra gli eventi fini del giorno (rallentamenti, degradi, errori)
+  // da /api/health-log. Compaiono anche nei giorni "verdi": un rallentamento sotto
+  // soglia non degrada il servizio ma viene registrato per l'analisi.
+  const CHECK_LABEL = { archive: "Archivio", signer: "Firma PDF", anchor: "Ancoraggio Bitcoin", worker: "Motore" };
+  const CAUSE_LABEL = { slow: "rallentamento", timeout: "timeout", r2_error: "errore archivio", all_unreachable: "calendar irraggiungibili" };
+  function evDotClass(e) {
+    if (e.status === "error") return "down";
+    if (e.status === "degraded") return "degraded";
+    if (e.cause === "slow") return "degraded"; // ok-ma-lento: pallino giallo tenue
+    return "ok";
+  }
+  function evStateText(e) {
+    if (e.status === "error") return "errore";
+    if (e.status === "degraded") return "rallentato";
+    if (e.cause === "slow") return "lento (entro soglia)";
+    return "ok";
+  }
+  async function loadDayEvents(dateStr) {
+    const box = document.getElementById("dayEvents");
+    const title = '<div class="ev-title">Eventi registrati nella giornata</div>';
+    box.innerHTML = title + '<div class="ev-note">Caricamento…</div>';
+    let data = null;
+    try {
+      data = await fetch(WORKER_BASE + "/api/health-log?day=" + encodeURIComponent(dateStr), { cache: "no-store" })
+        .then((r) => (r.ok ? r.json() : null));
+    } catch {}
+    if (!data) { box.innerHTML = title + '<div class="ev-note err">Dettaglio degli eventi non disponibile al momento.</div>'; return; }
+    const evs = data.events || [];
+    if (!evs.length) {
+      box.innerHTML = title + '<div class="ev-note">Nessun rallentamento o disservizio registrato: giornata regolare.</div>';
+      return;
+    }
+    let html = '<div class="ev-title">Eventi registrati (' + evs.length + ')</div>';
+    for (const e of evs) {
+      const t = new Date(e.ts).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+      const comp = CHECK_LABEL[e.check] || e.check;
+      const cause = e.cause ? " · " + (CAUSE_LABEL[e.cause] || e.cause) : "";
+      const lat = (e.latency != null ? " · " + e.latency + " ms" : "");
+      html += '<div class="ev-row"><span class="dot ' + evDotClass(e) + '"></span>' +
+        '<span class="ev-time">' + esc(t) + '</span> ' +
+        '<span class="ev-comp">' + esc(comp) + '</span> ' +
+        '<span class="ev-state">' + esc(evStateText(e)) + '</span>' +
+        '<span class="ev-lat">' + esc(lat + cause) + '</span></div>';
+    }
+    box.innerHTML = html;
   }
   (function () {
     const modal = document.getElementById("dayModal");
