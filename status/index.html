@@ -63,6 +63,33 @@
   footer { text-align: center; padding: 1.6rem; font-size: 0.78rem; color: #aaa; border-top: 1px solid #eee; }
   footer a { color: #888; text-decoration: none; }
   footer a:hover { text-decoration: underline; }
+
+  /* (a) descrizione per servizio */
+  .comp-info { margin-left: .45rem; font-size: .7rem; color: var(--oro); background: none;
+    border: 1px solid #e0d6b8; border-radius: 999px; padding: .02rem .5rem; cursor: pointer; }
+  .comp-info:hover { background: #faf6ea; }
+  .comp-desc { display: none; font-size: .82rem; color: #555; background: #faf9f6;
+    border: 1px solid #eee; border-radius: 8px; padding: .7rem .85rem; margin: 0 0 .65rem; }
+  .comp-desc.open { display: block; }
+  .comp-desc em { color: #444; font-style: italic; }
+
+  /* (b) barre cliccabili + modale dettaglio giorno */
+  .bar.clickable { cursor: pointer; }
+  .bar.clickable:hover { outline: 2px solid var(--oro); outline-offset: 1px; }
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none;
+    align-items: center; justify-content: center; padding: 1rem; z-index: 50; }
+  .modal.open { display: flex; }
+  .modal-box { background: #fff; border-radius: 12px; max-width: 470px; width: 100%;
+    padding: 1.4rem 1.5rem; box-shadow: 0 12px 44px rgba(0,0,0,.22); }
+  .modal-box h3 { font-family: 'EB Garamond', Georgia, serif; font-weight: 500; font-size: 1.2rem; }
+  .modal-close { float: right; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #999; line-height: 1; }
+  .day-row { padding: .6rem 0; border-top: 1px solid #f0f0ec; }
+  .day-row:first-of-type { border-top: none; }
+  .dr-head { display: flex; align-items: center; gap: .5rem; font-size: .9rem; font-weight: 500; color: #222; }
+  .dr-head .dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
+  .dr-exp { font-size: .8rem; color: #666; margin-top: .25rem; padding-left: 1rem; }
+  .dot.ok{background:var(--ok)} .dot.down{background:var(--down)} .dot.degraded{background:var(--deg)} .dot.nodata{background:var(--nd)}
+  .day-foot { font-size: .76rem; color: #999; margin-top: 1rem; padding-top: .8rem; border-top: 1px solid #f0f0ec; }
 </style>
 </head>
 <body>
@@ -94,6 +121,16 @@
   <a href="https://spaziogenesi.org">Spazio Genesi</a>
 </footer>
 
+<div id="dayModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="dayTitle">
+  <div class="modal-box">
+    <button class="modal-close" id="dayClose" aria-label="Chiudi">&times;</button>
+    <h3 id="dayTitle">Dettaglio del giorno</h3>
+    <div id="dayBody"></div>
+    <p class="day-foot">Il monitoraggio salva lo <strong>stato peggiore</strong> di ciascuna giornata, per componente
+    (controlli automatici ogni ~30 minuti). Questo dettaglio mostra l'esito di tutti i componenti in quella data.</p>
+  </div>
+</div>
+
 <script>
   const WORKER_BASE = "https://imgauth.spaziogenesi.org";
   const STATE_LABEL = { ok: "operativo", down: "non disponibile", degraded: "rallentato", nodata: "in raccolta dati" };
@@ -103,6 +140,41 @@
     down: "Disservizio in corso",
     nodata: "Stato in raccolta dati",
   };
+
+  // (a) Cosa monitoriamo e come, in parole semplici — per componente.
+  const SERVICE_DESC = {
+    worker: "Il <strong>motore</strong> che calcola l'impronta digitale (SHA-256) dei file e prepara l'attestazione. Lo consideriamo operativo se risponde alle richieste.",
+    signer: "Il servizio che <strong>firma digitalmente</strong> il certificato PDF. Controlliamo ogni pochi minuti che risponda (può avere un avvio lento dopo un periodo di inattività). Se non è disponibile, l'attestazione in formato testo (.txt) resta scaricabile, ma non il PDF firmato.",
+    archive: "Lo <strong>spazio di conservazione</strong> (Cloudflare R2, con dati nell'Unione Europea) dove custodiamo i certificati e le prove, per poterli recuperare tramite impronta. Controlliamo che sia raggiungibile.",
+    anchor: "La registrazione dell'impronta nella <strong>blockchain di Bitcoin</strong> tramite i calendar pubblici OpenTimestamps. Controlliamo che almeno uno dei calendar risponda. È una garanzia <em>aggiuntiva</em> e a prova di guasto: se i calendar sono lenti, il certificato viene comunque emesso (senza la riga OpenTimestamps), quindi un eventuale «rallentato» qui <strong>non interrompe</strong> il servizio.",
+  };
+
+  // (b) Spiegazione per stato, per la finestra di dettaglio del giorno.
+  const DAY_EXPLAIN = {
+    _default: {
+      ok: "Operativo per l'intera giornata, nessun problema rilevato.",
+      nodata: "Nessun dato raccolto in questa giornata.",
+    },
+    worker: {
+      down: "Il motore non rispondeva: in quei momenti il servizio poteva essere inaccessibile.",
+      degraded: "Il motore ha risposto con rallentamenti.",
+    },
+    signer: {
+      down: "Il firmatario non rispondeva: il PDF firmato poteva non essere generato (l'impronta e il .txt restavano comunque disponibili).",
+      degraded: "Il firmatario ha risposto lentamente (possibile avvio a freddo): qualche emissione di PDF poteva tardare.",
+    },
+    archive: {
+      down: "L'archivio non era raggiungibile: il recupero dei certificati tramite impronta poteva non funzionare temporaneamente.",
+      degraded: "L'archivio ha risposto con rallentamenti.",
+    },
+    anchor: {
+      down: "Nessun calendar OpenTimestamps raggiungibile: i certificati emessi in quel momento uscivano senza la riga di ancoraggio Bitcoin (recuperabile in seguito). Il resto del servizio non era interessato.",
+      degraded: "Uno o più calendar OpenTimestamps hanno risposto lentamente. L'ancoraggio resta garantito dagli altri calendar: nessuna interruzione del servizio (è una garanzia aggiuntiva, a prova di guasto).",
+    },
+  };
+
+  const esc = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  let _hist = null; // ultimo storico, per la finestra di dettaglio del giorno
 
   function fmtDate(iso) {
     if (!iso) return "—";
@@ -131,6 +203,7 @@
 
   // live = /api/status (stato ADESSO, ~3 min) · hist = /api/status-history (barre 90 gg)
   function render(live, hist) {
+    _hist = hist;
     const banner = document.getElementById("banner");
     const bannerText = document.getElementById("bannerText");
     const overall = live ? overallFromLive(live) : (hist ? hist.overall : "nodata");
@@ -149,20 +222,39 @@
 
       const head = document.createElement("div");
       head.className = "comp-head";
+      const nameWrap = document.createElement("span");
       const name = document.createElement("span");
       name.className = "comp-name";
       name.textContent = c.label;
+      const info = document.createElement("button");
+      info.className = "comp-info";
+      info.type = "button";
+      info.textContent = "?";
+      info.setAttribute("aria-label", "Cosa monitoriamo e come");
+      nameWrap.appendChild(name); nameWrap.appendChild(info);
       const state = document.createElement("span");
       state.className = "comp-state " + cur;
       state.textContent = STATE_LABEL[cur] || STATE_LABEL.nodata;
-      head.appendChild(name); head.appendChild(state);
+      head.appendChild(nameWrap); head.appendChild(state);
+
+      // (a) pannello descrittivo a tendina, per questo servizio
+      const desc = document.createElement("div");
+      desc.className = "comp-desc";
+      desc.innerHTML = SERVICE_DESC[c.key] || "";
+      info.addEventListener("click", () => desc.classList.toggle("open"));
 
       const bars = document.createElement("div");
       bars.className = "bars";
       for (const day of c.days) {
         const b = document.createElement("div");
-        b.className = "bar " + (day.s || "nodata");
-        b.title = fmtDayIt(day.d) + " — " + (STATE_LABEL[day.s] || STATE_LABEL.nodata);
+        const s = day.s || "nodata";
+        b.className = "bar " + s;
+        b.title = fmtDayIt(day.d) + " — " + (STATE_LABEL[s] || STATE_LABEL.nodata) +
+          (s !== "nodata" ? " · clicca per il dettaglio" : "");
+        if (s !== "nodata") {                       // (b) cliccabile solo se ha dati
+          b.classList.add("clickable");
+          b.addEventListener("click", () => openDay(day.d));
+        }
         bars.appendChild(b);
       }
 
@@ -177,7 +269,7 @@
       right.textContent = "oggi";
       meta.appendChild(left); meta.appendChild(mid); meta.appendChild(right);
 
-      wrap.appendChild(head); wrap.appendChild(bars); wrap.appendChild(meta);
+      wrap.appendChild(head); wrap.appendChild(desc); wrap.appendChild(bars); wrap.appendChild(meta);
       cont.appendChild(wrap);
     }
 
@@ -185,6 +277,31 @@
     document.getElementById("updated").textContent =
       "Stato attuale al " + liveTime + " · le barre mostrano lo storico giornaliero (90 giorni)";
   }
+
+  // (b) Finestra di dettaglio del giorno: esito di TUTTI i componenti in quella data.
+  function openDay(dateStr) {
+    if (!_hist || !_hist.components) return;
+    document.getElementById("dayTitle").textContent = "Dettaglio del " + fmtDayIt(dateStr);
+    let html = "";
+    for (const c of _hist.components) {
+      const day = (c.days || []).find((x) => x.d === dateStr);
+      const s = (day && day.s) ? day.s : "nodata";
+      const exp = (DAY_EXPLAIN[c.key] && DAY_EXPLAIN[c.key][s]) || DAY_EXPLAIN._default[s] || "";
+      html += '<div class="day-row"><div class="dr-head"><span class="dot ' + s + '"></span>' +
+        esc(c.label) + ' — <span class="comp-state ' + s + '">' +
+        (STATE_LABEL[s] || STATE_LABEL.nodata) + '</span></div>' +
+        (exp ? '<div class="dr-exp">' + esc(exp) + '</div>' : '') + '</div>';
+    }
+    document.getElementById("dayBody").innerHTML = html;
+    document.getElementById("dayModal").classList.add("open");
+  }
+  (function () {
+    const modal = document.getElementById("dayModal");
+    const close = () => modal.classList.remove("open");
+    document.getElementById("dayClose").addEventListener("click", close);
+    modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+  })();
 
   async function load() {
     let live = null, hist = null;
