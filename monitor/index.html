@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitor salute servizi — Spazio Genesi</title>
+<style>
+  :root { --oro:#8B6914; --ok:#1e7e34; --down:#c0392b; --deg:#d4a017; --slow:#caa53b; --nd:#d9d9d4; --bg:#faf9f6; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,"Segoe UI",sans-serif; background:#fff; color:#1a1a1a; line-height:1.5; padding:1.2rem; max-width:920px; margin:0 auto; }
+  h1 { font-size:1.35rem; font-weight:600; }
+  h1 .live { font-size:.62rem; font-weight:700; letter-spacing:.05em; color:#fff; background:var(--down); padding:.12rem .45rem; border-radius:999px; vertical-align:middle; margin-left:.5rem; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.45} }
+  .sub { color:#777; font-size:.82rem; margin-top:.2rem; }
+
+  .strip { display:flex; flex-wrap:wrap; gap:.6rem; margin:1.1rem 0; }
+  .chip { flex:1 1 180px; display:flex; align-items:center; gap:.55rem; background:var(--bg); border:1px solid #ece7da; border-radius:10px; padding:.6rem .8rem; }
+  .chip .dot { width:13px; height:13px; border-radius:50%; flex:0 0 auto; background:var(--nd); }
+  .chip .nm { font-weight:600; font-size:.85rem; }
+  .chip .st { font-size:.74rem; color:#777; }
+  .dot.ok{background:var(--ok)} .dot.down{background:var(--down)} .dot.degraded{background:var(--deg)} .dot.nodata{background:var(--nd)}
+
+  .bar { display:flex; flex-wrap:wrap; align-items:center; gap:.55rem; margin:1rem 0 .4rem; }
+  .bar input[type=date]{ font:inherit; padding:.3rem .5rem; border:1px solid #ddd; border-radius:7px; }
+  button { font:inherit; cursor:pointer; border:1px solid #ddd; background:#fff; border-radius:7px; padding:.32rem .7rem; }
+  button:hover { background:#f3f0e8; }
+  button.pri { background:var(--oro); color:#fff; border-color:var(--oro); }
+  .spacer { flex:1; }
+  .muted { color:#999; font-size:.76rem; }
+
+  .summary { font-size:.82rem; color:#555; background:var(--bg); border:1px solid #ece7da; border-radius:9px; padding:.6rem .85rem; margin:.6rem 0; }
+  .summary b { color:#222; }
+
+  table { width:100%; border-collapse:collapse; font-size:.84rem; margin-top:.4rem; }
+  th,td { text-align:left; padding:.42rem .55rem; border-bottom:1px solid #f0eee7; }
+  th { font-size:.72rem; text-transform:uppercase; letter-spacing:.03em; color:#999; }
+  td.lat { font-variant-numeric:tabular-nums; }
+  .tag { display:inline-flex; align-items:center; gap:.35rem; font-size:.78rem; }
+  .tag .d { width:9px; height:9px; border-radius:50%; }
+  .tag.slow .d{background:var(--slow)} .tag.slow{color:#8a6d00}
+  .tag.degraded .d{background:var(--deg)} .tag.degraded{color:#8a6d00}
+  .tag.error .d{background:var(--down)} .tag.error{color:var(--down)}
+  .empty { text-align:center; color:#888; padding:1.6rem; font-size:.9rem; }
+  .err { color:var(--down); }
+  footer { margin-top:1.4rem; padding-top:.9rem; border-top:1px solid #eee; font-size:.74rem; color:#999; line-height:1.7; }
+  code { background:#f3f0e8; padding:.05em .35em; border-radius:4px; font-size:.92em; }
+</style>
+</head>
+<body>
+
+<h1>Monitor salute servizi <span class="live">LIVE</span></h1>
+<p class="sub">Rallentamenti e disservizi di Azure (firma), R2 (archivio) e OpenTimestamps (ancoraggio), campionati dal Worker. Orari in ora italiana.</p>
+
+<div class="strip" id="strip"></div>
+
+<div class="bar">
+  <button id="prev" title="Giorno precedente">◀</button>
+  <input type="date" id="date">
+  <button id="next" title="Giorno successivo">▶</button>
+  <button id="today">Oggi</button>
+  <span class="spacer"></span>
+  <label class="muted"><input type="checkbox" id="auto" checked> auto 30s</label>
+  <button id="refresh" class="pri">↻ Aggiorna</button>
+</div>
+<p class="muted" id="updated">—</p>
+
+<div class="summary" id="summary"></div>
+<div id="events"></div>
+
+<footer>
+  <div>Soglie di registrazione attuali (un evento è loggato se la latenza le supera): R2 <code>≥300ms</code> · Firma/Azure <code>≥1200ms</code> · Ancoraggio/OTS <code>≥1000ms</code>. In fase di taratura — più basse = più eventi.</div>
+  <div>Fonte dati: <code>/api/status</code> e <code>/api/health-log</code> di <code>imgauth.spaziogenesi.org</code> · pagina pubblica: <a href="https://attestazione.spaziogenesi.org/status/" target="_blank">/status/</a>. Il log si popola via cron (ogni 30 min) e col traffico: i rallentamenti tipici (es. cold-start di Azure) compaiono nelle ore di basso traffico.</div>
+</footer>
+
+<script>
+  const BASE = "https://imgauth.spaziogenesi.org";
+  const TZ = "Europe/Rome";
+  const SVC = {
+    signer:  { nm:"Firma PDF (Azure)",     k:"signer" },
+    archive: { nm:"Archivio (R2)",         k:"archive" },
+    anchor:  { nm:"Ancoraggio (OTS)",      k:"anchor" },
+    worker:  { nm:"Motore",                k:"worker" },
+  };
+  const ORDER = ["worker","signer","archive","anchor"];
+  const STATE_LBL = { ok:"operativo", down:"non disponibile", degraded:"rallentato", "n/d":"n/d", nodata:"n/d" };
+  const CAUSE_LBL = { slow:"rallentamento", timeout:"timeout", r2_error:"errore archivio", all_unreachable:"calendar irraggiungibili" };
+
+  const dayRome = (d=new Date()) => new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(d);
+  const timeRome = (ms) => new Date(ms).toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit",second:"2-digit",timeZone:TZ});
+  const shiftDay = (ymd,delta) => { const [y,m,d]=ymd.split("-").map(Number); return new Intl.DateTimeFormat("en-CA",{timeZone:"UTC",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(Date.UTC(y,m-1,d)+delta*86400000)); };
+  const esc = (s)=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const norm = (v)=>(["ok","down","degraded"].includes(v)?v:"nodata");
+
+  const $ = (id)=>document.getElementById(id);
+  $("date").value = dayRome();
+
+  async function jget(url){ try{ const r=await fetch(url,{cache:"no-store"}); return r.ok?await r.json():null; }catch{ return null; } }
+
+  function renderStrip(live){
+    const el=$("strip"); el.innerHTML="";
+    for(const k of ORDER){
+      const s = live ? norm(live[k]) : "nodata";
+      el.insertAdjacentHTML("beforeend",
+        '<div class="chip"><span class="dot '+s+'"></span><div><div class="nm">'+esc(SVC[k].nm)+
+        '</div><div class="st">'+(STATE_LBL[s]||"n/d")+'</div></div></div>');
+    }
+  }
+
+  function evTag(e){
+    if(e.status==="error") return '<span class="tag error"><span class="d"></span>errore</span>';
+    if(e.status==="degraded") return '<span class="tag degraded"><span class="d"></span>rallentato</span>';
+    return '<span class="tag slow"><span class="d"></span>lento</span>';
+  }
+
+  function renderEvents(day, data){
+    const box=$("events"), sum=$("summary");
+    if(!data){ box.innerHTML='<p class="empty err">Dati non disponibili al momento.</p>'; sum.textContent=""; return; }
+    const evs = (data.events||[]);
+    if(!evs.length){
+      sum.innerHTML='<b>0 eventi</b> il '+esc(day)+'. Nessun rallentamento o disservizio registrato: tutto regolare (o le soglie non sono ancora state superate).';
+      box.innerHTML='<p class="empty">😌 Nessun evento in questa giornata.</p>'; return;
+    }
+    const by={}; let max=0,totLat=0,nLat=0;
+    for(const e of evs){ by[e.check]=(by[e.check]||0)+1; if(e.latency!=null){ max=Math.max(max,e.latency); totLat+=e.latency; nLat++; } }
+    const byTxt=Object.entries(by).map(([k,n])=>(SVC[k]?SVC[k].nm:k)+": "+n).join(" · ");
+    sum.innerHTML='<b>'+evs.length+' eventi</b> il '+esc(day)+' — '+esc(byTxt)+
+      ' · lat. max <b>'+max+'ms</b>'+(nLat?' · media '+Math.round(totLat/nLat)+'ms':'');
+    let rows="";
+    for(const e of evs){
+      rows+='<tr><td>'+esc(timeRome(e.ts))+'</td><td>'+esc(SVC[e.check]?SVC[e.check].nm:e.check)+'</td><td>'+evTag(e)+
+        '</td><td class="lat">'+(e.latency!=null?e.latency+' ms':'—')+'</td><td>'+esc(e.cause?(CAUSE_LBL[e.cause]||e.cause):'')+'</td></tr>';
+    }
+    box.innerHTML='<table><thead><tr><th>Ora</th><th>Servizio</th><th>Esito</th><th>Latenza</th><th>Causa</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  }
+
+  async function load(){
+    const day=$("date").value||dayRome();
+    const [live,log]=await Promise.all([ jget(BASE+"/api/status"), jget(BASE+"/api/health-log?day="+encodeURIComponent(day)) ]);
+    renderStrip(live);
+    renderEvents(day, log);
+    $("updated").textContent="Ultimo aggiornamento: "+timeRome(Date.now())+" (ora italiana)"+(live&&live.checked_at?" · stato calcolato alle "+timeRome(Date.parse(live.checked_at)):"");
+  }
+
+  $("prev").onclick   = ()=>{ $("date").value=shiftDay($("date").value,-1); load(); };
+  $("next").onclick   = ()=>{ $("date").value=shiftDay($("date").value,+1); load(); };
+  $("today").onclick  = ()=>{ $("date").value=dayRome(); load(); };
+  $("date").onchange  = load;
+  $("refresh").onclick= load;
+
+  let timer=null;
+  function arm(){ if(timer) clearInterval(timer); if($("auto").checked) timer=setInterval(load,30000); }
+  $("auto").onchange=arm;
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden) load(); });
+
+  load(); arm();
+</script>
+</body>
+</html>
