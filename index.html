@@ -669,6 +669,14 @@
           Scarica la prova blockchain (.ots)
         </a>
       </div>
+      <!-- Pagina di verifica permanente: ogni opera attestata ha un URL pubblico
+           e stabile (impronta, data, algoritmo, ancoraggio OTS, QR). Disponibile
+           dopo la generazione del PDF (è quel passo a creare l'archivio). -->
+      <div id="permaRow" style="display:none; text-align:center; margin-top:0.6rem;">
+        <p style="margin:0 0 0.3rem; font-size:0.8rem; color:#666;">Pagina di verifica permanente da condividere:</p>
+        <a id="permaLink" href="#" target="_blank" rel="noopener" style="font-family:'Courier New',monospace; font-size:0.78rem; word-break:break-all;"></a>
+        <button class="azione-secondaria" type="button" onclick="copyPerma(this)" style="display:block; margin:0.5rem auto 0;">Copia il link</button>
+      </div>
       <p class="microcopy">Il certificato PDF è il documento da conservare, insieme al file originale dell'opera.<br>
       Suggerimento: invialo via PEC a te stessə — alla prova matematica aggiungi una prova legale del possesso.</p>
     </div>
@@ -1086,6 +1094,9 @@
 
 <script>
   const WORKER_BASE       = "https://imgauth.spaziogenesi.org";
+  // Base della pagina di verifica permanente /c/<hash> (servita dal Worker, montata
+  // su questo dominio via route Cloudflare): stesso valore stampato nel certificato.
+  const CERT_PAGE_BASE    = "https://attestazione.spaziogenesi.org";
   const WORKER_HASH_URL   = WORKER_BASE + "/api/hash";
   const WORKER_VERIFY_URL = WORKER_BASE + "/api/verify";
   const WORKER_PDF_URL    = WORKER_BASE + "/api/cert-pdf";
@@ -1109,7 +1120,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.12.2";
+  const APP_VERSION = "1.13.0";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
@@ -1328,6 +1339,7 @@
       // è quel passo a creare l'archivio (cert + prova .ots) da cui il badge legge.
       // Popolarlo qui, prima, darebbe un badge "non attestata" (e la cache lo terrebbe).
       document.getElementById("otsRow").style.display = "none";
+      document.getElementById("permaRow").style.display = "none";
       document.getElementById("badgeDetails").style.display = "none";
 
       resultWrap.classList.add("show");
@@ -1393,6 +1405,17 @@
     });
   }
   window.copyBadge = copyBadge; // per l'onclick inline
+
+  function copyPerma(btn) {
+    const a = document.getElementById("permaLink");
+    if (!a || !a.href) return;
+    navigator.clipboard.writeText(a.href).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = "Copiato ✓";
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    });
+  }
+  window.copyPerma = copyPerma; // per l'onclick inline
 
   // --- DOWNLOAD TXT ---
   downloadBtn.addEventListener("click", () => {
@@ -1475,6 +1498,14 @@
       const otsLink = document.getElementById("otsLink");
       otsLink.href = WORKER_BASE + "/api/ots?hash=" + lastData.sha256;
       otsRow.style.display = "block";
+
+      // Pagina di verifica permanente: ora che l'opera è in archivio, l'URL /c/<hash>
+      // risponde. Lo stesso link è stampato nei "Dettagli tecnici" del certificato.
+      const permaUrl  = CERT_PAGE_BASE + "/c/" + lastData.sha256;
+      const permaLink = document.getElementById("permaLink");
+      permaLink.href = permaUrl;
+      permaLink.textContent = permaUrl;
+      document.getElementById("permaRow").style.display = "block";
 
       // Ora l'opera è archiviata (cert + prova .ots): popola e mostra il badge.
       // È qui — non a "Genera attestazione" — che il badge risulta "attestata".
