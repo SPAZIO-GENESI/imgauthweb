@@ -52,6 +52,14 @@
 <main>
 
   <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.14 — Ancoraggio Bitcoin più robusto</span><span class="data">25 giugno 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Quattro calendar invece di due.</strong> Dopo aver osservato rallentamenti ripetuti sull'ancoraggio in Bitcoin, abbiamo aggiunto due ulteriori server pubblici OpenTimestamps (da 2 a 4: Alice, Bob, Finney, Catallaxy). La prova di esistenza è valida basta che uno risponda: più server significa meno rischio di mancata registrazione in caso di temporanea irraggiungibilità.</li>
+      <li><strong>Verifica più onesta della disponibilità.</strong> Il controllo che alimenta l'indicatore di stato ora misura il tempo del <em>primo</em> server a rispondere, non del più lento. Un singolo calendar rallentato non genera più falsi "degrado" nella pagina di stato: il sistema funziona finché funziona almeno uno.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
     <summary><span class="seg">+</span><span class="tit">Versione 1.13 — Certificato verificabile online</span><span class="data">25 giugno 2026</span></summary>
     <div class="corpo"><ul>
       <li><strong>Ogni opera ha un suo indirizzo web permanente.</strong> Oltre al PDF, l'attestazione è ora anche una pagina pubblica e stabile — del tipo <code>attestazione.spaziogenesi.org/c/&lt;impronta&gt;</code> — che chiunque può aprire per vedere a colpo d'occhio impronta, data, algoritmo, ancoraggio in Bitcoin e un QR code. Un link da mettere accanto all'opera o da condividere.</li>
