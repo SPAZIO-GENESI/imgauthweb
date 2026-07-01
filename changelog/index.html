@@ -52,6 +52,17 @@
 <main>
 
   <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.15 — Full privacy: il file non lascia mai il tuo dispositivo</span><span class="data">1 luglio 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>L'impronta si calcola nel tuo browser.</strong> Da questa versione l'impronta SHA-256 dell'opera viene calcolata direttamente sul tuo dispositivo (tecnologia WebCrypto, standard del web): <strong>il file non viene più inviato ai nostri server</strong>, né per l'attestazione né per la verifica. A noi arriva solo il codice di 64 caratteri, dal quale l'opera non è ricostruibile.</li>
+      <li><strong>Nessuna garanzia in meno.</strong> Data e firma di sicurezza continuano a nascere sui nostri server (impossibile retrodatare), e restano invariati marca temporale, ancoraggio in Bitcoin e certificato PDF. Cambia solo <em>dove</em> si calcola l'impronta: sul tuo dispositivo invece che sul nostro.</li>
+      <li><strong>Limite di dimensione 10 volte più alto.</strong> Senza il trasferimento del file, il tetto passa da 100 MB a <strong>1 GB</strong> — e l'attestazione è istantanea anche con connessioni lente, perché non c'è nulla da caricare.</li>
+      <li><strong>Verifica anche offline dal server.</strong> Il confronto tra file e impronta avviene in locale: funziona persino se il nostro motore è momentaneamente irraggiungibile (al server si chiede solo la verifica della firma di sicurezza).</li>
+      <li><strong>Informativa privacy aggiornata</strong> per riflettere il nuovo principio: l'opera non lascia il tuo dispositivo.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
     <summary><span class="seg">+</span><span class="tit">Versione 1.14 — Ancoraggio Bitcoin più robusto</span><span class="data">25 giugno 2026</span></summary>
     <div class="corpo"><ul>
       <li><strong>Quattro calendar invece di due.</strong> Dopo aver osservato rallentamenti ripetuti sull'ancoraggio in Bitcoin, abbiamo aggiunto due ulteriori server pubblici OpenTimestamps (da 2 a 4: Alice, Bob, Finney, Catallaxy). La prova di esistenza è valida basta che uno risponda: più server significa meno rischio di mancata registrazione in caso di temporanea irraggiungibilità.</li>

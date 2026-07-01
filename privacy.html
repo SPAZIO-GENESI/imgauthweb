@@ -49,7 +49,7 @@
 
 <main>
 
-  <p class="meta">Ultimo aggiornamento: giugno 2026. La presente informativa riguarda specificamente il
+  <p class="meta">Ultimo aggiornamento: luglio 2026. La presente informativa riguarda specificamente il
   servizio di attestazione disponibile su <strong>attestazione.spaziogenesi.org</strong>. Per il sito
   istituzionale vedi l'<a href="https://spaziogenesi.org/privacy-policy">informativa generale</a>.</p>
 
@@ -63,20 +63,23 @@
     PEC: <a href="mailto:spaziogenesi@pec.it">spaziogenesi@pec.it</a>
   </p>
 
-  <h2>2. Principio di fondo: l'opera non viene conservata</h2>
+  <h2>2. Principio di fondo: l'opera non lascia il tuo dispositivo</h2>
   <p>
-    Il servizio calcola l'<strong>impronta digitale (SHA-256)</strong> del file che carichi e rilascia
-    un certificato. <strong>Il file dell'opera non viene memorizzato</strong>: è elaborato in memoria
-    solo per il tempo necessario a calcolarne l'impronta, poi viene scartato. Anche se il file contenesse
-    dati personali (o categorie particolari), questi <strong>non vengono conservati</strong> dal servizio.
+    L'<strong>impronta digitale (SHA-256)</strong> del file viene calcolata <strong>direttamente nel
+    tuo browser</strong>: <strong>il file dell'opera non viene inviato né conservato</strong> dai nostri
+    server, che ricevono soltanto l'impronta (una sequenza di 64 caratteri da cui il file non è
+    ricostruibile) e rilasciano il certificato. Anche se il file contenesse dati personali (o categorie
+    particolari), questi <strong>non raggiungono il servizio</strong>.
+    <em>Nota storica:</em> fino a giugno 2026 il calcolo avveniva sui nostri server, con elaborazione
+    in sola memoria e scarto immediato del file; oggi nemmeno quello.
   </p>
 
   <h2>3. Quali dati trattiamo, perché e con quale base giuridica</h2>
 
   <div class="box">
     <h3>3.1 Impronta, marca temporale e firma</h3>
-    <p>Dal file calcoliamo l'impronta SHA-256 e generiamo data/ora, stringa di attestazione e firma di
-    sicurezza (HMAC). Sono dati tecnici del certificato.</p>
+    <p>Il tuo browser calcola l'impronta SHA-256 del file e la invia al servizio, che genera data/ora,
+    stringa di attestazione e firma di sicurezza (HMAC). Sono dati tecnici del certificato.</p>
     <p class="meta"><strong>Base giuridica:</strong> erogazione del servizio richiesto dall'utente (art. 6.1.b)
     e legittimo interesse all'integrità del servizio (art. 6.1.f).</p>
   </div>
@@ -111,7 +114,7 @@
 
   <h2>4. Conservazione e residenza dei dati</h2>
   <ul>
-    <li><strong>File dell'opera:</strong> non conservato (vedi §2).</li>
+    <li><strong>File dell'opera:</strong> non inviato né conservato — resta sul tuo dispositivo (vedi §2).</li>
     <li><strong>Certificato PDF + prova OpenTimestamps (.ots):</strong> archiviati per consentire il recupero
     e la verifica nel tempo. Conservazione a tempo indeterminato salvo richiesta di cancellazione (vedi §7).</li>
     <li><strong>Dove:</strong> l'archivio dei certificati risiede su storage <strong>Cloudflare R2 in
@@ -158,7 +161,7 @@
   <a href="https://www.garanteprivacy.it" target="_blank" rel="noopener noreferrer">Garante per la protezione dei dati personali</a>.</p>
 
   <h2>9. Responsabilità dell'utente</h2>
-  <p>Caricando un file dichiari di averne titolo e di avere il diritto di trattarne il contenuto. Se inserisci
+  <p>Selezionando un file per l'attestazione dichiari di averne titolo e di avere il diritto di trattarne il contenuto. Se inserisci
   dati personali di terzi nei campi dichiarati, sei responsabile della loro liceità. Il servizio non verifica
   la titolarità dell'opera: fornisce un'attestazione crittografica di esistenza, non una prova legale di proprietà.</p>
 

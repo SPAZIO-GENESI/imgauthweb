@@ -538,7 +538,7 @@
 
 <header>
   <h1>Attestazione delle <span>opere digitali</span></h1>
-  <p class="tagline">Dimostra che la tua opera esisteva oggi, esattamente così com'è. Gratis, in un minuto.</p>
+  <p class="tagline">Dimostra che la tua opera esisteva oggi, esattamente così com'è. Gratis, in un minuto — e il file non lascia mai il tuo dispositivo.</p>
   <div class="divider"></div>
   <p class="notice">Il servizio fornisce attestazione crittografica di impronta digitale (hash) di file informatici.<br>
     Non costituisce registrazione di diritto d'autore né certificazione legale della titolarità dell'opera.</p>
@@ -558,12 +558,12 @@
        =========================== -->
   <section id="tabAttesta">
 
-  <div class="passo"><span class="n">1</span><h2>Carica la tua opera</h2><span class="hint">qualsiasi file, fino a 100 MB</span></div>
+  <div class="passo"><span class="n">1</span><h2>Carica la tua opera</h2><span class="hint">qualsiasi file, fino a 1 GB</span></div>
 
   <div class="drop-zone" id="dropZone">
     <input type="file" id="fileInput">
     <p class="drop-primary">Trascina il file qui, o clicca per selezionare</p>
-    <p class="drop-hint">Qualsiasi formato di file</p>
+    <p class="drop-hint">Qualsiasi formato — l'impronta si calcola nel tuo browser, il file non viene inviato</p>
   </div>
 
   <div class="preview-row" id="previewRow">
@@ -900,16 +900,17 @@
 
     <p>
       Questo servizio genera l'<em>impronta digitale</em> della tua opera — qualsiasi file,
-      fino a 100&nbsp;MB — e la lega a una data certa con un certificato PDF firmato.
-      Conservando l'attestazione potrai sempre provare che quel preciso file esisteva,
-      immutato, in quel momento: utile prima di pubblicare, partecipare a un concorso
-      o consegnare una bozza.
+      fino a 1&nbsp;GB — e la lega a una data certa con un certificato PDF firmato.
+      L'impronta si calcola <strong>direttamente nel tuo browser</strong>: il file non
+      lascia mai il tuo dispositivo. Conservando l'attestazione potrai sempre provare
+      che quel preciso file esisteva, immutato, in quel momento: utile prima di
+      pubblicare, partecipare a un concorso o consegnare una bozza.
     </p>
 
     <p><strong>Come si usa</strong> — tre passi:</p>
     <ol class="passi">
       <li><strong>Trascina il file</strong> nella scheda "Attesta la tua opera".</li>
-      <li>Il sistema calcola l'impronta: <strong>scarica il certificato PDF</strong> (o il .txt) e conservalo.</li>
+      <li>Il tuo browser calcola l'impronta (il file resta sul tuo dispositivo): <strong>scarica il certificato PDF</strong> (o il .txt) e conservalo.</li>
       <li>In qualsiasi momento, <strong>verifica</strong>: ricarichi il file nella scheda "Verifica" e il servizio conferma che è identico.</li>
     </ol>
 
@@ -931,10 +932,24 @@
         <summary><span class="segno">+</span><span><span class="titolo">Impronta digitale unica</span><br>
           <span class="breve">Un codice di 64 caratteri identifica il tuo file in modo univoco e irripetibile.</span></span></summary>
         <div class="corpo">
-          <p>L'impronta (hash <strong>SHA-256</strong>) è calcolata dai nostri server sui byte esatti del
+          <p>L'impronta (hash <strong>SHA-256</strong>) è calcolata sui byte esatti del
           file: basta che cambi un solo pixel — o una virgola — e l'impronta diventa completamente diversa.
           Per questo dimostra che il file non è stato modificato.</p>
           <p>Funziona con qualsiasi formato: immagini, video, audio, documenti, modelli 3D, archivi.</p>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Privacy totale: il file non lascia il tuo dispositivo</span><br>
+          <span class="breve">L'impronta si calcola nel tuo browser: a noi arriva solo il codice, mai l'opera.</span></span></summary>
+        <div class="corpo">
+          <p>Il calcolo dell'impronta avviene <strong>direttamente nel tuo browser</strong> (tecnologia
+          WebCrypto, standard del web): l'opera non viene caricata né trasmessa ai nostri server, che
+          ricevono e attestano soltanto l'impronta. Vale sia per l'attestazione sia per la verifica.</p>
+          <p><strong>Come si verifica:</strong> il codice del servizio è
+          <a href="https://github.com/SPAZIO-GENESI/imgauthweb" target="_blank" rel="noopener noreferrer">open source</a>:
+          chiunque può controllare che il file non venga inviato (per esempio osservando il traffico
+          di rete del browser durante l'attestazione).</p>
         </div>
       </details>
 
@@ -1120,7 +1135,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.13.0";
+  const APP_VERSION = "1.14.0";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
@@ -1214,7 +1229,19 @@
   }
 
   // --- CARICAMENTO FILE PRINCIPALE (HASH) ---
+  // Tetto pratico: l'impronta si calcola in locale (WebCrypto, non streaming),
+  // quindi il file va letto per intero in memoria. 1 GB è un limite prudente
+  // per i browser correnti; il file NON viene comunque inviato al server.
+  const MAX_FILE_BYTES = 1024 * 1024 * 1024;
+
   function loadFile(f) {
+    if (f.size > MAX_FILE_BYTES) {
+      selectedFile = null;
+      attestBtn.disabled = true;
+      previewRow.classList.remove("show");
+      showErr("File troppo grande (max 1 GB). L'impronta si calcola nel tuo browser e serve memoria sufficiente a leggere il file.");
+      return;
+    }
     selectedFile = f;
     previewName.textContent = f.name;
     previewMeta.textContent = (f.type || "tipo sconosciuto") + " · " + fmt(f.size);
@@ -1270,26 +1297,23 @@
     resultWrap.classList.remove("show");
 
     try {
-      // Converti il file in base64 usando FileReader (senza ... e senza Uint8Array)
-      const b64 = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const base64 = reader.result.split(",")[1]; // rimuove "data:image/...;base64,"
-          resolve(base64);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(selectedFile);
-      });
+      // Full privacy (1.14.0): l'impronta SHA-256 si calcola QUI, nel browser
+      // (WebCrypto). Il file non lascia mai questo dispositivo: al server
+      // viaggiano solo impronta, nome/tipo/dimensione e i dati dichiarati.
+      btnLabel.textContent = "Calcolo dell'impronta…";
+      const sha256 = await sha256Hex(selectedFile);
 
       // Invia JSON al Worker. I dati dell'opera (facoltativi) vengono
       // normalizzati dal server e vincolati alla firma HMAC dell'attestazione.
+      btnLabel.textContent = "Attestazione…";
       const res = await fetch(WORKER_HASH_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: selectedFile.name,
           type: selectedFile.type,
-          image: b64,
+          size: selectedFile.size,
+          sha256: sha256,
           turnstile_token: tsToken,
           titolo: document.getElementById("metaTitolo").value,
           autore: document.getElementById("metaAutore").value,
@@ -1345,7 +1369,7 @@
       resultWrap.classList.add("show");
       resultWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } catch (e) {
-      showErr("Impossibile raggiungere il worker. Verificare WORKER_HASH_URL. (" + e.message + ")");
+      showErr("Impossibile completare l'attestazione (" + e.message + "). Se il file è molto grande la memoria del browser potrebbe non bastare; altrimenti controlla la connessione.");
     } finally {
       attestBtn.classList.remove("loading");
       attestBtn.disabled = false;
@@ -1789,48 +1813,61 @@
     rows.innerHTML = "";
 
     try {
-      const fd = new FormData();
-      fd.append("image", verifyFile);
-      fd.append("hash", verifyHashInput.value.trim());
-      if (verifyAttestInput.value.trim()) fd.append("attestazione", verifyAttestInput.value.trim());
-      if (verifyHmacInput.value.trim())   fd.append("hmac", verifyHmacInput.value.trim());
-      // Dati dichiarati: se il certificato li riportava, la firma HMAC li copre
-      // e devono essere forniti identici perché la verifica riesca.
-      let hasMeta = false;
-      for (const [field, id] of [["titolo","vMetaTitolo"], ["autore","vMetaAutore"], ["anno","vMetaAnno"], ["note","vMetaNote"]]) {
-        const v = document.getElementById(id).value.trim();
-        if (v) { fd.append(field, v); hasMeta = true; }
-      }
+      // Full privacy (1.14.0): l'impronta dell'opera si calcola QUI, nel browser,
+      // e il confronto con quella dichiarata avviene in locale — il file non
+      // viene inviato al server. Al worker si chiede solo ciò che il browser
+      // non può fare da solo: verificare la firma HMAC (il segreto è suo).
+      verifyBtnLabel.textContent = "Calcolo dell'impronta…";
+      const claimed  = verifyHashInput.value.trim().toLowerCase();
+      const digest   = await sha256Hex(verifyFile);
+      const coincide = digest === claimed;
 
-      const res = await fetch(WORKER_VERIFY_URL, { method: "POST", body: fd });
-      const d = await res.json();
-      if (!res.ok) {
-        verifyErrorMsg.textContent = "Errore: " + (d.error || ("HTTP " + res.status));
-        verifyErrorMsg.classList.add("show");
-        return;
+      let hasMeta = false;
+      let hmacValido = null;
+      if (verifyAttestInput.value.trim() && verifyHmacInput.value.trim()) {
+        verifyBtnLabel.textContent = "Verifica della firma…";
+        const fd = new FormData();
+        fd.append("hash", claimed);
+        fd.append("attestazione", verifyAttestInput.value.trim());
+        fd.append("hmac", verifyHmacInput.value.trim());
+        // Dati dichiarati: se il certificato li riportava, la firma HMAC li copre
+        // e devono essere forniti identici perché la verifica riesca.
+        for (const [field, id] of [["titolo","vMetaTitolo"], ["autore","vMetaAutore"], ["anno","vMetaAnno"], ["note","vMetaNote"]]) {
+          const v = document.getElementById(id).value.trim();
+          if (v) { fd.append(field, v); hasMeta = true; }
+        }
+
+        const res = await fetch(WORKER_VERIFY_URL, { method: "POST", body: fd });
+        const d = await res.json();
+        if (!res.ok) {
+          verifyErrorMsg.textContent = "Errore: " + (d.error || ("HTTP " + res.status));
+          verifyErrorMsg.classList.add("show");
+          return;
+        }
+        hmacValido = d.hmac_valido;
       }
-      verifyHashCalc.textContent = d.hash_calcolato;
+      verifyHashCalc.textContent = digest;
 
       // Badge incorporabile: mostrato SOLO se la corrispondenza è confermata
       // (impronta verificata). Usa l'hash effettivo del file appena verificato.
       const vBadge = document.getElementById("vBadgeDetails");
-      if (d.coincide) {
-        fillBadge("vBadge", d.hash_calcolato);
+      if (coincide) {
+        fillBadge("vBadge", digest);
         vBadge.style.display = "";
       } else {
         vBadge.style.display = "none";
       }
 
-      // 1) Corrispondenza opera ↔ certificato
-      rows.appendChild(verdictRow(d.coincide ? "ok" : "bad",
-        d.coincide ? "L'opera corrisponde al certificato."
-                   : "L'opera NON corrisponde a questo certificato."));
+      // 1) Corrispondenza opera ↔ certificato (confronto fatto in locale)
+      rows.appendChild(verdictRow(coincide ? "ok" : "bad",
+        coincide ? "L'opera corrisponde al certificato."
+                 : "L'opera NON corrisponde a questo certificato."));
 
       // 2) Autenticità (firma HMAC del server) + integrità dei dati dichiarati
-      if (d.hmac_valido === true) {
+      if (hmacValido === true) {
         rows.appendChild(verdictRow("ok", "Certificato autentico, emesso da Spazio Genesi."));
         if (hasMeta) rows.appendChild(verdictRow("ok", "Dati dichiarati integri: non alterati dopo l'emissione."));
-      } else if (d.hmac_valido === false) {
+      } else if (hmacValido === false) {
         rows.appendChild(verdictRow("bad", "Firma di sicurezza NON valida: certificato non riconosciuto o dati alterati."));
         if (hasMeta) rows.appendChild(verdictRow("info", "Se hai caricato il PDF, controlla i dati letti nei «Dettagli tecnici» (passo 2): un errore di lettura può invalidare la firma."));
       } else {
@@ -1854,7 +1891,7 @@
       verifyResultWrap.classList.add("show");
       verifyResultWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } catch (e) {
-      verifyErrorMsg.textContent = "Errore: impossibile raggiungere il worker.";
+      verifyErrorMsg.textContent = "Errore durante la verifica: riprova (file troppo grande per la memoria del browser, o problema di rete).";
       verifyErrorMsg.classList.add("show");
     } finally {
       verifyBtn.disabled = false;
