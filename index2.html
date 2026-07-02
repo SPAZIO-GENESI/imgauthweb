@@ -1,0 +1,2193 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attestazione opere digitali — proposta di redesign | Spazio Genesi</title>
+<!-- PROPOSTA index2.html: bozza di riorganizzazione (non indicizzare, non linkata) -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="theme-color" content="#FBFAF6">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Turnstile: challenge anti-bot richiesta per l'emissione dell'attestazione -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback" async defer></script>
+
+<!-- pdf.js (auto-ospitato): lettura lato client del certificato PDF in fase di verifica -->
+<script src="/vendor/pdf/pdf.min.js" defer></script>
+
+<style>
+  /* ══════════════════════════════════════════════════════════════
+     PROPOSTA DI REDESIGN — sistema di token
+     Brand invariato (Garamond + oro + carta), esecuzione nuova:
+     contrasti AA, focus visibile, tablist ARIA, stepper editoriale.
+     ══════════════════════════════════════════════════════════════ */
+  :root{
+    --carta:#FBFAF6;         /* fondo pagina, carta calda */
+    --rialzo:#F4F1E7;        /* pannelli, pozzetti */
+    --bianco:#FFFFFF;
+    --ink:#211E15;           /* testo primario ~14:1 */
+    --ink-2:#57523F;         /* testo secondario ~6.4:1 */
+    --ink-3:#6C6759;         /* didascalie ~5:1 (mai sotto AA) */
+    --oro:#8B6914;           /* accento brand: display, bottoni, indicatori */
+    --oro-testo:#6E5310;     /* oro per testo piccolo ~5.6:1 */
+    --oro-scuro:#5C450C;     /* hover */
+    --linea:#E5E0D1;
+    --linea-forte:#CBC4AE;
+    --verde:#1E6E34;
+    --rosso:#9E2F24;
+    --serif:'EB Garamond', Georgia, serif;
+    --sans:'Inter', system-ui, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+    --raggio:10px;
+    --colonna:41rem;
+  }
+
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body{
+    font-family:var(--sans); font-weight:400; font-size:16px;
+    background:var(--carta); color:var(--ink);
+    min-height:100vh; display:flex; flex-direction:column;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* Focus visibile ovunque, coerente col brand */
+  :focus-visible{ outline:2px solid var(--oro); outline-offset:2px; border-radius:3px; }
+
+  .visually-hidden{
+    position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+    overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+  }
+
+  /* Skip link: primo elemento tabbabile */
+  .salta{
+    position:absolute; left:1rem; top:-3rem; z-index:100;
+    background:var(--ink); color:#fff; padding:0.6rem 1rem; border-radius:6px;
+    font-size:0.85rem; text-decoration:none; transition:top 0.15s;
+  }
+  .salta:focus{ top:0.75rem; }
+
+  /* ── Barra ente ─────────────────────────────────────────────── */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+    max-width:64rem; margin:0 auto; padding:1rem 1.5rem; width:100%;
+  }
+  .topbar a{ text-decoration:none; }
+  .brand{
+    display:inline-flex; align-items:center; gap:0.55rem; color:var(--ink);
+    font-size:0.92rem; font-weight:500; letter-spacing:0.02em; min-height:44px;
+  }
+  .brand svg{ display:block; }
+  .brand:hover{ color:var(--oro-testo); }
+  .link-servizi{
+    font-size:0.82rem; color:var(--ink-2); display:inline-flex; align-items:center;
+    min-height:44px; border-bottom:1px dotted var(--linea-forte); padding-bottom:1px;
+  }
+  .link-servizi:hover{ color:var(--oro-testo); border-color:var(--oro-testo); }
+
+  /* ── Hero: tesi a sinistra, impronta dal vivo a destra ──────── */
+  .hero{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:2.5rem 3.5rem;
+    align-items:center; max-width:64rem; margin:0 auto;
+    padding:2.2rem 1.5rem 2.6rem; width:100%;
+  }
+  .eyebrow{
+    font-size:0.7rem; letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--ink-3); font-weight:500; margin-bottom:0.9rem;
+  }
+  .hero h1{
+    font-family:var(--serif); font-weight:400; line-height:1.12;
+    font-size:clamp(2.1rem, 4.6vw, 3.15rem); letter-spacing:0.005em;
+    text-wrap:balance;
+  }
+  .hero h1 em{ font-style:italic; color:var(--oro); }
+  .lead{
+    margin-top:1.1rem; font-size:0.98rem; color:var(--ink-2); line-height:1.65;
+    max-width:34rem;
+  }
+  .chips{ display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1.3rem; }
+  .chip{
+    display:inline-flex; align-items:center; gap:0.45rem;
+    padding:0.34rem 0.8rem; border:1px solid var(--linea); border-radius:999px;
+    background:var(--bianco); font-size:0.76rem; color:var(--ink-2);
+  }
+  .chip::before{ content:""; width:6px; height:6px; border-radius:50%; background:var(--oro); }
+  .nota-legale{
+    margin-top:1.4rem; font-size:0.74rem; color:var(--ink-3); line-height:1.6;
+    padding-left:0.9rem; border-left:2px solid var(--linea-forte); max-width:34rem;
+  }
+
+  /* Firma della pagina: l'impronta, dal vivo.
+     Micro-demo WebCrypto — la stessa tecnologia dell'attestazione. */
+  .demo{
+    border:1px solid var(--linea-forte); border-top:3px double var(--oro);
+    border-radius:var(--raggio); background:var(--bianco);
+    padding:1.4rem 1.5rem 1.5rem;
+  }
+  .demo-label{
+    font-size:0.68rem; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--oro-testo); font-weight:500; margin-bottom:0.9rem;
+  }
+  .demo input{
+    width:100%; border:none; border-bottom:1px solid var(--linea-forte);
+    background:transparent; font-family:var(--serif); font-style:italic;
+    font-size:1.15rem; color:var(--ink); padding:0.3rem 0 0.5rem;
+  }
+  .demo input:focus{ outline:none; border-bottom-color:var(--oro); }
+  .demo input::placeholder{ color:var(--ink-3); opacity:1; }
+  .demo-hash{
+    margin-top:1rem; font-family:var(--mono); font-size:0.78rem;
+    line-height:1.75; word-break:break-all; color:var(--ink); min-height:2.6em;
+  }
+  .demo-hash span:nth-child(even){ color:var(--oro-testo); }
+  .demo-caption{ margin-top:0.8rem; font-size:0.76rem; color:var(--ink-3); line-height:1.55; }
+  .demo-summary{
+    cursor:pointer; list-style:none; font-size:0.88rem; font-weight:500;
+    color:var(--ink); display:flex; align-items:center; gap:0.5rem; min-height:32px;
+  }
+  .demo-summary::-webkit-details-marker{ display:none; }
+  .demo-summary::before{ content:"+"; color:var(--oro); font-weight:600; font-family:var(--mono); }
+  .demo[open] .demo-summary::before{ content:"–"; }
+  .demo-inner{ margin-top:0.9rem; }
+  @media (min-width:841px){
+    .demo-summary{ display:none; }
+    .demo-inner{ margin-top:0; }
+  }
+  @media (max-width:840px){
+    .demo-label{ display:none; }
+  }
+
+  /* ── Navigazione: tablist sticky con indicatore a inchiostro ── */
+  .tabs-bar{
+    position:sticky; top:0; z-index:50;
+    background:rgba(251,250,246,0.94);
+    -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+    border-top:1px solid var(--linea); border-bottom:1px solid var(--linea);
+  }
+  .tabs{
+    display:flex; max-width:var(--colonna); margin:0 auto; padding:0 1.5rem;
+  }
+  .tabs button{
+    appearance:none; background:none; border:none; cursor:pointer;
+    font-family:var(--sans); font-size:0.9rem; font-weight:500;
+    color:var(--ink-2); padding:0.95rem 0.25rem calc(0.95rem - 2px);
+    margin-right:1.9rem; border-bottom:2px solid transparent; min-height:48px;
+  }
+  .tabs button:last-child{ margin-right:0; }
+  .tabs button:hover{ color:var(--ink); }
+  .tabs button.attiva{
+    color:var(--ink); font-weight:600; border-bottom-color:var(--oro);
+  }
+  .tab-nascosta{ display:none !important; }
+
+  main{
+    flex:1; max-width:var(--colonna); margin:0 auto;
+    padding:2.4rem 1.5rem 4.5rem; width:100%;
+  }
+  section[role="tabpanel"]{ scroll-margin-top:4rem; }
+  section[role="tabpanel"]:focus{ outline:none; }
+
+  /* ── Stepper editoriale ─────────────────────────────────────── */
+  .passo{
+    display:flex; gap:0.85rem; align-items:baseline;
+    margin:2.4rem 0 0.9rem; padding-top:1.6rem; border-top:1px solid var(--linea);
+  }
+  .passo:first-child{ margin-top:0; padding-top:0; border-top:none; }
+  .passo .n{
+    flex:0 0 auto; width:1.7rem; height:1.7rem; border-radius:50%;
+    border:1.5px solid var(--oro); color:var(--oro-testo); background:var(--carta);
+    font-size:0.82rem; font-weight:600; font-family:var(--mono);
+    display:inline-flex; align-items:center; justify-content:center;
+    transform:translateY(0.28rem);
+  }
+  .passo h2{
+    font-family:var(--serif); font-weight:500; font-size:1.35rem; color:var(--ink);
+  }
+  .passo .hint{
+    font-size:0.74rem; color:var(--ink-3); margin-left:auto;
+    letter-spacing:0.04em; white-space:nowrap;
+  }
+
+  /* ── Zona di caricamento ────────────────────────────────────── */
+  .drop-zone{
+    border:1.5px dashed var(--linea-forte); border-radius:var(--raggio);
+    padding:2.5rem 1.5rem; text-align:center; cursor:pointer;
+    position:relative; background:var(--bianco);
+    transition:border-color 0.18s, background 0.18s;
+  }
+  .drop-zone:hover, .drop-zone.over{ border-color:var(--oro); background:#FFFDF6; }
+  .drop-zone:focus-within{ outline:2px solid var(--oro); outline-offset:2px; }
+  .drop-zone input[type="file"]{
+    position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%;
+  }
+  .drop-icona{ color:var(--oro); margin-bottom:0.7rem; }
+  .drop-primary{ font-size:0.92rem; color:var(--ink); margin-bottom:0.35rem; }
+  .drop-hint{ font-size:0.75rem; color:var(--ink-3); line-height:1.5; }
+
+  .preview-row{
+    display:none; align-items:center; gap:1rem; margin-top:1rem;
+    padding:0.85rem 1rem; background:var(--rialzo);
+    border:1px solid var(--linea); border-radius:8px;
+  }
+  .preview-row.show{ display:flex; }
+  .preview-thumb{
+    width:56px; height:56px; object-fit:cover; border-radius:5px;
+    border:1px solid var(--linea-forte); flex-shrink:0; background:var(--bianco);
+  }
+  .preview-info{ flex:1; min-width:0; }
+  .preview-fname{
+    font-size:0.85rem; font-weight:500; color:var(--ink);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:0.15rem;
+  }
+  .preview-fmeta{ font-size:0.76rem; color:var(--ink-3); }
+
+  /* ── Campi ──────────────────────────────────────────────────── */
+  label.field-label{
+    display:block; font-size:0.82rem; font-weight:500; color:var(--ink-2);
+    margin-bottom:0.45rem; letter-spacing:0.02em;
+  }
+  .campo{
+    width:100%; padding:0.62rem 0.75rem; border:1px solid var(--linea-forte);
+    border-radius:7px; font-size:0.88rem; font-family:var(--sans);
+    color:var(--ink); background:var(--bianco);
+  }
+  .campo::placeholder{ color:var(--ink-3); opacity:1; }
+  .campo:focus{ outline:2px solid var(--oro); outline-offset:0; border-color:var(--oro); }
+  .campo-mono{ font-family:var(--mono); font-size:0.8rem; }
+
+  /* ── Tendine ────────────────────────────────────────────────── */
+  details.opz{
+    border:1px solid var(--linea); border-radius:8px;
+    padding:0.8rem 1rem; background:var(--bianco);
+  }
+  details.opz summary{
+    cursor:pointer; font-size:0.86rem; color:var(--ink-2); list-style:none;
+    display:flex; align-items:center; gap:0.55rem; min-height:28px;
+  }
+  details.opz summary::-webkit-details-marker{ display:none; }
+  details.opz summary::before{ content:"+"; color:var(--oro); font-weight:600; font-family:var(--mono); }
+  details.opz[open] summary::before{ content:"–"; }
+  details.opz summary:hover{ color:var(--ink); }
+  .opz-nota{ font-size:0.75rem; color:var(--ink-3); margin-top:0.6rem; line-height:1.55; }
+  .opz-griglia{ margin-top:0.8rem; display:grid; gap:0.7rem; }
+
+  details.tecnici summary{
+    cursor:pointer; font-size:0.8rem; color:var(--ink-2); list-style:none; min-height:28px;
+  }
+  details.tecnici summary::-webkit-details-marker{ display:none; }
+  details.tecnici summary::before{ content:"+ "; color:var(--oro); font-weight:600; font-family:var(--mono); }
+  details.tecnici[open] summary::before{ content:"– "; }
+  details.tecnici summary:hover{ color:var(--ink); }
+
+  /* ── Bottoni ────────────────────────────────────────────────── */
+  .btn-row{ margin-top:1.3rem; display:flex; gap:0.75rem; }
+  button.primary{
+    flex:1; padding:0.95rem 1.3rem; background:var(--ink); color:#fff;
+    border:none; border-radius:8px; font-family:var(--sans);
+    font-size:0.92rem; font-weight:600; letter-spacing:0.03em; cursor:pointer;
+    transition:background 0.15s; display:flex; align-items:center;
+    justify-content:center; gap:0.55rem; min-height:48px;
+  }
+  button.primary:hover{ background:#3A3628; }
+  button.primary:disabled{ background:#B4AE9C; cursor:not-allowed; }
+
+  .spinner{
+    display:none; width:14px; height:14px;
+    border:1.5px solid rgba(255,255,255,0.4); border-top-color:#fff;
+    border-radius:50%; animation:spin 0.65s linear infinite;
+  }
+  .loading .spinner{ display:block; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .azioni{ margin-top:1.5rem; display:flex; flex-direction:column; gap:0.65rem; }
+  .azione-primaria{
+    display:flex; align-items:center; justify-content:center; gap:0.55rem;
+    padding:1rem 1.3rem; background:var(--oro); color:#fff; border:none;
+    border-radius:8px; font-family:var(--sans); font-size:0.95rem; font-weight:600;
+    letter-spacing:0.03em; cursor:pointer; width:100%; min-height:50px;
+    transition:background 0.15s;
+  }
+  .azione-primaria:hover{ background:var(--oro-scuro); }
+  .azione-primaria:disabled{ cursor:progress; opacity:0.85; }
+  .azione-primaria.loading #pdfBtnIcon{ display:none; }
+  .azione-secondaria{
+    display:flex; align-items:center; justify-content:center; gap:0.5rem;
+    padding:0.75rem 1.3rem; background:var(--bianco); color:var(--ink);
+    border:1.5px solid var(--ink); border-radius:8px; font-family:var(--sans);
+    font-size:0.85rem; font-weight:500; cursor:pointer; width:100%; min-height:46px;
+    transition:background 0.15s;
+  }
+  .azione-secondaria:hover{ background:var(--rialzo); }
+  .azione-secondaria:disabled{ border-color:var(--linea-forte); color:var(--ink-3); cursor:not-allowed; background:var(--bianco); }
+  .azione-terziaria{
+    display:inline-flex; align-items:center; gap:0.45rem; font-size:0.82rem;
+    color:var(--ink-2); text-decoration:none; margin:0.2rem auto 0;
+    border-bottom:1px dotted var(--linea-forte); padding-bottom:1px; min-height:32px;
+  }
+  .azione-terziaria:hover{ color:var(--oro-testo); border-color:var(--oro-testo); }
+  .microcopy{
+    font-size:0.76rem; color:var(--ink-3); text-align:center;
+    margin-top:0.5rem; line-height:1.65;
+  }
+
+  .btn-copy{
+    position:absolute; top:0.8rem; right:0.8rem; background:var(--bianco);
+    border:1px solid var(--linea-forte); border-radius:6px; font-size:0.7rem;
+    font-family:var(--sans); font-weight:500; letter-spacing:0.06em;
+    padding:5px 11px; cursor:pointer; color:var(--ink-2);
+    transition:border-color 0.15s, color 0.15s; min-height:28px;
+  }
+  .btn-copy:hover{ border-color:var(--ink); color:var(--ink); }
+  .btn-copy.ok{ border-color:var(--verde); color:var(--verde); }
+
+  /* ── Messaggi d'errore ──────────────────────────────────────── */
+  .error-msg{
+    display:none; margin-top:1rem; padding:0.8rem 1rem;
+    background:#FBEFED; border:1px solid #E3B7B0; border-radius:8px;
+    font-size:0.82rem; color:var(--rosso); line-height:1.55;
+  }
+  .error-msg.show{ display:block; }
+
+  /* ── Esito: la carta-certificato ────────────────────────────── */
+  .result-wrap{ display:none; margin-top:2.4rem; }
+  .result-wrap.show{ display:block; }
+  .risultato-card{
+    border:1px solid var(--linea-forte); border-top:3px double var(--oro);
+    border-radius:var(--raggio); padding:1.6rem 1.5rem 1.7rem; background:var(--bianco);
+  }
+  .result-section-title{
+    font-family:var(--serif); font-size:1.3rem; font-style:italic;
+    color:var(--ink); margin-bottom:1rem;
+  }
+  .ris-ok{ color:var(--verde); font-style:normal; }
+
+  .hash-block{
+    background:var(--rialzo); border:1px solid var(--linea);
+    border-radius:8px; padding:1rem 1.1rem; position:relative; margin-bottom:1.1rem;
+  }
+  .hash-label-small{
+    font-size:0.66rem; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--ink-3); margin-bottom:0.5rem; font-weight:500;
+  }
+  .hash-string{
+    font-family:var(--mono); font-size:0.8rem; color:var(--ink);
+    word-break:break-all; line-height:1.75; padding-right:3.5rem;
+  }
+
+  .meta-table{ width:100%; border-collapse:collapse; font-size:0.84rem; margin-bottom:1rem; }
+  .meta-table tr{ border-bottom:1px solid var(--linea); }
+  .meta-table tr:last-child{ border-bottom:none; }
+  .meta-table td{ padding:0.6rem 0.2rem; vertical-align:top; }
+  .meta-table td:first-child{
+    color:var(--ink-3); width:38%; font-size:0.76rem;
+    letter-spacing:0.04em; padding-top:0.68rem;
+  }
+  .meta-table td:last-child{ color:var(--ink); }
+
+  .attestation-block{
+    margin-top:0.6rem; padding:0.85rem 1rem; border-left:2px solid var(--oro);
+    background:var(--rialzo); font-family:var(--mono); font-size:0.72rem;
+    color:var(--ink-2); word-break:break-all; line-height:1.7;
+    border-radius:0 8px 8px 0;
+  }
+  .attestation-block strong{
+    display:block; font-family:var(--sans); font-size:0.66rem;
+    letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-3);
+    margin-bottom:0.45rem; font-weight:500;
+  }
+
+  .badge-textarea{
+    width:100%; font-family:var(--mono); font-size:0.72rem; padding:0.6rem;
+    border:1px solid var(--linea-forte); border-radius:7px; resize:vertical;
+    background:var(--bianco); color:var(--ink-2);
+  }
+  .dettaglio-corpo{ margin-top:0.8rem; font-size:0.82rem; color:var(--ink-2); line-height:1.6; }
+  .dettaglio-corpo p{ margin:0 0 0.7rem; }
+  .mt-04{ margin-top:0.4rem; } .mt-09{ margin-top:0.9rem; }
+
+  /* ── Verifica ───────────────────────────────────────────────── */
+  #verifyContext{
+    margin-bottom:1.3rem; padding:0.9rem 1.1rem; background:#FBF6E9;
+    border:1px solid #E5D9B8; border-radius:8px; font-size:0.86rem;
+    color:#5A4A22; line-height:1.6;
+  }
+  #verifyBlocks{ display:flex; flex-direction:column; }
+  #workBlock{ order:1; }
+  #certBlock{
+    order:2; margin-top:1.3rem; border:1px solid var(--linea);
+    border-radius:var(--raggio); padding:0.9rem 1.1rem; background:var(--bianco);
+  }
+  #certBlock > summary{
+    cursor:pointer; font-weight:500; color:var(--ink); font-size:0.95rem;
+    list-style:none; min-height:28px;
+  }
+  #certBlock > summary::-webkit-details-marker{ display:none; }
+  #certBlock > summary::before{ content:"+ "; color:var(--oro); font-weight:600; font-family:var(--mono); }
+  #certBlock[open] > summary::before{ content:"– "; }
+  #certReadBox{
+    display:none; margin-top:0.9rem; padding:0.8rem 1rem; background:var(--rialzo);
+    border:1px solid var(--linea); border-radius:8px; font-size:0.82rem; line-height:1.6;
+  }
+  #verifyMetaDetails{
+    margin-top:0.8rem; border:1px solid var(--linea); border-radius:8px; padding:0.7rem 0.95rem;
+  }
+  #verifyMetaDetails summary{ cursor:pointer; font-size:0.8rem; color:var(--ink-2); }
+  .dettagli-semplici{
+    margin-top:1.8rem; border:1px solid var(--linea); border-radius:8px;
+    padding:0.8rem 1rem; background:var(--bianco);
+  }
+  .dettagli-semplici summary{ cursor:pointer; font-size:0.82rem; color:var(--ink-2); list-style:none; min-height:28px; }
+  .dettagli-semplici summary::-webkit-details-marker{ display:none; }
+  .dettagli-semplici summary::before{ content:"+ "; color:var(--oro); font-weight:600; font-family:var(--mono); }
+  .dettagli-semplici[open] summary::before{ content:"– "; }
+  .dettagli-semplici summary:hover{ color:var(--ink); }
+  .dettagli-semplici .corpo-info{ font-size:0.82rem; color:var(--ink-2); line-height:1.65; margin-top:0.7rem; }
+  .dettagli-semplici .corpo-info ol{ margin:0 0 0.6rem; padding-left:1.2rem; }
+  .dettagli-semplici .corpo-info li{ margin-bottom:0.35rem; }
+  .dettagli-semplici .corpo-info a{ color:var(--oro-testo); }
+  .dettagli-semplici .corpo-info code{
+    font-family:var(--mono); font-size:0.76rem; background:var(--rialzo);
+    padding:1px 4px; border-radius:3px;
+  }
+  .testo-recupero{ font-size:0.85rem; color:var(--ink-2); line-height:1.65; margin:0.2rem 0 1rem; }
+
+  /* ── Istruzioni ─────────────────────────────────────────────── */
+  .istr p{ font-size:0.9rem; color:var(--ink-2); line-height:1.7; margin:0.75rem 0; }
+  .istr p strong, .istr li strong{ color:var(--ink); font-weight:600; }
+  .istr ol.passi{ margin:0.6rem 0 0.6rem 1.3rem; font-size:0.9rem; color:var(--ink-2); line-height:1.7; }
+  .istr ol.passi li{ margin:0.4rem 0; }
+  .istr a{ color:var(--oro-testo); text-decoration:none; }
+  .istr a:hover{ text-decoration:underline; }
+  .istr video{ width:100%; border-radius:var(--raggio); border:1px solid var(--linea-forte); margin:0.8rem 0 0.4rem; }
+  .istr h3{ font-family:var(--serif); font-weight:500; font-size:1.35rem; color:var(--ink); margin:2rem 0 0.2rem; }
+  .garanzie{ border-top:1px solid var(--linea); margin-top:0.7rem; }
+  details.g{ border-bottom:1px solid var(--linea); }
+  details.g summary{
+    cursor:pointer; list-style:none; display:flex; align-items:baseline;
+    gap:0.7rem; padding:0.85rem 0.1rem; user-select:none; min-height:44px;
+  }
+  details.g summary::-webkit-details-marker{ display:none; }
+  details.g summary .segno{
+    flex:0 0 auto; width:1rem; color:var(--oro); font-weight:600;
+    font-family:var(--mono); transition:transform 0.18s ease; text-align:center;
+  }
+  details.g[open] summary .segno{ transform:rotate(45deg); }
+  details.g summary .titolo{ font-weight:600; font-size:0.92rem; color:var(--ink); }
+  details.g summary:hover .titolo{ color:var(--oro-testo); }
+  details.g summary .breve{ color:var(--ink-3); font-size:0.8rem; font-weight:400; }
+  details.g .corpo{ padding:0 0.1rem 1rem 1.7rem; font-size:0.84rem; color:var(--ink-2); line-height:1.65; }
+  details.g .corpo p{ margin:0.4rem 0; font-size:0.84rem; }
+  details.g .corpo ol{ margin:0.4rem 0 0.4rem 1.2rem; }
+  details.g .corpo li{ margin:0.25rem 0; }
+  .badge-row{
+    display:flex; flex-wrap:wrap; align-items:center; gap:0.45rem;
+    padding-top:0.6rem; margin-top:0.5rem; border-top:1px solid var(--linea);
+  }
+  .badge{
+    display:inline-flex; align-items:center; gap:0.35rem; padding:0.24rem 0.7rem;
+    border:1px solid var(--linea); border-radius:999px; background:var(--bianco);
+    font-size:0.72rem; color:var(--ink-2); text-decoration:none;
+  }
+  a.badge:hover{ border-color:var(--oro-testo); color:var(--oro-testo); }
+  .nota-box{
+    margin-top:1.5rem; padding:0.9rem 1.1rem; background:var(--rialzo);
+    border:1px solid var(--linea); border-radius:8px; font-size:0.82rem;
+    color:var(--ink-2); line-height:1.65;
+  }
+  .nota-box strong{ color:var(--ink); }
+
+  /* ── Donazioni ──────────────────────────────────────────────── */
+  #donaRow{ text-align:center; padding:0 1.5rem 1.8rem; }
+  .dona{
+    display:inline-flex; align-items:center; gap:0.5rem; padding:0.85rem 1.8rem;
+    border:none; border-radius:999px; font-size:0.92rem; font-weight:600;
+    color:#fff; text-decoration:none; background:var(--oro);
+    box-shadow:0 2px 10px rgba(139,105,20,0.25); letter-spacing:0.02em;
+    transition:background 0.15s, transform 0.15s, box-shadow 0.15s; min-height:48px;
+  }
+  .dona:hover{ background:var(--oro-scuro); box-shadow:0 4px 14px rgba(139,105,20,0.35); transform:translateY(-1px); }
+  .dona-nota{ font-size:0.7rem; color:var(--ink-3); margin-top:0.5rem; }
+
+  /* ── Footer ─────────────────────────────────────────────────── */
+  footer{
+    text-align:center; padding:2rem 1.5rem 2.2rem; font-size:0.78rem;
+    color:var(--ink-3); border-top:1px solid var(--linea); background:var(--rialzo);
+  }
+  footer a{ color:var(--ink-2); text-decoration:none; }
+  footer a:hover{ color:var(--oro-testo); text-decoration:underline; }
+  footer .riga-brand{
+    display:flex; align-items:center; justify-content:center; gap:0.5rem;
+    margin-bottom:0.6rem; color:var(--ink-2); font-weight:500;
+  }
+  .svc-footer{
+    display:inline-flex; align-items:center; gap:0.45rem; margin-bottom:0.7rem;
+    font-size:0.78rem; color:var(--ink-2); min-height:32px;
+  }
+  .svc-dot{
+    flex:0 0 auto; width:9px; height:9px; border-radius:50%;
+    background:#B4AE9C; box-shadow:0 0 0 3px rgba(0,0,0,0.04);
+  }
+  .svc-dot.ok{ background:var(--verde); }
+  .svc-dot.down{ background:var(--rosso); }
+  .svc-dot.degraded{ background:#B8860B; }
+  .svc-dot.na{ background:#B4AE9C; }
+
+  /* ── Animazione d'ingresso (una sola, orchestrata) ──────────── */
+  @media (prefers-reduced-motion: no-preference){
+    .hero > *{ opacity:0; transform:translateY(12px); animation:alza 0.55s cubic-bezier(0.2,0.7,0.3,1) forwards; }
+    .hero > *:nth-child(2){ animation-delay:0.08s; }
+    @keyframes alza{ to{ opacity:1; transform:none; } }
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *, *::before, *::after{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+
+  /* ── Responsive ─────────────────────────────────────────────── */
+  @media (max-width: 840px){
+    .hero{ grid-template-columns:1fr; gap:1.8rem; padding-top:1.6rem; }
+    .demo{ max-width:34rem; }
+  }
+  @media (max-width: 480px){
+    .topbar{ padding:0.8rem 1rem; }
+    .hero{ padding:1.4rem 1rem 2rem; }
+    main{ padding:1.8rem 1rem 3.5rem; }
+    .tabs{ padding:0 1rem; }
+    .tabs button{ margin-right:1.2rem; font-size:0.86rem; }
+    .passo .hint{ display:none; }
+    .chip-md{ display:none; }
+    .nota-legale{ font-size:0.7rem; margin-top:1.1rem; }
+  }
+</style>
+</head>
+
+<body>
+
+<a class="salta" href="#contenuto">Salta al contenuto</a>
+
+<!-- Barra ente: logo ufficiale + rimando alla pagina del servizio sul sito -->
+<div class="topbar">
+  <a href="https://spaziogenesi.org/" class="brand" title="Spazio Genesi — sito dell'associazione">
+    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="26" viewBox="0 0 580 481" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <g transform="translate(0,481) scale(0.1,-0.1)" fill="currentColor" stroke="none">
+        <path d="M2175 4799 c-729 -75 -1378 -467 -1780 -1074 -82 -124 -203 -366 -252 -505 -100 -282 -137 -506 -137 -815 0 -222 6 -283 46 -497 l23 -118 1396 0 1397 0 26 -83 c37 -117 49 -216 43 -332 -24 -405 -299 -739 -698 -847 -120 -32 -328 -32 -448 0 -105 29 -210 76 -301 138 -77 51 -201 176 -240 242 l-25 41 -368 1 -368 0 63 -76 c142 -172 345 -355 533 -479 124 -82 366 -203 505 -252 281 -100 505 -137 815 -137 310 0 534 37 815 137 139 49 381 170 505 252 265 175 514 425 690 690 94 141 214 391 269 558 l49 147 534 0 533 0 0 565 0 565 -1944 0 -1943 0 -27 59 c-53 119 -70 203 -70 361 0 168 18 251 84 388 51 106 88 161 169 246 83 86 166 145 275 197 142 66 218 82 391 82 122 0 165 -4 228 -21 99 -27 232 -89 310 -146 74 -52 190 -172 232 -238 l30 -48 413 0 c226 0 412 2 412 5 0 14 -172 214 -256 299 -190 190 -374 323 -619 447 -232 117 -479 196 -735 234 -127 19 -452 27 -575 14z"/>
+      </g>
+    </svg>
+    Spazio Genesi
+  </a>
+  <a href="https://spaziogenesi.org/servizi#attestazione" class="link-servizi">Cos'è questo servizio? ↗</a>
+</div>
+
+<!-- Hero: la tesi a sinistra, la firma della pagina a destra -->
+<header class="hero">
+  <div>
+    <p class="eyebrow">Gratuito · open source · senza registrazione</p>
+    <h1>Attestazione delle <em>opere digitali</em></h1>
+    <p class="lead">Dimostra che la tua opera esisteva oggi, esattamente così com'è:
+      scegli il file, ottieni un certificato da conservare. Gratis, in un minuto —
+      e il file non lascia mai il tuo dispositivo.</p>
+    <div class="chips" aria-label="Caratteristiche del servizio">
+      <span class="chip">Il file resta da te</span>
+      <span class="chip chip-md">Qualsiasi formato, fino a 1 GB</span>
+      <span class="chip">Verifica gratuita per sempre</span>
+    </div>
+    <p class="nota-legale">Il servizio fornisce attestazione crittografica di impronta digitale
+      (hash) di file informatici. Non costituisce registrazione di diritto d'autore né
+      certificazione legale della titolarità dell'opera.</p>
+  </div>
+
+  <!-- L'impronta, dal vivo: micro-demo WebCrypto (stessa tecnologia dell'attestazione).
+       Solo didattica: nulla viene inviato, tutto accade nel browser. -->
+  <details class="demo" id="demoBox">
+    <summary class="demo-summary">Cos'è un'impronta? Guardala dal vivo</summary>
+    <div class="demo-inner">
+    <p class="demo-label" id="demoLabel">L'impronta, dal vivo</p>
+    <input id="demoFrase" type="text" maxlength="80" spellcheck="false"
+           value="La mia opera, oggi"
+           aria-describedby="demoSpiega"
+           aria-label="Scrivi una frase e osserva la sua impronta SHA-256 cambiare">
+    <p class="demo-hash" id="demoHash" aria-live="off"></p>
+    <p class="demo-caption" id="demoSpiega">Questa è un'impronta SHA-256, calcolata nel tuo
+      browser. Cambia una sola lettera qui sopra e cambierà tutta: per questo dimostra
+      che un file è rimasto esattamente com'era.</p>
+    </div>
+  </details>
+</header>
+
+<!-- Navigazione principale: tablist ARIA, sticky -->
+<div class="tabs-bar">
+  <nav class="tabs" aria-label="Sezioni del servizio">
+    <div role="tablist" id="navTabs" style="display:flex; width:100%;">
+      <button id="tabBtnAttesta" class="attiva" type="button" role="tab"
+              aria-selected="true" aria-controls="tabAttesta"
+              onclick="mostraTab('attesta')">Attesta</button>
+      <button id="tabBtnVerifica" type="button" role="tab"
+              aria-selected="false" aria-controls="tabVerifica" tabindex="-1"
+              onclick="mostraTab('verifica')">Verifica</button>
+      <button id="tabBtnIstruzioni" type="button" role="tab"
+              aria-selected="false" aria-controls="tabIstruzioni" tabindex="-1"
+              onclick="mostraTab('istruzioni')">Come funziona</button>
+    </div>
+  </nav>
+</div>
+
+<main id="contenuto">
+
+  <!-- ===========================
+       SEZIONE ATTESTAZIONE
+       =========================== -->
+  <section id="tabAttesta" role="tabpanel" aria-labelledby="tabBtnAttesta" tabindex="0">
+
+    <div class="passo"><span class="n">1</span><h2>Scegli la tua opera</h2><span class="hint">qualsiasi file, fino a 1 GB</span></div>
+
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" aria-label="Seleziona il file dell'opera da attestare">
+      <div class="drop-icona" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </div>
+      <p class="drop-primary">Trascina il file qui, o clicca per selezionare</p>
+      <p class="drop-hint">Qualsiasi formato — l'impronta si calcola nel tuo browser, il file non viene inviato</p>
+    </div>
+
+    <div class="preview-row" id="previewRow">
+      <img class="preview-thumb" id="previewImg" src="" alt="">
+      <div class="preview-info">
+        <div class="preview-fname" id="previewName"></div>
+        <div class="preview-fmeta" id="previewMeta"></div>
+      </div>
+    </div>
+
+    <!-- Dati dell'opera (facoltativi): auto-dichiarazioni stampate sul certificato
+         e vincolate alla firma HMAC (non alterabili dopo l'emissione) -->
+    <div class="passo"><span class="n">2</span><h2>Racconta l'opera</h2><span class="hint">facoltativo</span></div>
+    <details id="metaDetails" class="opz">
+      <summary>Aggiungi titolo, autore, anno e note — compariranno sul certificato</summary>
+      <p class="opz-nota">
+        Questi dati compaiono sul certificato come dichiarazioni dell'autore e vengono
+        vincolati alla firma di sicurezza: non saranno modificabili dopo l'emissione.
+      </p>
+      <div class="opz-griglia">
+        <div>
+          <label class="field-label" for="metaTitolo">Titolo dell'opera</label>
+          <input id="metaTitolo" class="campo" type="text" maxlength="150">
+        </div>
+        <div>
+          <label class="field-label" for="metaAutore">Autore o pseudonimo</label>
+          <input id="metaAutore" class="campo" type="text" maxlength="100">
+        </div>
+        <div>
+          <label class="field-label" for="metaAnno">Anno o versione</label>
+          <input id="metaAnno" class="campo" type="text" maxlength="50" placeholder="es. 2026, seconda stesura">
+        </div>
+        <div>
+          <label class="field-label" for="metaNote">Note</label>
+          <input id="metaNote" class="campo" type="text" maxlength="300" placeholder="es. tecnica, committente, contesto">
+        </div>
+      </div>
+    </details>
+
+    <div class="passo"><span class="n">3</span><h2>Genera l'attestazione</h2></div>
+    <!-- Verifica anti-bot: richiesta per generare l'attestazione (hash + firma) -->
+    <div id="turnstileWidget" style="margin-top:0.6rem;"></div>
+
+    <!-- Messaggio d'errore subito sopra il pulsante: su mobile resta vicino all'azione -->
+    <div class="error-msg" id="errorMsg" role="alert"></div>
+
+    <div class="btn-row">
+      <button class="primary" id="attestBtn" type="button" disabled>
+        <span class="spinner" aria-hidden="true"></span>
+        <span id="btnLabel">Genera attestazione SHA-256</span>
+      </button>
+    </div>
+
+    <!-- RISULTATO -->
+    <div class="result-wrap" id="resultWrap" aria-live="polite">
+      <div class="risultato-card">
+        <p class="result-section-title"><span class="ris-ok">✓</span> La tua opera è attestata</p>
+
+        <div class="hash-block">
+          <div class="hash-label-small">Impronta digitale (SHA-256)</div>
+          <div class="hash-string" id="rHash"></div>
+          <button class="btn-copy" id="copyBtn" type="button" onclick="copyHash()">Copia</button>
+        </div>
+
+        <table class="meta-table">
+          <tr><td>Opera</td><td id="rFilename"></td></tr>
+          <tr id="rowTitolo" style="display:none;"><td>Titolo (dichiarato)</td><td id="rTitolo"></td></tr>
+          <tr id="rowAutore" style="display:none;"><td>Autore (dichiarato)</td><td id="rAutore"></td></tr>
+          <tr id="rowAnno" style="display:none;"><td>Anno/versione</td><td id="rAnno"></td></tr>
+          <tr id="rowNote" style="display:none;"><td>Note (dichiarate)</td><td id="rNote"></td></tr>
+          <tr><td>Data e ora</td><td id="rTimestamp"></td></tr>
+          <tr><td>Emesso da</td><td id="rIssuer"></td></tr>
+        </table>
+
+        <details class="tecnici">
+          <summary>Dettagli tecnici (dimensione, stringa di attestazione)</summary>
+          <table class="meta-table" style="margin-top:0.6rem;">
+            <tr><td>Dimensione</td><td id="rSize"></td></tr>
+            <tr><td>Tipo file</td><td id="rMime"></td></tr>
+          </table>
+          <div class="attestation-block">
+            <strong>Stringa di attestazione</strong>
+            <span id="rAttestation"></span>
+          </div>
+        </details>
+
+        <!-- Gerarchia azioni: PDF dominante, txt secondario, prova blockchain terziaria -->
+        <div class="azioni">
+          <button class="azione-primaria" id="downloadPdfBtn" type="button">
+            <span class="spinner" aria-hidden="true"></span>
+            <svg id="pdfBtnIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span id="pdfBtnLabel">Scarica il certificato PDF</span>
+          </button>
+          <button class="azione-secondaria" id="downloadBtn" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Scarica versione testo (.txt)
+          </button>
+          <!-- Prova blockchain: disponibile dopo la generazione del PDF -->
+          <div id="otsRow" style="display:none; text-align:center;">
+            <a id="otsLink" class="azione-terziaria" href="#">
+              <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#F7931A"/><text x="12" y="16.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff" font-family="Arial" transform="rotate(14 12 12)">&#8383;</text></svg>
+              Scarica la prova blockchain (.ots)
+            </a>
+          </div>
+          <!-- URL pubblico e stabile dell'opera, disponibile dopo il PDF -->
+          <div id="permaRow" style="display:none; text-align:center; margin-top:0.6rem;">
+            <p style="margin:0 0 0.3rem; font-size:0.8rem; color:var(--ink-2);">Pagina di verifica permanente da condividere:</p>
+            <a id="permaLink" href="#" target="_blank" rel="noopener" style="font-family:var(--mono); font-size:0.78rem; word-break:break-all; color:var(--oro-testo);"></a>
+            <button class="azione-secondaria" type="button" onclick="copyPerma(this)" style="display:block; margin:0.5rem auto 0;">Copia il link</button>
+          </div>
+          <p class="microcopy">Il certificato PDF è il documento da conservare, insieme al file originale dell'opera.<br>
+          Suggerimento: invialo via PEC a te stessə — alla prova matematica aggiungi una prova legale del possesso.</p>
+        </div>
+
+        <!-- Badge "Opera attestata" da incorporare nel proprio sito o profilo -->
+        <details class="tecnici" id="badgeDetails" style="margin-top:1.4rem; display:none;">
+          <summary>Badge "Opera attestata" per il tuo sito o profilo</summary>
+          <div class="dettaglio-corpo">
+            <p>Mostra che l'opera è attestata e rendi la verifica raggiungibile in un click.
+            Il badge resta verde finché l'opera risulta nei nostri archivi; chi lo clicca
+            arriva alla pagina di verifica con l'impronta già inserita.</p>
+            <p style="margin-bottom:0.4rem; color:var(--ink-3);">Anteprima:</p>
+            <p style="margin-bottom:0.9rem;"><img id="badgePreview" alt="Opera attestata — Spazio Genesi" height="28"></p>
+
+            <label class="field-label" for="badgeHtml">Codice HTML (per siti web)</label>
+            <textarea id="badgeHtml" class="badge-textarea" readonly rows="3"></textarea>
+            <button class="azione-secondaria mt-04" type="button" onclick="copyBadge('badgeHtml', this)">Copia codice HTML</button>
+
+            <label class="field-label mt-09" for="badgeMd" style="margin-top:0.9rem;">Markdown (per GitHub, README e simili)</label>
+            <textarea id="badgeMd" class="badge-textarea" readonly rows="2"></textarea>
+            <button class="azione-secondaria mt-04" type="button" onclick="copyBadge('badgeMd', this)">Copia Markdown</button>
+          </div>
+        </details>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===========================
+       SEZIONE VERIFICA
+       =========================== -->
+  <section id="tabVerifica" class="tab-nascosta" role="tabpanel" aria-labelledby="tabBtnVerifica" tabindex="0">
+
+    <!-- Contesto: compare solo quando si arriva dal QR/link del certificato -->
+    <div id="verifyContext" style="display:none;"></div>
+
+    <!-- I due input: opera e certificato. Ordine ed enfasi cambiano via JS secondo
+         come si arriva (QR/link → opera in primo piano; a freddo → certificato). -->
+    <div id="verifyBlocks">
+
+      <!-- BLOCCO OPERA -->
+      <div id="workBlock">
+        <div class="passo"><h2 id="workHeading">Scegli il file da controllare</h2></div>
+        <div class="drop-zone" id="verifyDropZone">
+          <input type="file" id="verifyFileInput" aria-label="Seleziona il file originale da verificare">
+          <div class="drop-icona" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-8 8.5-4.5-1-8-3.5-8-8.5V6l8-3 8 3z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <p class="drop-primary">Trascina qui il file ricevuto, o clicca per sceglierlo</p>
+          <p class="drop-hint">deve essere il file originale, non il certificato PDF</p>
+        </div>
+        <div class="preview-row" id="verifyPreviewRow">
+          <img class="preview-thumb" id="verifyPreviewImg" src="" alt="">
+          <div class="preview-info">
+            <div class="preview-fname" id="verifyPreviewName"></div>
+            <div class="preview-fmeta" id="verifyPreviewMeta"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOCCO CERTIFICATO PDF -->
+      <details id="certBlock">
+        <summary id="certSummary">Apri il certificato PDF</summary>
+        <div style="margin-top:0.9rem;">
+          <div class="drop-zone" id="certDropZone">
+            <input type="file" id="certFileInput" accept="application/pdf,.pdf" aria-label="Seleziona il certificato PDF da leggere">
+            <p class="drop-primary">Trascina qui il certificato PDF, o clicca per sceglierlo</p>
+            <p class="drop-hint">ne leggiamo impronta, firma e dati dichiarati</p>
+          </div>
+
+          <!-- Esito della lettura automatica del certificato -->
+          <div id="certReadBox" aria-live="polite"></div>
+
+          <!-- Alternativa: chi non ha il PDF inserisce l'impronta a mano -->
+          <details id="manualHashDetails" class="opz" style="margin-top:0.9rem;">
+            <summary>Non hai il certificato PDF? Inserisci l'impronta manualmente</summary>
+            <div style="margin-top:0.7rem;">
+              <label class="field-label visually-hidden" for="verifyHashInput">Impronta SHA-256 (64 caratteri)</label>
+              <input id="verifyHashInput" class="campo campo-mono" type="text" spellcheck="false"
+                     placeholder="es. cdf242cec64d65e0…  (64 caratteri, dal certificato)">
+            </div>
+          </details>
+
+          <!-- Campi tecnici: auto-compilati leggendo il PDF; restano visibili per
+               trasparenza e come fallback se la lettura automatica fallisse. -->
+          <details id="verifyAdvanced" class="opz" style="margin-top:0.9rem;">
+            <summary>Verifica avanzata: firma di sicurezza e dati dichiarati (dal certificato)</summary>
+            <div style="margin-top:0.8rem;">
+              <label class="field-label" for="verifyAttestInput">Stringa di attestazione</label>
+              <input id="verifyAttestInput" class="campo campo-mono" type="text" spellcheck="false" placeholder="SHA-256:abc123...@2026-...">
+            </div>
+            <div style="margin-top:0.6rem;">
+              <label class="field-label" for="verifyHmacInput">Firma HMAC</label>
+              <input id="verifyHmacInput" class="campo campo-mono" type="text" spellcheck="false" placeholder="base64...">
+            </div>
+            <details id="verifyMetaDetails">
+              <summary>Dati dichiarati sul certificato (solo se presenti)</summary>
+              <div style="margin-top:0.6rem; display:grid; gap:0.5rem;">
+                <input id="vMetaTitolo" class="campo" type="text" maxlength="150" placeholder="Titolo dell'opera" aria-label="Titolo dell'opera dichiarato sul certificato">
+                <input id="vMetaAutore" class="campo" type="text" maxlength="100" placeholder="Autore / pseudonimo" aria-label="Autore o pseudonimo dichiarato sul certificato">
+                <input id="vMetaAnno" class="campo" type="text" maxlength="50" placeholder="Anno o versione" aria-label="Anno o versione dichiarati sul certificato">
+                <input id="vMetaNote" class="campo" type="text" maxlength="300" placeholder="Note" aria-label="Note dichiarate sul certificato">
+              </div>
+            </details>
+          </details>
+        </div>
+      </details>
+
+    </div>
+
+    <div class="error-msg" id="verifyErrorMsg" role="alert"></div>
+
+    <div class="btn-row" style="margin-top:1.1rem;">
+      <button class="primary" id="verifyBtn" type="button" disabled>
+        <span id="verifyBtnLabel">Verifica il certificato</span>
+      </button>
+    </div>
+
+    <div class="result-wrap" id="verifyResultWrap" aria-live="polite">
+      <div class="risultato-card">
+        <p class="result-section-title">Esito della verifica</p>
+        <div id="verdictRows" style="display:flex; flex-direction:column; gap:0.55rem;"></div>
+        <details class="tecnici" style="margin-top:1rem;">
+          <summary>Dettagli tecnici della verifica</summary>
+          <div class="hash-block" style="margin-top:0.6rem;">
+            <div class="hash-label-small">Hash calcolato dal file scelto</div>
+            <div class="hash-string" id="verifyHashCalc"></div>
+          </div>
+        </details>
+
+        <!-- Badge "Opera attestata": compare solo dopo verifica con corrispondenza positiva -->
+        <details class="tecnici" id="vBadgeDetails" style="margin-top:1rem; display:none;">
+          <summary>Badge "Opera attestata" per il tuo sito o profilo</summary>
+          <div class="dettaglio-corpo">
+            <p>Incorpora questo distintivo nel tuo sito o profilo: mostra che l'opera è
+            attestata e, con un click, porta alla verifica. Resta verde finché l'opera
+            risulta nei nostri archivi.</p>
+            <p style="margin-bottom:0.4rem; color:var(--ink-3);">Anteprima:</p>
+            <p style="margin-bottom:0.9rem;"><img id="vBadgePreview" alt="Opera attestata — Spazio Genesi" height="28"></p>
+
+            <label class="field-label" for="vBadgeHtml">Codice HTML (per siti web)</label>
+            <textarea id="vBadgeHtml" class="badge-textarea" readonly rows="3"></textarea>
+            <button class="azione-secondaria mt-04" type="button" onclick="copyBadge('vBadgeHtml', this)">Copia codice HTML</button>
+
+            <label class="field-label" for="vBadgeMd" style="margin-top:0.9rem;">Markdown (per GitHub, README e simili)</label>
+            <textarea id="vBadgeMd" class="badge-textarea" readonly rows="2"></textarea>
+            <button class="azione-secondaria mt-04" type="button" onclick="copyBadge('vBadgeMd', this)">Copia Markdown</button>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- Come verificare l'ancoraggio blockchain (OpenTimestamps) -->
+    <details class="dettagli-semplici">
+      <summary>Verifica blockchain (OpenTimestamps) — come si fa</summary>
+      <div class="corpo-info">
+        <p style="margin:0 0 0.6rem;">
+          I certificati emessi dalla versione 1.7 in poi ancorano l'impronta dell'opera nella
+          blockchain di Bitcoin tramite il protocollo aperto OpenTimestamps: una prova di
+          esistenza indipendente dai nostri server, che nessuno può retrodatare.
+        </p>
+        <ol>
+          <li>
+            <strong>Procurati la prova <code>.ots</code></strong>: la scarichi dal link che compare
+            dopo "Scarica il certificato PDF", dall'indirizzo stampato nei "Dettagli tecnici" del
+            certificato, oppure — se hai inserito qui sopra l'hash dichiarato —
+            <a href="#" id="otsVerifyLink">scaricala per l'hash inserito</a>.
+          </li>
+          <li>
+            Vai su <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">opentimestamps.org</a>,
+            riquadro <em>Stamp&nbsp;&amp;&nbsp;verify</em>.
+          </li>
+          <li>
+            Trascina nel riquadro il file <code>.ots</code> e poi, quando richiesto, l'opera
+            originale (il file esatto che hai attestato).
+          </li>
+          <li>
+            Esito atteso: <em>"Bitcoin attests data existed as of …"</em> con la data garantita
+            dalla blockchain. Nelle prime ore dopo l'emissione può comparire
+            <em>"Pending confirmation"</em>: la conferma definitiva matura con il blocco Bitcoin.
+          </li>
+        </ol>
+        <p style="margin:0;">
+          La verifica funziona anche offline e fra decenni: la prova dipende solo dal file
+          <code>.ots</code>, dall'opera originale e dalla blockchain pubblica di Bitcoin.
+        </p>
+      </div>
+    </details>
+
+    <!-- RECUPERO CERTIFICATO SMARRITO -->
+    <div class="passo" style="margin-top:2.2rem;"><span class="n" aria-hidden="true">★</span><h2>Hai smarrito il certificato?</h2></div>
+    <p class="testo-recupero">
+      Conserviamo una copia di ogni certificato emesso. Scegli qui sopra il file
+      originale dell'opera (o inserisci la sua impronta) e riscarica il tuo
+      certificato PDF firmato, identico all'originale.
+    </p>
+    <button class="azione-secondaria" id="recoverBtn" type="button" disabled>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span id="recoverBtnLabel">Recupera il certificato dall'archivio</span>
+    </button>
+    <p id="recoverMsg" role="status" style="display:none; font-size:0.82rem; margin-top:0.6rem; line-height:1.55;"></p>
+
+  </section>
+
+  <section id="tabIstruzioni" class="tab-nascosta istr" role="tabpanel" aria-labelledby="tabBtnIstruzioni" tabindex="0">
+
+    <p>
+      Questo servizio genera l'<em>impronta digitale</em> della tua opera — qualsiasi file,
+      fino a 1&nbsp;GB — e la lega a una data certa con un certificato PDF firmato.
+      L'impronta si calcola <strong>direttamente nel tuo browser</strong>: il file non
+      lascia mai il tuo dispositivo. Conservando l'attestazione potrai sempre provare
+      che quel preciso file esisteva, immutato, in quel momento: utile prima di
+      pubblicare, partecipare a un concorso o consegnare una bozza.
+    </p>
+
+    <p><strong>Come si usa</strong> — tre passi:</p>
+    <ol class="passi">
+      <li><strong>Trascina il file</strong> nella scheda «Attesta».</li>
+      <li>Il tuo browser calcola l'impronta (il file resta sul tuo dispositivo): <strong>scarica il certificato PDF</strong> (o il .txt) e conservalo.</li>
+      <li>In qualsiasi momento, <strong>verifica</strong>: trascini di nuovo il file nella scheda «Verifica» e il servizio conferma che è identico.</li>
+    </ol>
+
+    <p><strong>Video guida</strong> — il servizio completo in meno di due minuti:</p>
+    <video controls preload="none" playsinline
+      poster="https://spaziogenesi.org/assets/video/guida-attestazione-poster.jpg"
+      aria-label="Video guida al servizio di attestazione">
+      <source src="https://spaziogenesi.org/assets/video/guida-attestazione.mp4" type="video/mp4">
+      Il tuo browser non supporta la riproduzione video:
+      <a href="https://spaziogenesi.org/assets/video/guida-attestazione.mp4">scarica il video</a>.
+    </video>
+
+    <h3>Le garanzie, in breve</h3>
+    <p style="font-size:0.8rem; margin-top:0.1rem;">Ogni riga è un vantaggio: aprila per leggere come funziona e come si verifica.</p>
+
+    <div class="garanzie">
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Impronta digitale unica</span><br>
+          <span class="breve">Un codice di 64 caratteri identifica il tuo file in modo univoco e irripetibile.</span></span></summary>
+        <div class="corpo">
+          <p>L'impronta (hash <strong>SHA-256</strong>) è calcolata sui byte esatti del
+          file: basta che cambi un solo pixel — o una virgola — e l'impronta diventa completamente diversa.
+          Per questo dimostra che il file non è stato modificato.</p>
+          <p>Funziona con qualsiasi formato: immagini, video, audio, documenti, modelli 3D, archivi.</p>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Privacy totale: il file non lascia il tuo dispositivo</span><br>
+          <span class="breve">L'impronta si calcola nel tuo browser: a noi arriva solo il codice, mai l'opera.</span></span></summary>
+        <div class="corpo">
+          <p>Il calcolo dell'impronta avviene <strong>direttamente nel tuo browser</strong> (tecnologia
+          WebCrypto, standard del web): l'opera non viene caricata né trasmessa ai nostri server, che
+          ricevono e attestano soltanto l'impronta. Vale sia per l'attestazione sia per la verifica.</p>
+          <p><strong>Come si verifica:</strong> il codice del servizio è
+          <a href="https://github.com/SPAZIO-GENESI/imgauthweb" target="_blank" rel="noopener noreferrer">open source</a>:
+          chiunque può controllare che il file non venga inviato (per esempio osservando il traffico
+          di rete del browser durante l'attestazione).</p>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Data certa, garantita da terzi</span><br>
+          <span class="breve">La data di emissione è certificata da un'autorità indipendente riconosciuta da Adobe.</span></span></summary>
+        <div class="corpo">
+          <p>Il certificato PDF include una <strong>marca temporale</strong> emessa da DigiCert, autorità
+          presente nella lista di fiducia di Adobe: la data non la dichiariamo noi, la attesta una terza parte.</p>
+          <p><strong>Come si verifica:</strong> apri il PDF in Adobe Acrobat → pannello Firme →
+          "La firma include una marca temporale incorporata".</p>
+          <div class="badge-row">
+            <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-8 8.5-4.5-1-8-3.5-8-8.5V6l8-3 8 3z"/><path d="m9 12 2 2 4-4"/></svg>DigiCert · Timestamp Authority</span>
+            <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Adobe Approved Trust List</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Ancorata nella blockchain di Bitcoin</span><br>
+          <span class="breve">L'impronta viene registrata anche su Bitcoin: nessuno può retrodatarla, nemmeno noi.</span></span></summary>
+        <div class="corpo">
+          <p>Quando generi il certificato, l'impronta viene registrata nella blockchain di Bitcoin tramite
+          il protocollo aperto <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">OpenTimestamps</a>:
+          una prova di esistenza che non dipende dai nostri server.</p>
+          <p><strong>Come si verifica:</strong></p>
+          <ol>
+            <li>Scarica il file di prova <code>.ots</code> (il link compare dopo "Scarica il certificato PDF").</li>
+            <li>Vai su <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">opentimestamps.org</a>, riquadro <em>Stamp&nbsp;&amp;&nbsp;verify</em>.</li>
+            <li>Trascina il file <code>.ots</code> e l'opera originale: otterrai <em>"Bitcoin attests data existed as of…"</em>.</li>
+          </ol>
+          <p>La conferma definitiva matura in poche ore dall'emissione.</p>
+          <div class="badge-row">
+            <span class="badge"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#F7931A"/><text x="12" y="16.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff" font-family="Arial" transform="rotate(14 12 12)">&#8383;</text></svg>Bitcoin</span>
+            <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>OpenTimestamps</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">La tua opera non viene conservata</span><br>
+          <span class="breve">Il file serve solo a calcolare l'impronta: non viene memorizzato né ceduto a nessuno.</span></span></summary>
+        <div class="corpo">
+          <p>Il file viene elaborato in memoria il tempo di calcolarne l'impronta e poi scartato:
+          <strong>non viene salvato, né ceduto a terzi</strong>, né usato per altri scopi. Nei nostri
+          archivi resta soltanto il certificato PDF — che contiene l'impronta, non l'opera — e la prova blockchain.</p>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Dati archiviati in Europa (UE)</span><br>
+          <span class="breve">Il certificato e la prova restano su infrastruttura con residenza dei dati nell'Unione Europea.</span></span></summary>
+        <div class="corpo">
+          <p>Il certificato PDF e la prova di esistenza vengono conservati su storage
+          <strong>Cloudflare R2 in giurisdizione Unione Europea</strong>: i dati restano fisicamente
+          nell'UE, in linea con il GDPR. L'opera in sé, come detto, non viene comunque conservata.</p>
+          <div class="badge-row">
+            <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>Residenza dati UE</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Codice aperto, verificabile da chiunque</span><br>
+          <span class="breve">Tutto il codice del servizio è pubblico: non devi crederci sulla parola.</span></span></summary>
+        <div class="corpo">
+          <p>"Open source" significa che il codice che fa funzionare il servizio è pubblicato integralmente:
+          chiunque — anche un esperto di tua fiducia — può leggerlo e verificare che faccia esattamente ciò
+          che dichiara, comprese le promesse sulla non conservazione dei file. La fiducia non te la chiediamo:
+          te la dimostriamo.</p>
+          <p>Le chiavi crittografiche non sono nel codice: pubblicarlo non indebolisce nulla.</p>
+          <div class="badge-row">
+            <a class="badge" href="https://github.com/SPAZIO-GENESI/imgauth" target="_blank" rel="noopener noreferrer"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Motore</a>
+            <a class="badge" href="https://github.com/SPAZIO-GENESI/imgauthweb" target="_blank" rel="noopener noreferrer"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Interfaccia</a>
+            <a class="badge" href="https://github.com/SPAZIO-GENESI/autart-signer" target="_blank" rel="noopener noreferrer"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Firma</a>
+            <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Licenze GNU AGPL-3.0 · MIT</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Verifica gratuita, per sempre, per chiunque</span><br>
+          <span class="breve">Chi riceve il tuo certificato può controllarlo in un click, senza registrarsi né pagare.</span></span></summary>
+        <div class="corpo">
+          <p>Ogni certificato contiene un <strong>QR code</strong> e un link che aprono questa pagina con
+          l'impronta già compilata: chi lo riceve trascina il file e ottiene subito l'esito. La verifica
+          resterà sempre gratuita e aperta a tutti — è ciò che dà valore al certificato.</p>
+        </div>
+      </details>
+
+      <details class="g">
+        <summary><span class="segno">+</span><span><span class="titolo">Certificato PDF firmato</span><br>
+          <span class="breve">Ogni attestazione produce un certificato firmato digitalmente, con QR di verifica.</span></span></summary>
+        <div class="corpo">
+          <p>Il certificato è firmato digitalmente da <strong>Spazio Genesi ETS</strong> con un certificato
+          valido ma autonomo (emesso dall'associazione): la data è già garantita dalla marca temporale di
+          terza parte e dalla blockchain. Prossimamente il servizio potrà evolvere con un
+          <strong>sigillo elettronico riconosciuto</strong> anche per l'identità dell'emittente.</p>
+          <p>Se hai dichiarato titolo, autore, anno o note, questi dati sono "sigillati" nella firma di
+          sicurezza: dopo l'emissione nessuno può modificarli.</p>
+        </div>
+      </details>
+
+    </div>
+
+    <p style="font-size:0.85rem; margin-top:1.4rem;">Stato dei servizi in tempo reale e storico a 90 giorni:
+    <a href="/status/" style="color:var(--oro-testo);">pagina di stato</a>.</p>
+
+    <div class="nota-box">
+      <strong style="color:#111;">Nota.</strong> Il servizio fornisce un'attestazione crittografica,
+      <em>non</em> una registrazione di copyright né una prova legale di proprietà.
+      Per saperne di più: <a href="https://spaziogenesi.org/servizi#attestazione">la pagina del servizio</a>
+      e la <a href="/changelog/">cronologia dei miglioramenti</a>.
+    </div>
+
+    <div class="btn-row" style="margin-top:1.4rem;">
+      <button class="primary" type="button" onclick="mostraTab('attesta'); window.scrollTo({top:0, behavior:'smooth'});">Attesta ora la tua opera</button>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- Microdonazioni: visibile solo quando PAYPAL_DONATE_URL è configurato (vedi JS) -->
+<div id="donaRow" style="display:none;">
+  <a id="donaLink" class="dona" href="#" target="_blank" rel="noopener noreferrer">
+    ☕ Ti è stato utile? Sostieni il progetto con un caffè
+  </a>
+  <p class="dona-nota">donazione libera via PayPal — il servizio resta gratuito per tutti</p>
+</div>
+
+<footer>
+  <div class="riga-brand">
+    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 580 481" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <g transform="translate(0,481) scale(0.1,-0.1)" fill="currentColor" stroke="none">
+        <path d="M2175 4799 c-729 -75 -1378 -467 -1780 -1074 -82 -124 -203 -366 -252 -505 -100 -282 -137 -506 -137 -815 0 -222 6 -283 46 -497 l23 -118 1396 0 1397 0 26 -83 c37 -117 49 -216 43 -332 -24 -405 -299 -739 -698 -847 -120 -32 -328 -32 -448 0 -105 29 -210 76 -301 138 -77 51 -201 176 -240 242 l-25 41 -368 1 -368 0 63 -76 c142 -172 345 -355 533 -479 124 -82 366 -203 505 -252 281 -100 505 -137 815 -137 310 0 534 37 815 137 139 49 381 170 505 252 265 175 514 425 690 690 94 141 214 391 269 558 l49 147 534 0 533 0 0 565 0 565 -1944 0 -1943 0 -27 59 c-53 119 -70 203 -70 361 0 168 18 251 84 388 51 106 88 161 169 246 83 86 166 145 275 197 142 66 218 82 391 82 122 0 165 -4 228 -21 99 -27 232 -89 310 -146 74 -52 190 -172 232 -238 l30 -48 413 0 c226 0 412 2 412 5 0 14 -172 214 -256 299 -190 190 -374 323 -619 447 -232 117 -479 196 -735 234 -127 19 -452 27 -575 14z"/>
+      </g>
+    </svg>
+    <span>Spazio Genesi ETS</span>
+  </div>
+  <a class="svc-footer" id="svcFooter" href="/status/" title="Apri la pagina di stato del servizio"><span class="svc-dot na"></span><span id="svcFooterText">Stato dei servizi…</span></a>
+  <br>
+  <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a> ·
+  <a href="/changelog/">Cronologia dei miglioramenti</a> ·
+  <a href="/privacy.html">Privacy</a> ·
+  <span id="appVersion"></span> · realizzato da <a href="https://tangram.page">Tangram.page</a>
+</footer>
+
+<script>
+  const WORKER_BASE       = "https://imgauth.spaziogenesi.org";
+  // Base della pagina di verifica permanente /c/<hash> (servita dal Worker, montata
+  // su questo dominio via route Cloudflare): stesso valore stampato nel certificato.
+  const CERT_PAGE_BASE    = "https://attestazione.spaziogenesi.org";
+  const WORKER_HASH_URL   = WORKER_BASE + "/api/hash";
+  const WORKER_VERIFY_URL = WORKER_BASE + "/api/verify";
+  const WORKER_PDF_URL    = WORKER_BASE + "/api/cert-pdf";
+
+  // Turnstile: sitekey PUBBLICA del widget (creato in dashboard Cloudflare).
+  // Le sitekey reali iniziano con "0x"; finché è il placeholder, l'anti-bot è inattivo.
+  const TURNSTILE_SITEKEY = "0x4AAAAAADiPceBIwTz5n4hG";
+  const turnstileEnabled = () => /^0x/.test(TURNSTILE_SITEKEY);
+  let tsRendered = false;
+  function ensureTurnstile() {
+    if (tsRendered || !turnstileEnabled() || !window.turnstile) return;
+    const el = document.getElementById("turnstileWidget");
+    if (!el) return;
+    window.turnstile.render(el, { sitekey: TURNSTILE_SITEKEY, action: "genera-attestazione" });
+    tsRendered = true;
+  }
+  // Chiamata da Turnstile quando l'API è pronta (vedi ?onload= nello <script>);
+  // fallback su DOM pronto nel caso l'API risultasse già caricata.
+  window.onloadTurnstileCallback = ensureTurnstile;
+  document.addEventListener("DOMContentLoaded", ensureTurnstile);
+
+  // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
+  // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
+  const APP_VERSION = "1.15.0";
+
+  // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
+  // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
+  // Finché è vuoto, il pulsantino resta nascosto.
+  const PAYPAL_DONATE_URL = "https://www.paypal.com/ncp/payment/D6LB9W4BNVEA4";
+  (function showDona() {
+    if (!PAYPAL_DONATE_URL) return;
+    document.getElementById("donaLink").href = PAYPAL_DONATE_URL;
+    document.getElementById("donaRow").style.display = "block";
+  })();
+
+  // --- TAB ATTESTA / VERIFICA / ISTRUZIONI ---
+  const TABS = { attesta: "Attesta", verifica: "Verifica", istruzioni: "Istruzioni" };
+  function mostraTab(quale) {
+    for (const [k, nome] of Object.entries(TABS)) {
+      document.getElementById("tab" + nome).classList.toggle("tab-nascosta", quale !== k);
+      document.getElementById("tabBtn" + nome).classList.toggle("attiva", quale === k);
+    }
+  }
+  (function showVersion() {
+    const el = document.getElementById("appVersion");
+    if (!el) return;
+    el.textContent = "interfaccia v" + APP_VERSION;
+    fetch(WORKER_BASE + "/ping")
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => { if (d && d.version) el.textContent += " · motore v" + d.version; })
+      .catch(() => {});
+  })();
+
+
+  // --- ELEMENTI GENERAZIONE HASH ---
+  const fileInput   = document.getElementById("fileInput");
+  const dropZone    = document.getElementById("dropZone");
+  const previewRow  = document.getElementById("previewRow");
+  const previewImg  = document.getElementById("previewImg");
+  const previewName = document.getElementById("previewName");
+  const previewMeta = document.getElementById("previewMeta");
+  const attestBtn   = document.getElementById("attestBtn");
+  const btnLabel    = document.getElementById("btnLabel");
+  const errorMsg    = document.getElementById("errorMsg");
+  const resultWrap  = document.getElementById("resultWrap");
+  const downloadBtn = document.getElementById("downloadBtn");
+  const downloadPdfBtn = document.getElementById("downloadPdfBtn");
+
+  // --- ELEMENTI VERIFICA HASH ---
+  const verifyFileInput   = document.getElementById("verifyFileInput");
+  const verifyDropZone    = document.getElementById("verifyDropZone");
+  const verifyPreviewRow  = document.getElementById("verifyPreviewRow");
+  const verifyPreviewImg  = document.getElementById("verifyPreviewImg");
+  const verifyPreviewName = document.getElementById("verifyPreviewName");
+  const verifyPreviewMeta = document.getElementById("verifyPreviewMeta");
+  const verifyHashInput    = document.getElementById("verifyHashInput");
+  const verifyAttestInput  = document.getElementById("verifyAttestInput");
+  const verifyHmacInput    = document.getElementById("verifyHmacInput");
+  const verifyErrorMsg     = document.getElementById("verifyErrorMsg");
+  const verifyBtn          = document.getElementById("verifyBtn");
+  const verifyBtnLabel     = document.getElementById("verifyBtnLabel");
+  const verifyResultWrap   = document.getElementById("verifyResultWrap");
+  const verifyHashCalc     = document.getElementById("verifyHashCalc");
+
+  let selectedFile = null;
+  let lastData = null;
+  let verifyFile = null;
+
+  function fmt(b) {
+    if (b < 1024) return b + " B";
+    if (b < 1048576) return (b/1024).toFixed(1) + " KB";
+    return (b/1048576).toFixed(2) + " MB";
+  }
+
+  // Miniatura: immagine reale per i file immagine, altrimenti un'icona generica
+  // con l'estensione (accettiamo file di qualsiasi formato).
+  function fileIconDataUri(ext) {
+    const svg =
+      "<svg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'>" +
+      "<rect width='56' height='56' rx='4' fill='#eee' stroke='#ddd'/>" +
+      "<text x='28' y='33' font-family='Inter,sans-serif' font-size='11' fill='#888' text-anchor='middle'>" +
+      (ext || "FILE") + "</text></svg>";
+    return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  }
+
+  function setThumb(imgEl, f) {
+    if (f.type && f.type.startsWith("image/")) {
+      const fr = new FileReader();
+      fr.onload = e => { imgEl.src = e.target.result; };
+      fr.readAsDataURL(f);
+    } else {
+      const ext = (f.name.split(".").pop() || "").toUpperCase().slice(0, 5);
+      imgEl.src = fileIconDataUri(ext);
+    }
+  }
+
+  // --- CARICAMENTO FILE PRINCIPALE (HASH) ---
+  // Tetto pratico: l'impronta si calcola in locale (WebCrypto, non streaming),
+  // quindi il file va letto per intero in memoria. 1 GB è un limite prudente
+  // per i browser correnti; il file NON viene comunque inviato al server.
+  const MAX_FILE_BYTES = 1024 * 1024 * 1024;
+
+  function loadFile(f) {
+    if (f.size > MAX_FILE_BYTES) {
+      selectedFile = null;
+      attestBtn.disabled = true;
+      previewRow.classList.remove("show");
+      showErr("File troppo grande (max 1 GB). L'impronta si calcola nel tuo browser e serve memoria sufficiente a leggere il file.");
+      return;
+    }
+    selectedFile = f;
+    previewName.textContent = f.name;
+    previewMeta.textContent = (f.type || "tipo sconosciuto") + " · " + fmt(f.size);
+    setThumb(previewImg, f);
+    previewRow.classList.add("show");
+    attestBtn.disabled = false;
+    resultWrap.classList.remove("show");
+    errorMsg.classList.remove("show");
+    lastData = null;
+  }
+
+  fileInput.addEventListener("change", () => {
+    if (fileInput.files[0]) loadFile(fileInput.files[0]);
+  });
+
+  dropZone.addEventListener("dragover", e => {
+    e.preventDefault();
+    dropZone.classList.add("over");
+  });
+
+  dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("over");
+  });
+
+  dropZone.addEventListener("drop", e => {
+    e.preventDefault();
+    dropZone.classList.remove("over");
+    const f = e.dataTransfer.files[0];
+    if (f) {
+      fileInput.files = e.dataTransfer.files;
+      loadFile(f);
+    }
+  });
+
+  // --- GENERAZIONE HASH / ATTESTAZIONE ---
+  attestBtn.addEventListener("click", async () => {
+    if (!selectedFile) return;
+
+    // Token anti-bot Turnstile: il worker lo richiede per emettere l'attestazione.
+    let tsToken = "";
+    if (turnstileEnabled()) {
+      tsToken = (window.turnstile && window.turnstile.getResponse()) || "";
+      if (!tsToken) {
+        showErr("Completa la verifica anti-bot qui sopra, poi riprova.");
+        return;
+      }
+    }
+
+    attestBtn.classList.add("loading");
+    attestBtn.disabled = true;
+    btnLabel.textContent = "Elaborazione…";
+    errorMsg.classList.remove("show");
+    resultWrap.classList.remove("show");
+
+    try {
+      // Full privacy (1.14.0): l'impronta SHA-256 si calcola QUI, nel browser
+      // (WebCrypto). Il file non lascia mai questo dispositivo: al server
+      // viaggiano solo impronta, nome/tipo/dimensione e i dati dichiarati.
+      btnLabel.textContent = "Calcolo dell'impronta…";
+      const sha256 = await sha256Hex(selectedFile);
+
+      // Invia JSON al Worker. I dati dell'opera (facoltativi) vengono
+      // normalizzati dal server e vincolati alla firma HMAC dell'attestazione.
+      btnLabel.textContent = "Attestazione…";
+      const res = await fetch(WORKER_HASH_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: selectedFile.name,
+          type: selectedFile.type,
+          size: selectedFile.size,
+          sha256: sha256,
+          turnstile_token: tsToken,
+          titolo: document.getElementById("metaTitolo").value,
+          autore: document.getElementById("metaAutore").value,
+          anno:   document.getElementById("metaAnno").value,
+          note:   document.getElementById("metaNote").value
+        })
+      });
+
+      const d = await res.json();
+
+      if (!res.ok) {
+        showErr(d.error || "Errore " + res.status);
+        return;
+      }
+
+      
+
+      lastData = d;
+      // Auto-fill campi verifica HMAC con i dati appena calcolati.
+      // I dati dichiarati arrivano dal server in forma canonica (normalizzata):
+      // sono QUELLI i valori coperti dalla firma, da usare per la verifica.
+      verifyAttestInput.value = d.attestazione || "";
+      verifyHmacInput.value   = d.hmac || "";
+      document.getElementById("vMetaTitolo").value = d.titolo || "";
+      document.getElementById("vMetaAutore").value = d.autore || "";
+      document.getElementById("vMetaAnno").value   = d.anno   || "";
+      document.getElementById("vMetaNote").value   = d.note   || "";
+
+      // Righe "dichiarato" nella tabella risultato: visibili solo se compilate
+      const metaRows = [["rowTitolo","rTitolo",d.titolo], ["rowAutore","rAutore",d.autore], ["rowAnno","rAnno",d.anno], ["rowNote","rNote",d.note]];
+      for (const [rowId, cellId, val] of metaRows) {
+        document.getElementById(rowId).style.display = val ? "" : "none";
+        document.getElementById(cellId).textContent = val || "";
+      }
+
+      document.getElementById("rHash").textContent        = d.sha256;
+      document.getElementById("rFilename").textContent    = d.opera;
+      document.getElementById("rSize").textContent        = fmt(d.dimensione_bytes);
+      document.getElementById("rMime").textContent        = d.tipo_mime;
+      document.getElementById("rTimestamp").textContent   = d.timestamp_leggibile;
+      document.getElementById("rIssuer").textContent      = d.emesso_da;
+      document.getElementById("rAttestation").textContent = d.attestazione;
+
+      // Il link alla prova blockchain e il badge valgono per il PDF precedente:
+      // nascondili finché non viene generato il PDF di QUESTA attestazione.
+      // ⚠️ Il badge si popola DOPO "Scarica il certificato PDF" (vedi downloadPdfBtn):
+      // è quel passo a creare l'archivio (cert + prova .ots) da cui il badge legge.
+      // Popolarlo qui, prima, darebbe un badge "non attestata" (e la cache lo terrebbe).
+      document.getElementById("otsRow").style.display = "none";
+      document.getElementById("permaRow").style.display = "none";
+      document.getElementById("badgeDetails").style.display = "none";
+
+      resultWrap.classList.add("show");
+      resultWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    } catch (e) {
+      showErr("Impossibile completare l'attestazione (" + e.message + "). Se il file è molto grande la memoria del browser potrebbe non bastare; altrimenti controlla la connessione.");
+    } finally {
+      attestBtn.classList.remove("loading");
+      attestBtn.disabled = false;
+      btnLabel.textContent = "Genera attestazione SHA-256";
+      // Il token Turnstile è monouso: resetta il widget per una nuova attestazione.
+      if (turnstileEnabled() && window.turnstile) window.turnstile.reset();
+    }
+  });
+
+  function showErr(msg) {
+    errorMsg.textContent = "Errore: " + msg;
+    errorMsg.classList.add("show");
+  }
+
+  // --- COPIA HASH ---
+  function copyHash() {
+    const h = document.getElementById("rHash").textContent;
+    if (!h) return;
+    navigator.clipboard.writeText(h).then(() => {
+      const b = document.getElementById("copyBtn");
+      b.textContent = "Copiato";
+      b.classList.add("ok");
+      setTimeout(() => {
+        b.textContent = "Copia";
+        b.classList.remove("ok");
+      }, 2000);
+    });
+  }
+  window.copyHash = copyHash; // per l'onclick inline
+
+  // --- BADGE: popola anteprima + snippet HTML/Markdown per un dato hash ---
+  // prefix = "badge" (scheda Attesta) o "vBadge" (esito Verifica): popola gli
+  // elementi <prefix>Preview / <prefix>Html / <prefix>Md se presenti.
+  function fillBadge(prefix, hash) {
+    const verifyPageUrl = "https://attestazione.spaziogenesi.org?hash=" + hash;
+    const badgeImgUrl   = WORKER_BASE + "/api/badge?hash=" + hash;
+    const img    = document.getElementById(prefix + "Preview");
+    const htmlEl = document.getElementById(prefix + "Html");
+    const mdEl   = document.getElementById(prefix + "Md");
+    if (img) img.src = badgeImgUrl;
+    if (htmlEl) htmlEl.value =
+      '<a href="' + verifyPageUrl + '" target="_blank" rel="noopener">\n' +
+      '  <img src="' + badgeImgUrl + '" alt="Opera attestata — Spazio Genesi" height="28">\n' +
+      '</a>';
+    if (mdEl) mdEl.value =
+      '[![Opera attestata — Spazio Genesi](' + badgeImgUrl + ')](' + verifyPageUrl + ')';
+  }
+
+  // --- COPIA SNIPPET BADGE ---
+  function copyBadge(id, btn) {
+    const ta = document.getElementById(id);
+    if (!ta) return;
+    navigator.clipboard.writeText(ta.value).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = "Copiato ✓";
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    });
+  }
+  window.copyBadge = copyBadge; // per l'onclick inline
+
+  function copyPerma(btn) {
+    const a = document.getElementById("permaLink");
+    if (!a || !a.href) return;
+    navigator.clipboard.writeText(a.href).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = "Copiato ✓";
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    });
+  }
+  window.copyPerma = copyPerma; // per l'onclick inline
+
+  // --- DOWNLOAD TXT ---
+  downloadBtn.addEventListener("click", () => {
+    if (!lastData) return;
+    const lines = [
+      "SPAZIO GENESI ETS — CERTIFICATO DI ATTESTAZIONE OPERA",
+      "=".repeat(54),
+      "",
+      "Opera:              " + lastData.opera,
+      "Dimensione:         " + fmt(lastData.dimensione_bytes),
+      "Tipo MIME:          " + lastData.tipo_mime,
+      "SHA-256:            " + lastData.sha256,
+      "Timestamp ISO:      " + lastData.timestamp_iso,
+      "Timestamp leggibile:" + lastData.timestamp_leggibile,
+    ];
+    // Dati dichiarati (se presenti): coperti dalla firma HMAC, vanno
+    // reinseriti identici per una futura verifica della firma.
+    const declared = [
+      ["Titolo (dichiarato):   ", lastData.titolo],
+      ["Autore (dichiarato):   ", lastData.autore],
+      ["Anno/versione:         ", lastData.anno],
+      ["Note (dichiarate):     ", lastData.note],
+    ].filter(([, v]) => v);
+    if (declared.length) {
+      lines.push("", "Dati dell'opera dichiarati dall'autore (vincolati alla firma HMAC):");
+      for (const [label, v] of declared) lines.push(label + v);
+    }
+    lines.push(
+      "",
+      "Stringa di attestazione:",
+      lastData.attestazione,
+      "",
+      "Firma HMAC (server): " + (lastData.hmac || "n/d"),
+      "",
+      "Emesso da: " + lastData.emesso_da,
+    );
+    const txt = lines.join("\n");
+
+    const a = document.createElement("a");
+    a.href = "data:text/plain;charset=utf-8," + encodeURIComponent(txt);
+    a.download = "attestazione-" + lastData.sha256.slice(0, 12) + ".txt";
+    a.click();
+  });
+
+  // --- DOWNLOAD PDF DAL WORKER ---
+  downloadPdfBtn.addEventListener("click", async () => {
+    if (!lastData) return;
+    // Nessuna challenge qui: l'attestazione (lastData) esiste solo dopo la verifica
+    // anti-bot fatta a monte su "Genera attestazione"; il token HMAC lo dimostra.
+    // Spinner + etichetta d'attesa: la prima richiesta dopo inattività può impiegare
+    // alcuni secondi (cold start del worker/firma + ancoraggio OpenTimestamps).
+    const pdfBtnLabel = document.getElementById("pdfBtnLabel");
+    const labelOriginale = pdfBtnLabel.textContent;
+    downloadPdfBtn.classList.add("loading");
+    downloadPdfBtn.disabled = true;
+    pdfBtnLabel.textContent = "Generazione del certificato in corso…";
+    try {
+      const res = await fetch(WORKER_PDF_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(lastData),
+      });
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({ error: res.status }));
+        alert("Errore generazione PDF: " + (errBody.error || res.status));
+        return;
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      // Nome coerente col recupero (worker: certificato-<hash>.pdf) e con la
+      // dicitura dell'interfaccia ("certificato PDF"): è lo stesso documento.
+      a.download = "certificato-" + lastData.sha256.slice(0, 12) + ".pdf";
+      a.click();
+      URL.revokeObjectURL(url);
+
+      // La prova OpenTimestamps nasce insieme al PDF: mostra il link al download
+      const otsRow  = document.getElementById("otsRow");
+      const otsLink = document.getElementById("otsLink");
+      otsLink.href = WORKER_BASE + "/api/ots?hash=" + lastData.sha256;
+      otsRow.style.display = "block";
+
+      // Pagina di verifica permanente: ora che l'opera è in archivio, l'URL /c/<hash>
+      // risponde. Lo stesso link è stampato nei "Dettagli tecnici" del certificato.
+      const permaUrl  = CERT_PAGE_BASE + "/c/" + lastData.sha256;
+      const permaLink = document.getElementById("permaLink");
+      permaLink.href = permaUrl;
+      permaLink.textContent = permaUrl;
+      document.getElementById("permaRow").style.display = "block";
+
+      // Ora l'opera è archiviata (cert + prova .ots): popola e mostra il badge.
+      // È qui — non a "Genera attestazione" — che il badge risulta "attestata".
+      fillBadge("badge", lastData.sha256);
+      document.getElementById("badgeDetails").style.display = "";
+    } catch (e) {
+      alert("Errore di rete durante il download del PDF: " + e.message);
+    } finally {
+      downloadPdfBtn.classList.remove("loading");
+      downloadPdfBtn.disabled = false;
+      pdfBtnLabel.textContent = labelOriginale;
+    }
+  });
+
+  // --- VERIFICA BLOCKCHAIN: scarica la prova .ots per l'hash inserito ---
+  document.getElementById("otsVerifyLink").addEventListener("click", (ev) => {
+    ev.preventDefault();
+    const hash = (verifyHashInput.value || "").trim().toLowerCase();
+    if (!/^[0-9a-f]{64}$/.test(hash)) {
+      alert("Inserisci prima l'hash dichiarato (64 caratteri esadecimali) nel campo qui sopra.");
+      return;
+    }
+    window.open(WORKER_BASE + "/api/ots?hash=" + hash, "_blank");
+  });
+
+  // --- VERIFICA HASH: CARICAMENTO FILE ---
+  function loadVerifyFile(f) {
+    verifyFile = f;
+    verifyPreviewName.textContent = f.name;
+    verifyPreviewMeta.textContent = (f.type || "tipo sconosciuto") + " · " + fmt(f.size);
+    setThumb(verifyPreviewImg, f);
+    verifyPreviewRow.classList.add("show");
+    verifyErrorMsg.classList.remove("show");
+    verifyResultWrap.classList.remove("show");
+    updateVerifyBtnState();
+  }
+
+  function updateVerifyBtnState() {
+    const hasFile = !!verifyFile;
+    const hasHash = verifyHashInput.value.trim().length > 0;
+    verifyBtn.disabled = !(hasFile && hasHash);
+  }
+
+  verifyFileInput.addEventListener("change", () => {
+    if (verifyFileInput.files[0]) loadVerifyFile(verifyFileInput.files[0]);
+  });
+
+  verifyDropZone.addEventListener("dragover", e => {
+    e.preventDefault();
+    verifyDropZone.classList.add("over");
+  });
+
+  verifyDropZone.addEventListener("dragleave", () => {
+    verifyDropZone.classList.remove("over");
+  });
+
+  verifyDropZone.addEventListener("drop", e => {
+    e.preventDefault();
+    verifyDropZone.classList.remove("over");
+    const f = e.dataTransfer.files[0];
+    if (f) {
+      verifyFileInput.files = e.dataTransfer.files;
+      loadVerifyFile(f);
+    }
+  });
+
+  verifyHashInput.addEventListener("input", updateVerifyBtnState);
+
+  // --- LETTURA AUTOMATICA DEL CERTIFICATO PDF (Feature 2) ---
+  // Estrae dal PDF (con pdf.js, interamente lato client) impronta, stringa di
+  // attestazione, firma HMAC e dati dichiarati: chi riceve un certificato ne
+  // verifica l'AUTENTICITÀ (firma + data) oltre alla corrispondenza del file,
+  // senza ricopiare nulla a mano dai "Dettagli tecnici".
+  const certDropZone  = document.getElementById("certDropZone");
+  const certFileInput = document.getElementById("certFileInput");
+  const certReadBox   = document.getElementById("certReadBox");
+
+  function pdfjsReady() {
+    if (!window.pdfjsLib) return false;
+    if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "/vendor/pdf/pdf.worker.min.js";
+    }
+    return true;
+  }
+
+  // Ricostruisce il testo del PDF riga per riga (raggruppando i frammenti per
+  // coordinata y), poi estrae i campi. I campi senza spazi (attestazione, HMAC)
+  // si cercano sul testo "compatto" (whitespace rimosso): robusto rispetto a come
+  // pdf.js spezza i frammenti. I dati dichiarati si leggono dal blocco delimitato.
+  async function extractCertFields(file) {
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
+    const lines = [];
+    for (let p = 1; p <= pdf.numPages; p++) {
+      const page = await pdf.getPage(p);
+      const tc = await page.getTextContent();
+      const byY = new Map();
+      for (const it of tc.items) {
+        if (!it.str) continue;
+        const y = Math.round(it.transform[5]);
+        if (!byY.has(y)) byY.set(y, []);
+        byY.get(y).push({ x: it.transform[4], s: it.str });
+      }
+      for (const y of [...byY.keys()].sort((a, b) => b - a)) {
+        const txt = byY.get(y).sort((a, b) => a.x - b.x).map(o => o.s).join("");
+        if (txt.trim()) lines.push(txt);
+      }
+    }
+    const tight = lines.join("\n").replace(/\s+/g, "");
+    const out = { hash:"", attestazione:"", hmac:"", titolo:"", autore:"", anno:"", note:"" };
+
+    const att = tight.match(/SHA-256:([0-9a-f]{64})@(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)/i);
+    if (att) { out.hash = att[1].toLowerCase(); out.attestazione = "SHA-256:" + out.hash + "@" + att[2]; }
+
+    let hm = tight.match(/FirmaHMAC\(server\):([A-Za-z0-9+/]{43}=)/);
+    if (!hm) hm = tight.match(/([A-Za-z0-9+/]{43}=)/); // fallback: unica stringa base64 con padding
+    if (hm) out.hmac = hm[1];
+
+    // Dati dichiarati: blocco compreso tra l'intestazione e l'avvertenza; gestisce
+    // i valori andati a capo (li riaccoda al campo corrente).
+    const start = lines.findIndex(l => /Dati dichiarati dall.?autore/i.test(l));
+    const end   = lines.findIndex(l => /Dati forniti dall.?autore al momento/i.test(l));
+    if (start >= 0 && end > start) {
+      const acc = { titolo: [], autore: [], anno: [], note: [] };
+      const labels = [["titolo",/^Titolo:\s*(.*)$/],["autore",/^Autore:\s*(.*)$/],
+                      ["anno",/^Anno\/versione:\s*(.*)$/],["note",/^Note:\s*(.*)$/]];
+      let cur = null;
+      for (const raw of lines.slice(start + 1, end)) {
+        const l = raw.trim(); if (!l) continue;
+        let matched = false;
+        for (const [k, re] of labels) {
+          const m = l.match(re);
+          if (m) { cur = k; acc[k].push(m[1]); matched = true; break; }
+        }
+        if (!matched && cur) acc[cur].push(l);
+      }
+      for (const k of ["titolo","autore","anno","note"]) {
+        const v = acc[k].join(" ").replace(/\s+/g, " ").trim();
+        if (v) out[k] = v;
+      }
+    }
+    return out;
+  }
+
+  function applyCertFields(f) {
+    verifyHashInput.value   = f.hash || "";
+    verifyAttestInput.value = f.attestazione || "";
+    verifyHmacInput.value   = f.hmac || "";
+    document.getElementById("vMetaTitolo").value = f.titolo || "";
+    document.getElementById("vMetaAutore").value = f.autore || "";
+    document.getElementById("vMetaAnno").value   = f.anno   || "";
+    document.getElementById("vMetaNote").value   = f.note   || "";
+    updateVerifyBtnState();
+    updateRecoverState();
+  }
+
+  async function loadCertPdf(f) {
+    certReadBox.style.display = "block";
+    certReadBox.style.color = "#666";
+    certReadBox.textContent = "Lettura del certificato in corso…";
+    if (!pdfjsReady()) {
+      certReadBox.style.color = "#c0392b";
+      certReadBox.textContent = "Lettore PDF non ancora pronto: attendi un istante e riprova.";
+      return;
+    }
+    try {
+      const f2 = await extractCertFields(f);
+      if (!f2.hash) {
+        certReadBox.style.color = "#c0392b";
+        certReadBox.innerHTML = "Non riesco a leggere un'impronta valida da questo PDF. " +
+          "Assicurati che sia un certificato emesso da questo servizio, oppure inserisci l'impronta manualmente qui sotto.";
+        return;
+      }
+      applyCertFields(f2);
+      const bits = ["impronta SHA-256"];
+      if (f2.hmac) bits.push("firma di sicurezza");
+      const meta = [f2.titolo && "titolo", f2.autore && "autore", f2.anno && "anno", f2.note && "note"].filter(Boolean);
+      if (meta.length) bits.push("dati dichiarati (" + meta.join(", ") + ")");
+      certReadBox.style.color = "#1e7e34";
+      certReadBox.innerHTML = "✓ Letto dal certificato: " + bits.join(", ") +
+        ".<br><span style='color:#777'>Ora scegli il file dell'opera (passo 1), poi premi «Verifica il certificato».</span>";
+    } catch (e) {
+      certReadBox.style.color = "#c0392b";
+      certReadBox.textContent = "Impossibile leggere questo PDF. Inserisci l'impronta manualmente qui sotto.";
+    }
+  }
+
+  certFileInput.addEventListener("change", () => { if (certFileInput.files[0]) loadCertPdf(certFileInput.files[0]); });
+  certDropZone.addEventListener("dragover", e => { e.preventDefault(); certDropZone.classList.add("over"); });
+  certDropZone.addEventListener("dragleave", () => certDropZone.classList.remove("over"));
+  certDropZone.addEventListener("drop", e => {
+    e.preventDefault(); certDropZone.classList.remove("over");
+    const f = e.dataTransfer.files[0];
+    if (f) { certFileInput.files = e.dataTransfer.files; loadCertPdf(f); }
+  });
+
+  // Riga d'esito (semaforo) per la card di verifica
+  function verdictRow(state, text) {
+    const fg = { ok:"#1e7e34", bad:"#c0392b", warn:"#8a6d00", info:"#555" };
+    const bg = { ok:"#eef7ef", bad:"#fdecea", warn:"#fbf6e7", info:"#f4f4f2" };
+    const ic = { ok:"✓", bad:"✕", warn:"!", info:"i" };
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex; align-items:flex-start; gap:0.6rem; padding:0.6rem 0.8rem; " +
+      "border-radius:6px; font-size:0.84rem; line-height:1.45; background:" + bg[state] + "; color:" + fg[state] + ";";
+    const b = document.createElement("span");
+    b.textContent = ic[state];
+    b.style.cssText = "flex:0 0 auto; width:1.2rem; height:1.2rem; border-radius:50%; background:" + fg[state] +
+      "; color:#fff; font-size:0.72rem; font-weight:700; display:inline-flex; align-items:center; justify-content:center; margin-top:0.05rem;";
+    const s = document.createElement("span"); s.textContent = text;
+    row.appendChild(b); row.appendChild(s);
+    return row;
+  }
+
+  // --- MODALITÀ DELLA SCHEDA VERIFICA (consapevole dell'ingresso) ---
+  // Da QR/link del certificato (?hash=): l'utente ha già un certificato e gli serve
+  //   solo controllare che un file corrisponda → file dell'opera in primo piano,
+  //   certificato PDF facoltativo (richiudibile) per verificare anche la firma.
+  // A freddo (nessun ?hash): verifica completa → certificato PDF in primo piano
+  //   (lo leggiamo noi) + file dell'opera da confrontare.
+  function setupVerifyMode(mode, hash) {
+    const ctx         = document.getElementById("verifyContext");
+    const workBlock   = document.getElementById("workBlock");
+    const certBlock   = document.getElementById("certBlock");
+    const certSummary = document.getElementById("certSummary");
+    const workHeading = document.getElementById("workHeading");
+    if (!ctx || !workBlock || !certBlock) return;
+    if (mode === "qr") {
+      workBlock.style.order = "1";
+      certBlock.style.order = "2";
+      certBlock.open = false;
+      workHeading.textContent = "Scegli il file dell'opera da controllare";
+      certSummary.textContent = "Verifica anche la firma del certificato (facoltativo)";
+      ctx.style.display = "block";
+      ctx.innerHTML =
+        "Stai verificando il certificato con impronta " +
+        "<code style=\"font-size:0.78rem; word-break:break-all;\">" + hash + "</code>.<br>" +
+        "Scegli qui sotto il file dell'opera per controllare che corrisponda. " +
+        "Vuoi la verifica completa, anche di firma e data? Aggiungi il certificato PDF.";
+    } else {
+      certBlock.style.order = "1";
+      workBlock.style.order = "2";
+      certBlock.open = true;
+      workHeading.textContent = "Scegli il file dell'opera da confrontare";
+      certSummary.textContent = "Apri il certificato PDF — lo legge il tuo browser";
+      ctx.style.display = "none";
+    }
+  }
+
+  // --- PRE-COMPILAZIONE DA URL (?hash=...) ---
+  // Quando si apre la pagina via QR code o link del certificato, il parametro hash
+  // è già nell'URL: lo usiamo per pre-compilare il campo di verifica e impostare la
+  // modalità "da QR". La funzione è INVOCATA in fondo allo script, così tutte le
+  // definizioni che usa esistono già (evita il ReferenceError che rompeva il QR).
+  function prefillFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const hashParam = params.get("hash");
+    if (hashParam && /^[0-9a-f]{64}$/i.test(hashParam)) {
+      const h = hashParam.toLowerCase();
+      verifyHashInput.value = h;
+      updateVerifyBtnState();
+      updateRecoverState();
+      setupVerifyMode("qr", h);
+      // Chi arriva dal QR/link del certificato vuole verificare: apri quella scheda
+      mostraTab("verifica");
+      document.getElementById("verifyDropZone")
+        .scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      setupVerifyMode("cold");
+    }
+  }
+
+  // --- VERIFICA DEL CERTIFICATO: file + dati (auto-letti dal PDF o manuali) ---
+  verifyBtn.addEventListener("click", async () => {
+    if (!verifyFile || !verifyHashInput.value.trim()) return;
+
+    verifyBtn.disabled = true;
+    verifyBtnLabel.textContent = "Verifica in corso…";
+    verifyErrorMsg.classList.remove("show");
+    verifyResultWrap.classList.remove("show");
+    const rows = document.getElementById("verdictRows");
+    rows.innerHTML = "";
+
+    try {
+      // Full privacy (1.14.0): l'impronta dell'opera si calcola QUI, nel browser,
+      // e il confronto con quella dichiarata avviene in locale — il file non
+      // viene inviato al server. Al worker si chiede solo ciò che il browser
+      // non può fare da solo: verificare la firma HMAC (il segreto è suo).
+      verifyBtnLabel.textContent = "Calcolo dell'impronta…";
+      const claimed  = verifyHashInput.value.trim().toLowerCase();
+      const digest   = await sha256Hex(verifyFile);
+      const coincide = digest === claimed;
+
+      let hasMeta = false;
+      let hmacValido = null;
+      if (verifyAttestInput.value.trim() && verifyHmacInput.value.trim()) {
+        verifyBtnLabel.textContent = "Verifica della firma…";
+        const fd = new FormData();
+        fd.append("hash", claimed);
+        fd.append("attestazione", verifyAttestInput.value.trim());
+        fd.append("hmac", verifyHmacInput.value.trim());
+        // Dati dichiarati: se il certificato li riportava, la firma HMAC li copre
+        // e devono essere forniti identici perché la verifica riesca.
+        for (const [field, id] of [["titolo","vMetaTitolo"], ["autore","vMetaAutore"], ["anno","vMetaAnno"], ["note","vMetaNote"]]) {
+          const v = document.getElementById(id).value.trim();
+          if (v) { fd.append(field, v); hasMeta = true; }
+        }
+
+        const res = await fetch(WORKER_VERIFY_URL, { method: "POST", body: fd });
+        const d = await res.json();
+        if (!res.ok) {
+          verifyErrorMsg.textContent = "Errore: " + (d.error || ("HTTP " + res.status));
+          verifyErrorMsg.classList.add("show");
+          return;
+        }
+        hmacValido = d.hmac_valido;
+      }
+      verifyHashCalc.textContent = digest;
+
+      // Badge incorporabile: mostrato SOLO se la corrispondenza è confermata
+      // (impronta verificata). Usa l'hash effettivo del file appena verificato.
+      const vBadge = document.getElementById("vBadgeDetails");
+      if (coincide) {
+        fillBadge("vBadge", digest);
+        vBadge.style.display = "";
+      } else {
+        vBadge.style.display = "none";
+      }
+
+      // 1) Corrispondenza opera ↔ certificato (confronto fatto in locale)
+      rows.appendChild(verdictRow(coincide ? "ok" : "bad",
+        coincide ? "L'opera corrisponde al certificato."
+                 : "L'opera NON corrisponde a questo certificato."));
+
+      // 2) Autenticità (firma HMAC del server) + integrità dei dati dichiarati
+      if (hmacValido === true) {
+        rows.appendChild(verdictRow("ok", "Certificato autentico, emesso da Spazio Genesi."));
+        if (hasMeta) rows.appendChild(verdictRow("ok", "Dati dichiarati integri: non alterati dopo l'emissione."));
+      } else if (hmacValido === false) {
+        rows.appendChild(verdictRow("bad", "Firma di sicurezza NON valida: certificato non riconosciuto o dati alterati."));
+        if (hasMeta) rows.appendChild(verdictRow("info", "Se hai aperto il PDF, controlla i dati letti nei «Dettagli tecnici» (passo 2): un errore di lettura può invalidare la firma."));
+      } else {
+        rows.appendChild(verdictRow("info", "Firma non verificata: manca la firma di sicurezza. Apri il certificato PDF (passo 2) per il controllo completo."));
+      }
+
+      // 3) Ancoraggio blockchain (OpenTimestamps): presenza della prova .ots
+      const otsPlaceholder = verdictRow("info", "Controllo dell'ancoraggio blockchain…");
+      rows.appendChild(otsPlaceholder);
+      try {
+        const otsRes = await fetch(WORKER_BASE + "/api/ots?hash=" + verifyHashInput.value.trim().toLowerCase());
+        if (otsRes.ok) {
+          otsPlaceholder.replaceWith(verdictRow("ok", "Esistenza ancorata nella blockchain di Bitcoin (OpenTimestamps)."));
+        } else {
+          otsPlaceholder.replaceWith(verdictRow("info", "Nessun ancoraggio blockchain per questa impronta (certificati anteriori alla v1.7)."));
+        }
+      } catch {
+        otsPlaceholder.replaceWith(verdictRow("info", "Ancoraggio blockchain non verificabile in questo momento."));
+      }
+
+      verifyResultWrap.classList.add("show");
+      verifyResultWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    } catch (e) {
+      verifyErrorMsg.textContent = "Errore durante la verifica: riprova (file troppo grande per la memoria del browser, o problema di rete).";
+      verifyErrorMsg.classList.add("show");
+    } finally {
+      verifyBtn.disabled = false;
+      verifyBtnLabel.textContent = "Verifica il certificato";
+    }
+  });
+
+  // --- RECUPERO CERTIFICATO SMARRITO (GET /api/cert?hash=) ---
+  // L'hash si ottiene dal campo impronta (se valido) oppure calcolando in
+  // locale l'SHA-256 del file caricato: il file NON viene inviato al server.
+  const recoverBtn      = document.getElementById("recoverBtn");
+  const recoverBtnLabel = document.getElementById("recoverBtnLabel");
+  const recoverMsg      = document.getElementById("recoverMsg");
+  const HEX64_RE = /^[0-9a-f]{64}$/;
+
+  function updateRecoverState() {
+    const hashOk = HEX64_RE.test(verifyHashInput.value.trim().toLowerCase());
+    // Il recupero legge dall'archivio: se è giù (da /api/status) lo inibiamo.
+    recoverBtn.disabled = !(verifyFile || hashOk) || window.__svcArchiveDown === true;
+  }
+  verifyHashInput.addEventListener("input", updateRecoverState);
+
+  // loadVerifyFile è già definita sopra: la avvolgiamo per aggiornare anche
+  // lo stato del pulsante di recupero quando si carica un file.
+  const _loadVerifyFile = loadVerifyFile;
+  loadVerifyFile = function (f) { _loadVerifyFile(f); updateRecoverState(); };
+
+  function showRecoverMsg(text, ok) {
+    recoverMsg.textContent = text;
+    recoverMsg.style.color = ok ? "#2e7d32" : "#c0392b";
+    recoverMsg.style.display = "block";
+  }
+
+  async function sha256Hex(file) {
+    const buf = await file.arrayBuffer();
+    const h = await crypto.subtle.digest("SHA-256", buf);
+    return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  recoverBtn.addEventListener("click", async () => {
+    recoverMsg.style.display = "none";
+    recoverBtn.disabled = true;
+    recoverBtnLabel.textContent = "Ricerca in archivio…";
+    try {
+      let hash = verifyHashInput.value.trim().toLowerCase();
+      if (!HEX64_RE.test(hash)) {
+        if (!verifyFile) return;
+        recoverBtnLabel.textContent = "Calcolo dell'impronta…";
+        hash = await sha256Hex(verifyFile);
+      }
+      const res = await fetch(WORKER_BASE + "/api/cert?hash=" + hash);
+      if (res.status === 404) {
+        showRecoverMsg("Nessun certificato in archivio per questa opera. " +
+          "Nota: il recupero vale per i certificati emessi dal 13 giugno 2026 in poi; " +
+          "per quelli precedenti scrivici indicando l'impronta.", false);
+        return;
+      }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        showRecoverMsg("Errore: " + (err.error || ("HTTP " + res.status)), false);
+        return;
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "certificato-" + hash.slice(0, 12) + ".pdf";
+      a.click();
+      URL.revokeObjectURL(url);
+      showRecoverMsg("Certificato recuperato: è la copia firmata conservata nel nostro archivio " +
+        "(in caso di più emissioni per la stessa opera, la prima — quella con la data più antica).", true);
+    } catch (e) {
+      showRecoverMsg("Errore di rete durante il recupero. Riprova tra qualche istante.", false);
+    } finally {
+      recoverBtn.disabled = false;
+      recoverBtnLabel.textContent = "Recupera il certificato dall'archivio";
+      updateRecoverState();
+    }
+  });
+
+  // Pre-compilazione da ?hash= (QR/link del certificato): invocata QUI, in fondo,
+  // quando tutte le funzioni e costanti referenziate sono già definite.
+  prefillFromUrl();
+
+  // --- STATO SEMAFORICO DEI SERVIZI (/api/status) ---
+  // Mostra lo stato live nel footer e nel pannello "Stato dei servizi" (Istruzioni),
+  // e pilota la UX inibendo le azioni le cui componenti sono indisponibili.
+  // Principio prudente: si inibisce SOLO su un "down" certo; se lo stato non è
+  // raggiungibile, neutro (grigio) e nessun blocco.
+  const WORKER_STATUS_URL = WORKER_BASE + "/api/status";
+  const SVC_LABELS = { ok: "operativo", down: "non disponibile", degraded: "rallentato", "n/d": "non rilevato", na: "non rilevato" };
+
+  let svcPdfNote = null;
+  function ensurePdfNote() {
+    if (svcPdfNote) return svcPdfNote;
+    const btn = document.getElementById("downloadPdfBtn");
+    if (!btn || !btn.parentNode) return null;
+    svcPdfNote = document.createElement("p");
+    svcPdfNote.className = "microcopy";
+    svcPdfNote.style.cssText = "display:none; color:#c0392b;";
+    btn.parentNode.insertBefore(svcPdfNote, btn);
+    return svcPdfNote;
+  }
+
+  function applyServiceGating(st) {
+    const signerDown  = !!st && st.signer === "down";
+    const archiveDown = !!st && st.archive === "down";
+    window.__svcArchiveDown = archiveDown;
+    if (typeof updateRecoverState === "function") updateRecoverState();
+
+    const btn = document.getElementById("downloadPdfBtn");
+    if (!btn) return;
+    const note = ensurePdfNote();
+    if ((signerDown || archiveDown) && !btn.classList.contains("loading")) {
+      btn.disabled = true;
+      if (note) {
+        note.textContent = archiveDown
+          ? "Archivio temporaneamente non disponibile: puoi comunque generare l'attestazione e scaricare il .txt; riprova più tardi per il certificato PDF."
+          : "Firma del certificato temporaneamente non disponibile: puoi scaricare il .txt; riprova più tardi per il PDF.";
+        note.style.display = "block";
+      }
+    } else {
+      if (!btn.classList.contains("loading")) btn.disabled = false;
+      if (note) note.style.display = "none";
+    }
+  }
+
+  function renderServiceStatus(st) {
+    const keys = ["worker", "signer", "archive", "anchor"];
+    let down = 0, degraded = 0, na = 0;
+    for (const k of keys) {
+      const dot = document.querySelector('.svc-dot[data-svc="' + k + '"]');
+      const lab = document.querySelector('[data-svc-state="' + k + '"]');
+      const v = st ? (st[k] || "n/d") : "na";
+      const cls = v === "ok" ? "ok" : v === "down" ? "down" : v === "degraded" ? "degraded" : "na";
+      if (dot) dot.className = "svc-dot " + cls;
+      if (lab) lab.textContent = SVC_LABELS[v] || "non rilevato";
+      if (cls === "down") down++; else if (cls === "degraded") degraded++; else if (cls === "na") na++;
+    }
+    const checked = document.getElementById("svcChecked");
+    if (checked) checked.textContent = st
+      ? "Ultimo controllo: " + new Date().toLocaleTimeString("it-IT")
+      : "Ultimo controllo: stato non raggiungibile";
+
+    const fdot = document.querySelector("#svcFooter .svc-dot");
+    const ftxt = document.getElementById("svcFooterText");
+    let fcls = "ok", ftext = "Servizi operativi";
+    if (!st || na === keys.length) { fcls = "na"; ftext = "Stato dei servizi non disponibile"; }
+    else if (down > 0) { fcls = "down"; ftext = "Disservizio parziale in corso"; }
+    else if (degraded > 0) { fcls = "degraded"; ftext = "Servizi operativi (un componente rallentato)"; }
+    if (fdot) fdot.className = "svc-dot " + fcls;
+    if (ftxt) ftxt.textContent = ftext;
+  }
+
+  async function pollServiceStatus() {
+    let st = null;
+    try {
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 12000);
+      const r = await fetch(WORKER_STATUS_URL, { signal: ctrl.signal });
+      clearTimeout(to);
+      if (r.ok) st = await r.json();
+    } catch { /* lasciamo st = null → neutro, nessun blocco */ }
+    renderServiceStatus(st);
+    applyServiceGating(st);
+  }
+
+  pollServiceStatus();
+  setInterval(pollServiceStatus, 180000); // 180s: traffico basso, nessun bisogno di poll frequenti
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) pollServiceStatus(); });
+</script>
+
+<script>
+  /* ── Estensioni della proposta index2 (solo UI, nessuna logica di servizio) ── */
+
+  // 1) Tablist ARIA: sincronizza aria-selected/tabindex a ogni cambio scheda
+  //    e aggiunge la navigazione con le frecce (pattern WAI-ARIA "Tabs").
+  (function () {
+    const ordine = ["attesta", "verifica", "istruzioni"];
+    const nomi = { attesta: "Attesta", verifica: "Verifica", istruzioni: "Istruzioni" };
+    const btn = q => document.getElementById("tabBtn" + nomi[q]);
+
+    function sincronizza() {
+      ordine.forEach(k => {
+        const b = btn(k);
+        if (!b) return;
+        const sel = b.classList.contains("attiva");
+        b.setAttribute("aria-selected", sel ? "true" : "false");
+        b.tabIndex = sel ? 0 : -1;
+      });
+    }
+
+    const orig = window.mostraTab;
+    window.mostraTab = function (quale) { orig(quale); sincronizza(); };
+    sincronizza(); // stato iniziale (copre anche il deep-link ?hash= già gestito dal core)
+
+    document.getElementById("navTabs").addEventListener("keydown", e => {
+      const i = ordine.findIndex(k => btn(k) === document.activeElement);
+      if (i < 0) return;
+      let j = null;
+      if (e.key === "ArrowRight") j = (i + 1) % ordine.length;
+      else if (e.key === "ArrowLeft") j = (i + ordine.length - 1) % ordine.length;
+      else if (e.key === "Home") j = 0;
+      else if (e.key === "End") j = ordine.length - 1;
+      if (j !== null) { e.preventDefault(); window.mostraTab(ordine[j]); btn(ordine[j]).focus(); }
+    });
+  })();
+
+  // 2) L'impronta, dal vivo: SHA-256 della frase digitata, calcolata nel browser
+  //    con WebCrypto — la stessa tecnologia usata per attestare le opere.
+  (function () {
+    // Desktop: demo sempre aperto (il vertice della tendina è nascosto via CSS).
+    // Mobile: parte chiuso, per non frapporre testo tra il titolo e l'azione.
+    const box = document.getElementById("demoBox");
+    if (box) {
+      const mq = window.matchMedia("(min-width: 841px)");
+      const applica = () => { box.open = mq.matches; };
+      applica();
+      if (mq.addEventListener) mq.addEventListener("change", applica); else mq.addListener(applica);
+    }
+    const inp = document.getElementById("demoFrase");
+    const out = document.getElementById("demoHash");
+    if (!inp || !out || !(window.crypto && crypto.subtle)) return;
+    let ultima = 0;
+    async function aggiorna() {
+      const mia = ++ultima;
+      const dati = new TextEncoder().encode(inp.value || " ");
+      const dig = await crypto.subtle.digest("SHA-256", dati);
+      if (mia !== ultima) return; // scarta risposte fuori ordine
+      const hex = Array.from(new Uint8Array(dig)).map(b => b.toString(16).padStart(2, "0")).join("");
+      out.innerHTML = hex.match(/.{8}/g).map(g => "<span>" + g + "</span>").join("");
+    }
+    inp.addEventListener("input", aggiorna);
+    aggiorna();
+  })();
+</script>
+
+</body>
+</html>
