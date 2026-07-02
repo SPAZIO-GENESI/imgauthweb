@@ -10,6 +10,12 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta name="theme-color" content="#ffffff">
 
+<!-- PWA: installabile sulla home screen (manifest + icone); nessun service worker,
+     la pagina resta servita live da GitHub Pages come sempre -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Attestazione">
+
 <!-- Open Graph / Twitter -->
 <meta property="og:title" content="Attestazione opere digitali — Spazio Genesi">
 <meta property="og:description" content="Impronta SHA-256, data certificata da terza parte e ancoraggio in Bitcoin. Gratuito e open source: il file non viene conservato.">
@@ -1135,7 +1141,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.14.0";
+  const APP_VERSION = "1.15.0";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").

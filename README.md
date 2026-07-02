@@ -12,6 +12,11 @@ rilasciato sotto AGPL-3.0.
 browser con WebCrypto — il file non lascia mai il dispositivo dell'utente, né
 per l'attestazione né per la verifica; al motore viaggia solo l'impronta.
 
+**Installabile come PWA** (dalla 1.15.0): `manifest.json` + icone (`/icons/`,
+`apple-touch-icon.png`) rendono la pagina installabile sulla home screen di
+Android e iOS. Nessun service worker: la pagina resta servita live da GitHub
+Pages (niente cache offline da invalidare).
+
 ## Licenza
 
 Copyright (c) 2026 Spazio Genesi ETS — licenza **MIT** (vedi [LICENSE](LICENSE)).

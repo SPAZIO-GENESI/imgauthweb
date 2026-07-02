@@ -1,0 +1,16 @@
+{
+  "name": "Attestazione opere digitali — Spazio Genesi",
+  "short_name": "Attestazione",
+  "description": "Dimostra che la tua opera digitale esisteva oggi, esattamente così com'è: impronta SHA-256 calcolata sul tuo dispositivo, certificato PDF con marca temporale riconosciuta e ancoraggio nella blockchain di Bitcoin.",
+  "lang": "it",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
