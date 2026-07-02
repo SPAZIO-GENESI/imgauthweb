@@ -137,6 +137,22 @@
     padding-left:0.9rem; border-left:2px solid var(--linea-forte); max-width:34rem;
   }
 
+  /* Avviso PWA: solo su smartphone (schermi stretti), nascosto se già installata
+     (display-mode:standalone). Discreto, niente JS. */
+  .pwa-hint{ display:none; }
+  @media (max-width:640px){
+    .pwa-hint{
+      display:flex; align-items:flex-start; gap:0.5rem;
+      margin-top:0.9rem; padding:0.5rem 0.75rem; max-width:34rem;
+      border:1px solid var(--linea-forte); border-radius:10px;
+      background:var(--bianco); font-size:0.72rem; color:var(--ink-3); line-height:1.5;
+    }
+    .pwa-hint svg{ flex:0 0 auto; margin-top:0.15rem; color:var(--oro); }
+  }
+  @media (display-mode: standalone){
+    .pwa-hint{ display:none !important; }
+  }
+
   /* Firma della pagina: l'impronta, dal vivo.
      Micro-demo WebCrypto — la stessa tecnologia dell'attestazione. */
   .demo{
@@ -631,6 +647,13 @@
     <p class="nota-legale">Il servizio fornisce attestazione crittografica di impronta digitale
       (hash) di file informatici. Non costituisce registrazione di diritto d'autore né
       certificazione legale della titolarità dell'opera.</p>
+    <p class="pwa-hint">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/>
+      </svg>
+      Puoi installare questa pagina come app: dal menu del browser scegli
+      "Aggiungi alla schermata Home" (o "Installa app").
+    </p>
   </div>
 
   <!-- L'impronta, dal vivo: micro-demo WebCrypto (stessa tecnologia dell'attestazione).
@@ -1228,7 +1251,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.16.0";
+  const APP_VERSION = "1.16.1";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
