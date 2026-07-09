@@ -1,5 +1,7 @@
 # authweb — Attestazione opere digitali (interfaccia)
 
+[![Genesis Trust Score](https://trust.spaziogenesi.org/badge.svg)](https://trust.spaziogenesi.org)
+
 Interfaccia web del servizio di attestazione crittografica di Spazio Genesi ETS:
 https://attestazione.spaziogenesi.org
 
