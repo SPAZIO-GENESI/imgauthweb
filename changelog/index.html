@@ -36,9 +36,17 @@
   details.v .corpo a:hover { text-decoration: underline; }
   details.v .corpo code { font-family: 'Courier New', monospace; font-size: 0.8rem; background: #f4f4f2; padding: 1px 4px; border-radius: 3px; }
   .nota { margin-top: 1.8rem; padding: 0.9rem 1.1rem; background: #f9f9f7; border: 1px solid #e5e5e0; border-radius: 6px; font-size: 0.82rem; color: #666; line-height: 1.6; }
-  footer { text-align: center; padding: 1.6rem; font-size: 0.78rem; color: #aaa; border-top: 1px solid #eee; }
+  footer { padding: 2rem 1.5rem 2.2rem; font-size: 0.78rem; color: #aaa; border-top: 1px solid #eee; }
   footer a { color: #888; text-decoration: none; }
   footer a:hover { text-decoration: underline; }
+  .footer-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+  .footer-back { display: block; margin-bottom: 1rem; }
+  .footer-cols { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1.6rem 2.6rem; margin: 0 0 1.3rem; text-align: left; }
+  .footer-col { min-width: 150px; }
+  .footer-col h3 { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.06em; color: #999; font-weight: 600; margin-bottom: 0.5rem; }
+  .footer-col a { display: block; margin: 0.35rem 0; }
+  .footer-bottom { padding-top: 1rem; border-top: 1px solid #f0f0ee; }
+  @media (max-width: 480px) { .footer-cols { text-align: center; justify-content: space-around; } }
 </style>
 
 <!-- Matomo (sg-matomo) -->
@@ -66,6 +74,14 @@
 </header>
 
 <main>
+
+  <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Versione 1.16.4 — Un angolo per chi programma</span><span class="data">10 luglio 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Nuova pagina "Per sviluppatori e partner".</strong> Un link "Sviluppatori" nel footer porta alla documentazione dell'API (Swagger interattiva e contratto OpenAPI), al server MCP per assistenti e agenti AI, e spiega come ottenere un accesso — autorizzazione al volo o chiave dedicata per integrazioni continuative.</li>
+      <li><strong>Footer riorganizzato su tutte le pagine.</strong> Da un'unica riga di link a colonne ordinate (Servizio, Fiducia, Sviluppatori), più leggibili e uniformi su ogni pagina del sito — incluse Cronologia, Stato del servizio e Privacy.</li>
+    </ul></div>
+  </details>
 
   <details class="v">
     <summary><span class="seg">+</span><span class="tit">Attestazione anche per assistenti e agenti AI</span><span class="data">10 luglio 2026</span></summary>
@@ -263,9 +279,31 @@
 </main>
 
 <footer>
-  <a href="/">← Torna al servizio di attestazione</a> ·
-  <a href="/status/">Stato del servizio</a> ·
-  <a href="https://spaziogenesi.org">Spazio Genesi</a>
+  <div class="footer-inner">
+    <a class="footer-back" href="/">← Torna al servizio di attestazione</a>
+    <nav class="footer-cols" aria-label="Collegamenti del footer">
+      <div class="footer-col">
+        <h3>Servizio</h3>
+        <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a>
+        <a href="/changelog/">Cronologia dei miglioramenti</a>
+        <a href="/status/">Stato del servizio</a>
+      </div>
+      <div class="footer-col">
+        <h3>Fiducia</h3>
+        <a href="/privacy.html">Privacy</a>
+        <a href="https://trust.spaziogenesi.org">Come verificarci</a>
+      </div>
+      <div class="footer-col">
+        <h3>Sviluppatori</h3>
+        <a href="/developer/">API &amp; server MCP</a>
+      </div>
+    </nav>
+    <div class="footer-bottom">
+      <a href="https://trust.spaziogenesi.org"><img src="https://trust.spaziogenesi.org/badge.svg" alt="Genesis Trust Score" height="16" style="vertical-align:middle;"></a>
+      <span>·</span>
+      <a href="https://spaziogenesi.org">Spazio Genesi</a>
+    </div>
+  </div>
 </footer>
 
 </body>

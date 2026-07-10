@@ -546,7 +546,7 @@
 
   /* ── Footer ─────────────────────────────────────────────────── */
   footer{
-    text-align:center; padding:2rem 1.5rem 2.2rem; font-size:0.78rem;
+    text-align:center; padding:2rem 0 2.2rem; font-size:0.78rem;
     color:var(--ink-3); border-top:1px solid var(--linea); background:var(--rialzo);
   }
   footer a{ color:var(--ink-2); text-decoration:none; }
@@ -567,6 +567,28 @@
   .svc-dot.down{ background:var(--rosso); }
   .svc-dot.degraded{ background:#B8860B; }
   .svc-dot.na{ background:#B4AE9C; }
+  .footer-inner{ max-width:64rem; margin:0 auto; padding:0 1.5rem; width:100%; }
+  .footer-cols{
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:2rem 2.6rem;
+    margin:1.4rem 0 1.3rem; text-align:left;
+  }
+  .footer-col{ min-width:150px; }
+  .footer-col h3{
+    font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em;
+    color:var(--ink-3); font-weight:600; margin-bottom:0.55rem;
+  }
+  .footer-col a{ display:block; margin:0.4rem 0; }
+  .footer-bottom{
+    display:flex; align-items:center; justify-content:center; flex-wrap:wrap;
+    gap:0.5rem; margin-top:1.2rem; padding-top:1.1rem; border-top:1px solid var(--linea);
+    color:var(--ink-3);
+  }
+  @media (max-width:640px){
+    .footer-cols{ justify-content:space-around; }
+  }
+  @media (max-width:480px){
+    .footer-cols{ text-align:center; justify-content:space-around; }
+  }
 
   /* ── Animazione d'ingresso (una sola, orchestrata) ──────────── */
   @media (prefers-reduced-motion: no-preference){
@@ -1223,22 +1245,42 @@
 </div>
 
 <footer>
-  <div class="riga-brand">
-    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 580 481" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      <g transform="translate(0,481) scale(0.1,-0.1)" fill="currentColor" stroke="none">
-        <path d="M2175 4799 c-729 -75 -1378 -467 -1780 -1074 -82 -124 -203 -366 -252 -505 -100 -282 -137 -506 -137 -815 0 -222 6 -283 46 -497 l23 -118 1396 0 1397 0 26 -83 c37 -117 49 -216 43 -332 -24 -405 -299 -739 -698 -847 -120 -32 -328 -32 -448 0 -105 29 -210 76 -301 138 -77 51 -201 176 -240 242 l-25 41 -368 1 -368 0 63 -76 c142 -172 345 -355 533 -479 124 -82 366 -203 505 -252 281 -100 505 -137 815 -137 310 0 534 37 815 137 139 49 381 170 505 252 265 175 514 425 690 690 94 141 214 391 269 558 l49 147 534 0 533 0 0 565 0 565 -1944 0 -1943 0 -27 59 c-53 119 -70 203 -70 361 0 168 18 251 84 388 51 106 88 161 169 246 83 86 166 145 275 197 142 66 218 82 391 82 122 0 165 -4 228 -21 99 -27 232 -89 310 -146 74 -52 190 -172 232 -238 l30 -48 413 0 c226 0 412 2 412 5 0 14 -172 214 -256 299 -190 190 -374 323 -619 447 -232 117 -479 196 -735 234 -127 19 -452 27 -575 14z"/>
-      </g>
-    </svg>
-    <span>Spazio Genesi ETS</span>
+  <div class="footer-inner">
+    <div class="riga-brand">
+      <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 580 481" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <g transform="translate(0,481) scale(0.1,-0.1)" fill="currentColor" stroke="none">
+          <path d="M2175 4799 c-729 -75 -1378 -467 -1780 -1074 -82 -124 -203 -366 -252 -505 -100 -282 -137 -506 -137 -815 0 -222 6 -283 46 -497 l23 -118 1396 0 1397 0 26 -83 c37 -117 49 -216 43 -332 -24 -405 -299 -739 -698 -847 -120 -32 -328 -32 -448 0 -105 29 -210 76 -301 138 -77 51 -201 176 -240 242 l-25 41 -368 1 -368 0 63 -76 c142 -172 345 -355 533 -479 124 -82 366 -203 505 -252 281 -100 505 -137 815 -137 310 0 534 37 815 137 139 49 381 170 505 252 265 175 514 425 690 690 94 141 214 391 269 558 l49 147 534 0 533 0 0 565 0 565 -1944 0 -1943 0 -27 59 c-53 119 -70 203 -70 361 0 168 18 251 84 388 51 106 88 161 169 246 83 86 166 145 275 197 142 66 218 82 391 82 122 0 165 -4 228 -21 99 -27 232 -89 310 -146 74 -52 190 -172 232 -238 l30 -48 413 0 c226 0 412 2 412 5 0 14 -172 214 -256 299 -190 190 -374 323 -619 447 -232 117 -479 196 -735 234 -127 19 -452 27 -575 14z"/>
+        </g>
+      </svg>
+      <span>Spazio Genesi ETS</span>
+    </div>
+    <a class="svc-footer" id="svcFooter" href="/status/" title="Apri la pagina di stato del servizio"><span class="svc-dot na"></span><span id="svcFooterText">Stato dei servizi…</span></a>
+
+    <nav class="footer-cols" aria-label="Collegamenti del footer">
+      <div class="footer-col">
+        <h3>Servizio</h3>
+        <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a>
+        <a href="/changelog/">Cronologia dei miglioramenti</a>
+        <a href="/status/">Stato del servizio</a>
+      </div>
+      <div class="footer-col">
+        <h3>Fiducia</h3>
+        <a href="/privacy.html">Privacy</a>
+        <a href="https://trust.spaziogenesi.org">Come verificarci</a>
+      </div>
+      <div class="footer-col">
+        <h3>Sviluppatori</h3>
+        <a href="/developer/">API &amp; server MCP</a>
+      </div>
+    </nav>
+
+    <div class="footer-bottom">
+      <a href="https://trust.spaziogenesi.org"><img src="https://trust.spaziogenesi.org/badge.svg" alt="Genesis Trust Score" height="16" style="vertical-align:middle;"></a>
+      <span>·</span>
+      <span id="appVersion"></span>
+      <span>· realizzato da <a href="https://tangram.page">Tangram.page</a></span>
+    </div>
   </div>
-  <a class="svc-footer" id="svcFooter" href="/status/" title="Apri la pagina di stato del servizio"><span class="svc-dot na"></span><span id="svcFooterText">Stato dei servizi…</span></a>
-  <br>
-  <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a> ·
-  <a href="/changelog/">Cronologia dei miglioramenti</a> ·
-  <a href="/privacy.html">Privacy</a> ·
-  <a href="https://trust.spaziogenesi.org">Come verificarci</a>
-  <a href="https://trust.spaziogenesi.org"><img src="https://trust.spaziogenesi.org/badge.svg" alt="Genesis Trust Score" height="16" style="vertical-align:middle;"></a> ·
-  <span id="appVersion"></span> · realizzato da <a href="https://tangram.page">Tangram.page</a>
 </footer>
 
 <script>
@@ -1269,7 +1311,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.16.3";
+  const APP_VERSION = "1.16.4";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
