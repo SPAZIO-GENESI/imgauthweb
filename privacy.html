@@ -74,7 +74,7 @@
 
 <main>
 
-  <p class="meta">Ultimo aggiornamento: luglio 2026. La presente informativa riguarda specificamente il
+  <p class="meta">Ultimo aggiornamento: 10 luglio 2026. La presente informativa riguarda specificamente il
   servizio di attestazione disponibile su <strong>attestazione.spaziogenesi.org</strong>. Per il sito
   istituzionale vedi l'<a href="https://spaziogenesi.org/privacy-policy">informativa generale</a>.</p>
 
@@ -137,6 +137,23 @@
     <strong>Conservazione:</strong> 13 mesi.</p>
   </div>
 
+  <div class="box">
+    <h3>3.5 Accesso per sviluppatori: richiesta di chiave API</h3>
+    <p>Questa sottosezione riguarda <strong>esclusivamente</strong> chi richiede una chiave API self-service
+    dalla pagina <code>imgauth.spaziogenesi.org/developer/keys</code> — non chi usa il servizio di attestazione
+    dal sito: per quell'uso, come già descritto sopra, non trattiamo alcun dato personale identificativo.</p>
+    <p>Per emettere la chiave chiediamo di confermare la tua email tramite <strong>Google o Microsoft</strong>
+    (login "one-shot": leggiamo solo l'indirizzo email verificato dal provider, poi scartiamo il token —
+    nessuna sessione, nessun cookie, nessun accesso continuativo al tuo account Google/Microsoft). Trattiamo
+    <strong>email, provider scelto e data di richiesta</strong>, per emettere la chiave, moderarne l'uso
+    (comprese eventuali comunicazioni in caso di revoca o abuso sospetto) e mantenere una traccia anti-abuso.</p>
+    <p class="meta"><strong>Base giuridica:</strong> misure precontrattuali/contrattuali richieste dall'interessato
+    (art. 6.1.b) e legittimo interesse alla prevenzione degli abusi (art. 6.1.f).
+    <strong>Conservazione:</strong> per tutta la durata della chiave attiva, poi <strong>180 giorni</strong> dalla
+    revoca (traccia anti-abuso), trascorsi i quali l'email viene anonimizzata automaticamente. Cancellazione
+    anticipata su richiesta: vedi §7.</p>
+  </div>
+
   <h2>4. Conservazione e residenza dei dati</h2>
   <ul>
     <li><strong>File dell'opera:</strong> non inviato né conservato — resta sul tuo dispositivo (vedi §2).</li>
@@ -145,6 +162,10 @@
     <li><strong>Dove:</strong> l'archivio dei certificati risiede su storage <strong>Cloudflare R2 in
     giurisdizione Unione Europea</strong> (residenza dei dati nell'UE). Il motore di elaborazione
     (Cloudflare Workers) processa le richieste all'edge in modo transitorio.</li>
+    <li><strong>Email degli sviluppatori (§3.5):</strong> conservata su <strong>Cloudflare D1</strong>
+    (database del motore), distinto dall'archivio R2 dei certificati e senza il vincolo di giurisdizione UE
+    esplicita di R2; copertura tramite Data Processing Agreement e clausole contrattuali standard Cloudflare
+    (vedi §6). Riguarda solo chi richiede una chiave API, non gli utenti del servizio di attestazione.</li>
   </ul>
 
   <h2>5. Destinatari (responsabili del trattamento e soggetti coinvolti)</h2>
@@ -158,6 +179,10 @@
     <tr><td>OpenTimestamps (calendar pubblici)</td><td>Ancoraggio in blockchain Bitcoin</td><td>Solo un hash <code>sha256(impronta‖nonce)</code> — nessun dato personale</td></tr>
   </table>
   <p>Inoltre, autorità pubbliche nei soli casi previsti dalla legge.</p>
+  <p><strong>Nota sul login per gli sviluppatori (§3.5):</strong> Google e Microsoft non agiscono come nostri
+  responsabili del trattamento, ma come <strong>titolari autonomi</strong> nel loro ruolo di provider di identità
+  scelto da chi richiede la chiave — trattano l'autenticazione secondo le proprie informative privacy. Noi
+  riceviamo solo l'email verificata, non il token di accesso.</p>
 
   <h2>6. Trasferimenti fuori dall'UE</h2>
   <p>Cloudflare, Microsoft, GitHub e DigiCert hanno sede negli Stati Uniti. Gli eventuali trasferimenti
@@ -175,6 +200,10 @@
       <li>Il <strong>certificato PDF archiviato</strong> può invece contenere dati personali (autore,
       nome del file): su tua richiesta <strong>lo cancelliamo dal nostro archivio</strong> (diritto
       all'oblio, art. 17). La firma vincola i dati per integrità, ma non impedisce la rimozione della copia archiviata.</li>
+      <li>Se hai richiesto una <strong>chiave API self-service</strong> (§3.5), puoi chiedere la cancellazione
+      anticipata della tua email in qualsiasi momento (senza attendere i 180 giorni), scrivendo a
+      <a href="mailto:info@spaziogenesi.org">info@spaziogenesi.org</a>: la chiave viene revocata e l'email
+      anonimizzata subito, invece che al termine del periodo di conservazione.</li>
     </ul>
   </div>
 
