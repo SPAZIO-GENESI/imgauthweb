@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Attestazione opere digitali — impronta SHA-256 gratuita | Spazio Genesi</title>
-<meta name="description" content="Dimostra che la tua opera digitale esisteva oggi, esattamente così com'è: impronta SHA-256, certificato PDF con marca temporale riconosciuta e ancoraggio nella blockchain di Bitcoin. Gratuito, open source, il file non viene conservato.">
+<title>Attestazione opere digitali — SHA-256 gratis | Spazio Genesi</title>
+<meta name="description" content="Attesta gratis la tua opera digitale: impronta SHA-256 calcolata nel browser, certificato PDF con marca temporale e ancoraggio Bitcoin. Open source.">
 <link rel="canonical" href="https://attestazione.spaziogenesi.org/">
 <meta name="robots" content="index, follow">
 <meta name="color-scheme" content="light">
@@ -34,6 +34,135 @@
 
 <!-- pdf.js (auto-ospitato): lettura lato client del certificato PDF in fase di verifica -->
 <script src="/vendor/pdf/pdf.min.js" defer></script>
+
+<!-- Dati strutturati (SEO): organizzazione, applicazione, procedura, video guida, domande frequenti -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://spaziogenesi.org/#org",
+      "name": "Spazio Genesi ETS",
+      "url": "https://spaziogenesi.org",
+      "logo": "https://attestazione.spaziogenesi.org/icons/icon-512.png",
+      "sameAs": [
+        "https://github.com/SPAZIO-GENESI",
+        "https://trust.spaziogenesi.org"
+      ]
+    },
+    {
+      "@type": "WebApplication",
+      "name": "Attestazione opere digitali — Spazio Genesi",
+      "url": "https://attestazione.spaziogenesi.org/",
+      "description": "Attesta gratis la tua opera digitale: impronta SHA-256 calcolata nel browser, certificato PDF con marca temporale e ancoraggio Bitcoin.",
+      "applicationCategory": "SecurityApplication",
+      "operatingSystem": "Qualsiasi dispositivo con browser",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      "publisher": { "@id": "https://spaziogenesi.org/#org" }
+    },
+    {
+      "@type": "HowTo",
+      "name": "Come attestare un'opera digitale",
+      "description": "Tre passi per ottenere un certificato di data certa per un file, calcolando l'impronta direttamente nel browser.",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Scegli l'opera",
+          "text": "Trascina il file nella scheda «Attesta». Qualsiasi formato, fino a 1 GB."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Genera l'attestazione",
+          "text": "Il browser calcola l'impronta SHA-256 senza inviare il file: scarica il certificato PDF (o il .txt) e conservalo."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Verifica quando vuoi",
+          "text": "Trascina di nuovo il file nella scheda «Verifica»: il servizio conferma che è identico all'originale attestato."
+        }
+      ]
+    },
+    {
+      "@type": "VideoObject",
+      "name": "Video guida al servizio di attestazione Spazio Genesi",
+      "description": "Come attestare e verificare un'opera digitale con il servizio di Spazio Genesi, in meno di due minuti.",
+      "thumbnailUrl": "https://spaziogenesi.org/assets/video/guida-attestazione-poster.jpg",
+      "contentUrl": "https://spaziogenesi.org/assets/video/guida-attestazione.mp4",
+      "uploadDate": "2026-07-02"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Come funziona l'impronta digitale SHA-256?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "L'impronta è calcolata sui byte esatti del file: basta che cambi un solo pixel o una virgola perché diventi completamente diversa. Funziona con qualsiasi formato (immagini, video, audio, documenti, modelli 3D, archivi) e dimostra che il file non è stato modificato."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Il mio file viene caricato sui vostri server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Il calcolo dell'impronta avviene direttamente nel browser (tecnologia WebCrypto): l'opera non viene mai caricata né trasmessa. I server ricevono e attestano soltanto l'impronta, sia per l'attestazione sia per la verifica. Il codice è open source e chiunque può verificarlo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Come faccio a sapere che la data del certificato è vera?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Il certificato PDF include una marca temporale emessa da DigiCert, autorità nella lista di fiducia di Adobe: la data non è dichiarata da Spazio Genesi, ma attestata da una terza parte indipendente e verificabile in Adobe Acrobat."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Cos'è l'ancoraggio nella blockchain di Bitcoin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ogni certificato registra l'impronta nella blockchain di Bitcoin tramite il protocollo aperto OpenTimestamps: una prova di esistenza indipendente dai server di Spazio Genesi, verificabile su opentimestamps.org."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Conservate la mia opera dopo l'attestazione?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Il file viene elaborato in memoria solo il tempo di calcolarne l'impronta e poi scartato: non viene salvato né ceduto a terzi. Negli archivi resta solo il certificato PDF, che contiene l'impronta, non l'opera."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Dove vengono conservati i dati del certificato?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Il certificato PDF e la prova di esistenza sono conservati su storage Cloudflare R2 con residenza dei dati nell'Unione Europea, in linea con il GDPR."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "La verifica del certificato è gratuita?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sì, sempre e per chiunque. Ogni certificato contiene un QR code e un link che aprono questa pagina con l'impronta già compilata: chi lo riceve trascina il file e ottiene subito l'esito, senza registrarsi né pagare."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 
 <style>
   /* ══════════════════════════════════════════════════════════════
