@@ -1,0 +1,57 @@
+# Copia di staging dell'interfaccia (P24 FASE 7): ad ogni push sul branch
+# `staging`, pubblica una copia del sito puntata a imgauth-staging invece
+# che alla produzione, su un secondo repo Pages (attestazione-staging).
+#
+# ⚠️ Lezione beta.html (vedi CLAUDE.md): questa copia è SEMPRE generata da
+# questo stesso sorgente, mai editata a mano — l'unica differenza dalla
+# produzione sono le tre costanti sostituite qui sotto. Il branch `main`
+# (produzione) non viene mai toccato da questo workflow.
+#
+# Richiede il secret di repo STAGING_DEPLOY_TOKEN: PAT fine-grained,
+# scope SOLO sul repo attestazione-staging, permesso Contents: Read and
+# write (creato alla FASE 7 di P24-DESIGN-devops-cicd.md).
+
+name: Deploy staging (imgauthweb)
+
+on:
+  push:
+    branches: [staging]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Punta index.html a imgauth-staging (Turnstile di test)
+        run: |
+          set -e
+          sed -i \
+            -e 's#const WORKER_BASE       = "https://imgauth\.spaziogenesi\.org";#const WORKER_BASE       = "https://imgauth-staging.it-e3f.workers.dev";#' \
+            -e 's#const CERT_PAGE_BASE    = "https://attestazione\.spaziogenesi\.org";#const CERT_PAGE_BASE    = "https://imgauth-staging.it-e3f.workers.dev";#' \
+            -e 's#const TURNSTILE_SITEKEY = "0x4AAAAAADiPceBIwTz5n4hG";#const TURNSTILE_SITEKEY = "1x00000000000000000000AA";#' \
+            index.html
+          # Verifica che le tre sostituzioni siano avvenute davvero (altrimenti
+          # il sito di staging pubblicherebbe silenziosamente contro la produzione).
+          grep -q 'imgauth-staging.it-e3f.workers.dev' index.html
+          grep -q '1x00000000000000000000AA' index.html
+          echo "Sostituzioni applicate."
+
+      - name: Pubblica su attestazione-staging (repo Pages secondario)
+        env:
+          STAGING_DEPLOY_TOKEN: ${{ secrets.STAGING_DEPLOY_TOKEN }}
+        run: |
+          set -e
+          rm -rf /tmp/staging-pages
+          git clone --depth 1 "https://x-access-token:${STAGING_DEPLOY_TOKEN}@github.com/SPAZIO-GENESI/attestazione-staging.git" /tmp/staging-pages 2>/dev/null \
+            || (mkdir -p /tmp/staging-pages && cd /tmp/staging-pages && git init -q && git remote add origin "https://x-access-token:${STAGING_DEPLOY_TOKEN}@github.com/SPAZIO-GENESI/attestazione-staging.git")
+          rsync -a --delete --exclude='.git' ./ /tmp/staging-pages/
+          # Nessun dominio custom (D2 del design: solo workers.dev/*.github.io).
+          rm -f /tmp/staging-pages/CNAME
+          cd /tmp/staging-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B main
+          git add -A
+          git commit -m "deploy: staging da imgauthweb@${{ github.sha }}" || echo "Nessuna modifica da pubblicare."
+          git push -f origin main
