@@ -1430,8 +1430,12 @@
 
   // Turnstile: sitekey PUBBLICA del widget (creato in dashboard Cloudflare).
   // Le sitekey reali iniziano con "0x"; finché è il placeholder, l'anti-bot è inattivo.
+  // Le sitekey di TEST documentate da Cloudflare (per ambienti di staging/collaudo,
+  // MAI in produzione) usano i prefissi 1x/2x/3x — vedi CLAUDE.md § Turnstile.
+  // Scoperto in P24 FASE 7: /^0x/ da solo escludeva anche le chiavi di test,
+  // impedendo al widget di renderizzarsi affatto sull'ambiente di staging.
   const TURNSTILE_SITEKEY = "0x4AAAAAADiPceBIwTz5n4hG";
-  const turnstileEnabled = () => /^0x/.test(TURNSTILE_SITEKEY);
+  const turnstileEnabled = () => /^[0-3]x/.test(TURNSTILE_SITEKEY);
   let tsRendered = false;
   function ensureTurnstile() {
     if (tsRendered || !turnstileEnabled() || !window.turnstile) return;
