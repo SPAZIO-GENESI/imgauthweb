@@ -45,7 +45,12 @@ jobs:
           rm -rf /tmp/staging-pages
           git clone --depth 1 "https://x-access-token:${STAGING_DEPLOY_TOKEN}@github.com/SPAZIO-GENESI/attestazione-staging.git" /tmp/staging-pages 2>/dev/null \
             || (mkdir -p /tmp/staging-pages && cd /tmp/staging-pages && git init -q && git remote add origin "https://x-access-token:${STAGING_DEPLOY_TOKEN}@github.com/SPAZIO-GENESI/attestazione-staging.git")
-          rsync -a --delete --exclude='.git' ./ /tmp/staging-pages/
+          # .github escluso: il repo secondario è solo destinazione Pages statica,
+          # non serve alcun workflow lì (e il PAT fine-grained non ha lo scope
+          # "Workflows" necessario per pubblicare file .github/workflows/*.yml —
+          # scoperto al primo run: preferito restringere cosa si copia piuttosto
+          # che allargare i permessi del token).
+          rsync -a --delete --exclude='.git' --exclude='.github' ./ /tmp/staging-pages/
           # Nessun dominio custom (D2 del design: solo workers.dev/*.github.io).
           rm -f /tmp/staging-pages/CNAME
           cd /tmp/staging-pages
