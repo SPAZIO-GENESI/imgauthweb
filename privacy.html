@@ -74,7 +74,7 @@
 
 <main>
 
-  <p class="meta">Ultimo aggiornamento: 10 luglio 2026. La presente informativa riguarda specificamente il
+  <p class="meta">Ultimo aggiornamento: 11 luglio 2026. La presente informativa riguarda specificamente il
   servizio di attestazione disponibile su <strong>attestazione.spaziogenesi.org</strong>. Per il sito
   istituzionale vedi l'<a href="https://spaziogenesi.org/privacy-policy">informativa generale</a>.</p>
 
@@ -154,6 +154,23 @@
     anticipata su richiesta: vedi §7.</p>
   </div>
 
+  <div class="box">
+    <h3>3.6 Canale Telegram (bot)</h3>
+    <p>Questa sottosezione riguarda <strong>esclusivamente</strong> chi usa il bot Telegram
+    <a href="https://t.me/SGAttestBot">@SGAttestBot</a> — un canale di <strong>comodità</strong>, distinto dal
+    sito: qui il file che invii <strong>transita</strong> per i server di Telegram e per il nostro Worker, che
+    ne calcola l'impronta in streaming e scarta subito i byte — <strong>non lo salviamo mai</strong>. Il bot
+    dichiara questo prima di scaricare qualunque file; se per te conta la privacy assoluta, il sito resta il
+    canale dove il file non lascia mai il tuo dispositivo.</p>
+    <p>Trattiamo il tuo <strong>id utente Telegram</strong>, se hai accettato l'avvertenza sul transito del
+    file, e <strong>contatori d'uso giornalieri</strong> (quante attestazioni/verifiche hai richiesto), per
+    applicare le quote e prevenire abusi. Non trattiamo username, nome o altri dati del tuo profilo Telegram.</p>
+    <p class="meta"><strong>Base giuridica:</strong> erogazione del servizio richiesto dall'utente (art. 6.1.b)
+    e legittimo interesse alla prevenzione degli abusi (art. 6.1.f).
+    <strong>Conservazione:</strong> i contatori d'uso sono cancellati automaticamente dopo
+    <strong>90 giorni</strong>. Cancellazione anticipata su richiesta: vedi §7.</p>
+  </div>
+
   <h2>4. Conservazione e residenza dei dati</h2>
   <ul>
     <li><strong>File dell'opera:</strong> non inviato né conservato — resta sul tuo dispositivo (vedi §2).</li>
@@ -166,6 +183,9 @@
     (database del motore), distinto dall'archivio R2 dei certificati e senza il vincolo di giurisdizione UE
     esplicita di R2; copertura tramite Data Processing Agreement e clausole contrattuali standard Cloudflare
     (vedi §6). Riguarda solo chi richiede una chiave API, non gli utenti del servizio di attestazione.</li>
+    <li><strong>Dati del bot Telegram (§3.6):</strong> conservati su una <strong>Cloudflare D1</strong>
+    dedicata al bot, distinta sia dall'archivio R2 sia dal database del motore. Stessa copertura contrattuale
+    di Cloudflare descritta al punto precedente.</li>
   </ul>
 
   <h2>5. Destinatari (responsabili del trattamento e soggetti coinvolti)</h2>
@@ -183,6 +203,10 @@
   responsabili del trattamento, ma come <strong>titolari autonomi</strong> nel loro ruolo di provider di identità
   scelto da chi richiede la chiave — trattano l'autenticazione secondo le proprie informative privacy. Noi
   riceviamo solo l'email verificata, non il token di accesso.</p>
+  <p><strong>Nota sul bot Telegram (§3.6):</strong> Telegram FZ-LLC non agisce come nostro responsabile del
+  trattamento, ma come <strong>titolare autonomo</strong> nel suo ruolo di fornitore del trasporto — il file
+  e i messaggi transitano sulla sua infrastruttura secondo la sua propria informativa privacy, prima di
+  raggiungere il nostro Worker.</p>
 
   <h2>6. Trasferimenti fuori dall'UE</h2>
   <p>Cloudflare, Microsoft, GitHub e DigiCert hanno sede negli Stati Uniti. Gli eventuali trasferimenti
@@ -204,6 +228,9 @@
       anticipata della tua email in qualsiasi momento (senza attendere i 180 giorni), scrivendo a
       <a href="mailto:info@spaziogenesi.org">info@spaziogenesi.org</a>: la chiave viene revocata e l'email
       anonimizzata subito, invece che al termine del periodo di conservazione.</li>
+      <li>Se hai usato il <strong>bot Telegram</strong> (§3.6), puoi chiedere la cancellazione anticipata
+      del tuo id utente e dei contatori d'uso in qualsiasi momento, scrivendo a
+      <a href="mailto:info@spaziogenesi.org">info@spaziogenesi.org</a> — non serve attendere i 90 giorni.</li>
     </ul>
   </div>
 
@@ -234,6 +261,7 @@
       <div class="footer-col">
         <h3>Servizio</h3>
         <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a>
+        <a href="https://t.me/SGAttestBot">Bot Telegram</a>
         <a href="/changelog/">Cronologia dei miglioramenti</a>
         <a href="/status/">Stato del servizio</a>
       </div>
