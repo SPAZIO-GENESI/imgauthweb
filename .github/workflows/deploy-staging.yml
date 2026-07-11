@@ -37,6 +37,20 @@ jobs:
           grep -q '1x00000000000000000000AA' index.html
           echo "Sostituzioni applicate."
 
+      - name: Correggi i percorsi assoluti per il sottopercorso GitHub Pages
+        run: |
+          set -e
+          # In produzione (attestazione.spaziogenesi.org, dominio custom) i percorsi
+          # assoluti (/vendor/..., /status/, ...) risolvono correttamente alla radice.
+          # Il repo Pages secondario vive invece sotto spazio-genesi.github.io/attestazione-staging/
+          # (D2 del design: niente dominio custom per lo staging): senza questo passo,
+          # ogni riferimento assoluto punterebbe alla radice sbagliata (404) — scoperto
+          # nel collaudo browser reale di P24 FASE 7 (pdf.min.js 404, link interni rotti).
+          sed -i -E 's#(href|src)="(/[^/"][^"]*)"#\1="/attestazione-staging\2"#g' index.html
+          sed -i -E 's#workerSrc = "(/vendor[^"]*)"#workerSrc = "/attestazione-staging\1"#' index.html
+          grep -q '/attestazione-staging/vendor/pdf/pdf.min.js' index.html
+          echo "Percorsi assoluti corretti."
+
       - name: Pubblica su attestazione-staging (repo Pages secondario)
         env:
           STAGING_DEPLOY_TOKEN: ${{ secrets.STAGING_DEPLOY_TOKEN }}
