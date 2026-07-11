@@ -49,15 +49,29 @@
   section.blocco a { color: var(--oro); text-decoration: none; }
   section.blocco a:hover { text-decoration: underline; }
 
-  .tabella-wrap { overflow-x: auto; margin-top: 1.6rem; border: 1px solid #e6e0cc; border-radius: 6px; }
-  table.fasce { width: 100%; min-width: 720px; border-collapse: collapse; font-size: 0.83rem; }
+  .tabella-wrap { margin-top: 1.6rem; border: 1px solid #e6e0cc; border-radius: 6px; overflow: hidden; }
+  table.fasce { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
   table.fasce caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   table.fasce th, table.fasce td { padding: 0.6rem 0.8rem; text-align: left; vertical-align: top; border-bottom: 1px solid #f0ede2; }
   table.fasce thead th { background: #f8f5eb; font-family: 'EB Garamond', Georgia, serif; font-weight: 500; font-size: 0.98rem; color: #111; border-bottom: 2px solid #e6e0cc; }
-  table.fasce tbody th[scope="row"] { font-weight: 500; font-size: 0.78rem; color: #888; text-transform: uppercase; letter-spacing: 0.03em; background: #fdfcf8; white-space: nowrap; }
+  table.fasce tbody th[scope="row"] { font-weight: 500; font-size: 0.72rem; color: #888; text-transform: uppercase; letter-spacing: 0.03em; background: #fdfcf8; width: 118px; }
   table.fasce td { color: #444; }
   table.fasce td strong { font-weight: 500; color: #111; }
   table.fasce tbody tr:last-child th, table.fasce tbody tr:last-child td { border-bottom: none; }
+  /* Sotto i 720px la tabella diventa schede impilate: una scheda per
+     caratteristica, con i quattro valori etichettati per fascia (via
+     data-fascia). Niente scroll orizzontale. */
+  @media (max-width: 720px) {
+    .tabella-wrap { border: none; border-radius: 0; overflow: visible; }
+    table.fasce, table.fasce tbody, table.fasce tr, table.fasce th, table.fasce td { display: block; width: auto; }
+    table.fasce thead { display: none; }
+    table.fasce tr { border: 1px solid #e6e0cc; border-radius: 6px; margin-bottom: 0.8rem; overflow: hidden; background: #fffefb; }
+    table.fasce tbody tr:last-child { margin-bottom: 0; }
+    table.fasce tbody th[scope="row"] { width: auto; background: #f8f5eb; border-bottom: 1px solid #e6e0cc; font-size: 0.75rem; }
+    table.fasce td { border-bottom: 1px solid #f6f3ea; padding: 0.5rem 0.8rem; }
+    table.fasce tr:last-child td:last-child, table.fasce td:last-child { border-bottom: none; }
+    table.fasce td::before { content: attr(data-fascia); display: block; font-size: 0.66rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--oro); margin-bottom: 0.1rem; }
+  }
   .tag-arrivo { display: inline-block; font-family: 'Inter', sans-serif; font-size: 0.62rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--oro); border: 1px solid var(--oro); border-radius: 999px; padding: 0.05rem 0.5rem; margin-left: 0.4rem; vertical-align: middle; }
   td .tag-arrivo { margin-left: 0; }
 
@@ -129,73 +143,73 @@
       <tbody>
         <tr>
           <th scope="row">A chi si rivolge</th>
-          <td>Chiunque, per uso occasionale</td>
-          <td>Sviluppatori, agenti AI, integrazioni</td>
-          <td>Chi attesta con continuità: artisti, fotografi, studi</td>
-          <td>Accademie, enti, aziende</td>
+          <td data-fascia="Base">Chiunque, per uso occasionale</td>
+          <td data-fascia="Sviluppatore">Sviluppatori, agenti AI, integrazioni</td>
+          <td data-fascia="Professionale">Chi attesta con continuità: artisti, fotografi, studi</td>
+          <td data-fascia="Convenzione">Accademie, enti, aziende</td>
         </tr>
         <tr>
           <th scope="row">Identità richiesta</th>
-          <td><strong>Nessuna</strong> — zero dati</td>
-          <td>Email verificata (Google/Microsoft)</td>
-          <td>Email verificata + abbonamento</td>
-          <td>Email del dominio convenzionato (es. <em>@studenti.tuaaccademia.it</em>)</td>
+          <td data-fascia="Base"><strong>Nessuna</strong> — zero dati</td>
+          <td data-fascia="Sviluppatore">Email verificata (Google/Microsoft)</td>
+          <td data-fascia="Professionale">Email verificata + abbonamento</td>
+          <td data-fascia="Convenzione">Email del dominio convenzionato (es. <em>@studenti.tuaaccademia.it</em>)</td>
         </tr>
         <tr>
           <th scope="row">Canali</th>
-          <td>Sito, bot Telegram</td>
-          <td>API, server MCP</td>
-          <td>Sito con accesso email <span class="tag-arrivo">in arrivo</span> · API</td>
-          <td>Sito con accesso email <span class="tag-arrivo">in arrivo</span> · API</td>
+          <td data-fascia="Base">Sito, bot Telegram</td>
+          <td data-fascia="Sviluppatore">API, server MCP</td>
+          <td data-fascia="Professionale">Sito con accesso email <span class="tag-arrivo">in arrivo</span> · API</td>
+          <td data-fascia="Convenzione">Sito con accesso email <span class="tag-arrivo">in arrivo</span> · API</td>
         </tr>
         <tr>
           <th scope="row">Costo</th>
-          <td>Gratuito</td>
-          <td>Gratuito</td>
-          <td>Abbonamento annuale (importo in definizione)</td>
-          <td>Secondo convenzione</td>
+          <td data-fascia="Base">Gratuito</td>
+          <td data-fascia="Sviluppatore">Gratuito</td>
+          <td data-fascia="Professionale">Abbonamento annuale (importo in definizione)</td>
+          <td data-fascia="Convenzione">Secondo convenzione</td>
         </tr>
         <tr>
           <th scope="row">Attestazioni</th>
-          <td>Senza quota nominale, con limiti anti-abuso (bot Telegram: 5 al giorno)</td>
-          <td><strong>50 al mese</strong></td>
-          <td><strong>200 al mese</strong></td>
-          <td>Monte mensile concordato, condiviso tra i membri del dominio</td>
+          <td data-fascia="Base">Senza quota nominale, con limiti anti-abuso (bot Telegram: 5 al giorno)</td>
+          <td data-fascia="Sviluppatore"><strong>50 al mese</strong></td>
+          <td data-fascia="Professionale"><strong>200 al mese</strong></td>
+          <td data-fascia="Convenzione">Monte mensile concordato, condiviso tra i membri del dominio</td>
         </tr>
         <tr>
           <th scope="row">Verifiche</th>
-          <td>Illimitate</td>
-          <td>Illimitate</td>
-          <td>Illimitate</td>
-          <td>Illimitate</td>
+          <td data-fascia="Base">Illimitate</td>
+          <td data-fascia="Sviluppatore">Illimitate</td>
+          <td data-fascia="Professionale">Illimitate</td>
+          <td data-fascia="Convenzione">Illimitate</td>
         </tr>
         <tr>
           <th scope="row">Recupero del PDF dall'archivio</th>
-          <td>Garantito almeno <strong>6 mesi</strong></td>
-          <td>Garantito almeno <strong>12 mesi</strong></td>
-          <td>Garantito almeno <strong>5 anni</strong></td>
-          <td>Garantito almeno <strong>5 anni</strong> (o secondo convenzione)</td>
+          <td data-fascia="Base">Garantito almeno <strong>6 mesi</strong></td>
+          <td data-fascia="Sviluppatore">Garantito almeno <strong>12 mesi</strong></td>
+          <td data-fascia="Professionale">Garantito almeno <strong>5 anni</strong></td>
+          <td data-fascia="Convenzione">Garantito almeno <strong>5 anni</strong> (o secondo convenzione)</td>
         </tr>
         <tr>
-          <th scope="row">Prova di esistenza (pagina permanente, ancoraggio Bitcoin, badge)</th>
-          <td>Per sempre</td>
-          <td>Per sempre</td>
-          <td>Per sempre</td>
-          <td>Per sempre</td>
+          <th scope="row">Prova di esistenza</th>
+          <td data-fascia="Base">Per sempre</td>
+          <td data-fascia="Sviluppatore">Per sempre</td>
+          <td data-fascia="Professionale">Per sempre</td>
+          <td data-fascia="Convenzione">Per sempre</td>
         </tr>
         <tr>
           <th scope="row">Rendicontazione dei consumi</th>
-          <td>—</td>
-          <td>Contatore mensile della chiave</td>
-          <td>Riepilogo mensile</td>
-          <td>Riepilogo mensile, <strong>per membro</strong></td>
+          <td data-fascia="Base">—</td>
+          <td data-fascia="Sviluppatore">Contatore mensile della chiave</td>
+          <td data-fascia="Professionale">Riepilogo mensile</td>
+          <td data-fascia="Convenzione">Riepilogo mensile, <strong>per membro</strong></td>
         </tr>
         <tr>
           <th scope="row">Supporto</th>
-          <td>Best effort</td>
-          <td>Email</td>
-          <td>Email prioritaria</td>
-          <td>Referente dedicato</td>
+          <td data-fascia="Base">Best effort</td>
+          <td data-fascia="Sviluppatore">Email</td>
+          <td data-fascia="Professionale">Email prioritaria</td>
+          <td data-fascia="Convenzione">Referente dedicato</td>
         </tr>
       </tbody>
     </table>
