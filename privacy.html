@@ -74,7 +74,7 @@
 
 <main>
 
-  <p class="meta">Ultimo aggiornamento: 11 luglio 2026. La presente informativa riguarda specificamente il
+  <p class="meta">Ultimo aggiornamento: 12 luglio 2026. La presente informativa riguarda specificamente il
   servizio di attestazione disponibile su <strong>attestazione.spaziogenesi.org</strong>. Per il sito
   istituzionale vedi l'<a href="https://spaziogenesi.org/privacy-policy">informativa generale</a>.</p>
 
@@ -171,6 +171,30 @@
     <strong>90 giorni</strong>. Cancellazione anticipata su richiesta: vedi §7.</p>
   </div>
 
+  <div class="box">
+    <h3>3.7 Convenzioni con enti formativi (accademie, scuole)</h3>
+    <p>Questa sottosezione riguarda <strong>esclusivamente</strong> chi attesta un'opera nell'ambito di una
+    convenzione tra Spazio Genesi e un ente formativo (identificata dal dominio della tua email istituzionale,
+    es. <code>@studenti.tuaaccademia.it</code>) — sia richiedendo una chiave API (§3.5), sia tramite l'accesso
+    "Attesta con la tua email" direttamente dal sito. In entrambi i casi confermiamo la tua email con lo stesso
+    login "one-shot" Google, Microsoft o LinkedIn descritto al §3.5: nessuna password, nessun account presso di
+    noi. Nel caso dell'accesso dal sito, l'esito è un <strong>voucher firmato che vive solo nel tuo browser</strong>
+    (in <em>sessionStorage</em>, scompare quando chiudi la scheda o premi "Esci", validità massima 8 ore) —
+    non creiamo cookie né sessioni sul nostro server.</p>
+    <p>Per le sole attestazioni emesse in convenzione trattiamo <strong>email istituzionale, provider di accesso
+    e l'associazione tra la tua email e le impronte delle opere che attesti</strong>. Questo log esiste
+    unicamente per: erogare la garanzia di custodia del certificato prevista dalla convenzione, contabilizzare
+    il monte mensile condiviso con l'ente, e produrre un rendiconto <strong>aggregato</strong> per l'ente (totali
+    e numero di membri, mai l'elenco nominativo delle opere) a fini di fatturazione e rinnovo — salvo diverso
+    accordo scritto con l'ente. Non trattiamo alcun dato aggiuntivo per chi usa il servizio senza una convenzione
+    attiva sul proprio dominio email.</p>
+    <p class="meta"><strong>Base giuridica:</strong> erogazione del servizio richiesto dallo studente/membro
+    nell'ambito della convenzione (art. 6.1.b) e legittimo interesse alla prevenzione degli abusi (art. 6.1.f).
+    <strong>Conservazione:</strong> per la durata della garanzia di custodia prevista dalla convenzione (5-10
+    anni secondo l'accordo con l'ente) — coerente con la funzione stessa del log, che è provare la copertura nel
+    tempo. Cancellazione anticipata su richiesta: vedi §7.</p>
+  </div>
+
   <h2>4. Conservazione e residenza dei dati</h2>
   <ul>
     <li><strong>File dell'opera:</strong> non inviato né conservato — resta sul tuo dispositivo (vedi §2).</li>
@@ -186,6 +210,10 @@
     <li><strong>Dati del bot Telegram (§3.6):</strong> conservati su una <strong>Cloudflare D1</strong>
     dedicata al bot, distinta sia dall'archivio R2 sia dal database del motore. Stessa copertura contrattuale
     di Cloudflare descritta al punto precedente.</li>
+    <li><strong>Log delle convenzioni (§3.7):</strong> conservato sulla stessa Cloudflare D1 del motore, per la
+    durata della garanzia di custodia prevista dalla convenzione. Riguarda solo chi attesta nell'ambito di una
+    convenzione attiva; il voucher dell'accesso dal sito non è mai conservato lato server (vive solo nel tuo
+    browser, vedi §3.7).</li>
   </ul>
 
   <h2>5. Destinatari (responsabili del trattamento e soggetti coinvolti)</h2>
@@ -199,10 +227,11 @@
     <tr><td>OpenTimestamps (calendar pubblici)</td><td>Ancoraggio in blockchain Bitcoin</td><td>Solo un hash <code>sha256(impronta‖nonce)</code> — nessun dato personale</td></tr>
   </table>
   <p>Inoltre, autorità pubbliche nei soli casi previsti dalla legge.</p>
-  <p><strong>Nota sul login per gli sviluppatori (§3.5):</strong> Google, Microsoft e LinkedIn non agiscono come
-  nostri responsabili del trattamento, ma come <strong>titolari autonomi</strong> nel loro ruolo di provider di
-  identità scelto da chi richiede la chiave — trattano l'autenticazione secondo le proprie informative privacy.
-  Noi riceviamo solo l'email verificata, non il token di accesso.</p>
+  <p><strong>Nota sul login per gli sviluppatori (§3.5) e sulle convenzioni (§3.7):</strong> Google, Microsoft e
+  LinkedIn non agiscono come nostri responsabili del trattamento, ma come <strong>titolari autonomi</strong> nel
+  loro ruolo di provider di identità scelto da chi richiede la chiave o accede dal sito — trattano
+  l'autenticazione secondo le proprie informative privacy. Noi riceviamo solo l'email verificata, non il token
+  di accesso.</p>
   <p><strong>Nota sul bot Telegram (§3.6):</strong> Telegram FZ-LLC non agisce come nostro responsabile del
   trattamento, ma come <strong>titolare autonomo</strong> nel suo ruolo di fornitore del trasporto — il file
   e i messaggi transitano sulla sua infrastruttura secondo la sua propria informativa privacy, prima di
@@ -231,6 +260,11 @@
       <li>Se hai usato il <strong>bot Telegram</strong> (§3.6), puoi chiedere la cancellazione anticipata
       del tuo id utente e dei contatori d'uso in qualsiasi momento, scrivendo a
       <a href="mailto:info@spaziogenesi.org">info@spaziogenesi.org</a> — non serve attendere i 90 giorni.</li>
+      <li>Se hai attestato nell'ambito di una <strong>convenzione con un ente formativo</strong> (§3.7), puoi
+      chiedere in qualsiasi momento la rimozione della tua email dal log, scrivendo a
+      <a href="mailto:info@spaziogenesi.org">info@spaziogenesi.org</a>: il log resta in forma pseudonima (le
+      opere restano contate ai fini della garanzia e del rendiconto verso l'ente, ma senza più il tuo indirizzo
+      email associato).</li>
     </ul>
   </div>
 
