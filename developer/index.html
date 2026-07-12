@@ -55,6 +55,27 @@
   .link-row a.pill:hover { background: #ede7d4; text-decoration: none; }
   .link-row a.pill svg { flex: 0 0 auto; }
 
+  .tabella-wrap { margin: 0.9rem 0 0.3rem; border: 1px solid #e6e0cc; border-radius: 6px; overflow: hidden; }
+  table.matrice { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  table.matrice caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  table.matrice th, table.matrice td { padding: 0.6rem 0.75rem; text-align: left; vertical-align: top; border-bottom: 1px solid #f0ede2; }
+  table.matrice thead th { background: #f8f5eb; font-family: 'EB Garamond', Georgia, serif; font-weight: 500; font-size: 0.92rem; color: #111; border-bottom: 2px solid #e6e0cc; }
+  table.matrice tbody th[scope="row"] { font-weight: 500; font-size: 0.72rem; color: #888; text-transform: uppercase; letter-spacing: 0.03em; background: #fdfcf8; width: 130px; }
+  table.matrice td { color: #444; }
+  table.matrice td strong { font-weight: 500; color: #111; }
+  table.matrice tbody tr:last-child th, table.matrice tbody tr:last-child td { border-bottom: none; }
+  @media (max-width: 720px) {
+    .tabella-wrap { border: none; border-radius: 0; overflow: visible; }
+    table.matrice, table.matrice tbody, table.matrice tr, table.matrice th, table.matrice td { display: block; width: auto; }
+    table.matrice thead { display: none; }
+    table.matrice tr { border: 1px solid #e6e0cc; border-radius: 6px; margin-bottom: 0.8rem; overflow: hidden; background: #fffefb; }
+    table.matrice tbody tr:last-child { margin-bottom: 0; }
+    table.matrice tbody th[scope="row"] { width: auto; background: #f8f5eb; border-bottom: 1px solid #e6e0cc; font-size: 0.75rem; }
+    table.matrice td { border-bottom: 1px solid #f6f3ea; padding: 0.5rem 0.75rem; }
+    table.matrice tr:last-child td:last-child, table.matrice td:last-child { border-bottom: none; }
+    table.matrice td::before { content: attr(data-client); display: block; font-size: 0.64rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--oro); margin-bottom: 0.1rem; }
+  }
+
   .nota { margin-top: 1.6rem; padding: 0.9rem 1.1rem; background: #f9f9f7; border: 1px solid #e5e5e0; border-radius: 6px; font-size: 0.82rem; color: #666; line-height: 1.6; }
   footer { padding: 2rem 1.5rem 2.2rem; font-size: 0.78rem; color: #aaa; border-top: 1px solid #eee; }
   footer a { color: #888; text-decoration: none; }
@@ -127,6 +148,62 @@
     <p style="margin-top:0.8rem;">Installazione in un client MCP (es. Claude Desktop, Claude Code):</p>
     <p><code>npx -y @spazio-genesi/attest-mcp</code></p>
     <p>Sette strumenti: autorizzazione, attestazione file, download certificato PDF, verifica file, verifica certificato, controllo ancoraggio Bitcoin, stato del servizio.</p>
+  </section>
+
+  <section class="blocco">
+    <h2>MCP remoto — zero installazione</h2>
+    <p>Per chi preferisce non installare nulla: lo stesso servizio, raggiungibile aggiungendo un URL come connettore (claude.ai, Claude Code, o qualunque client MCP che parli HTTP Streamable). Nessun upload — l'agente calcola l'impronta SHA-256 eseguendo codice in locale (<code>sha256sum</code>/<code>certutil</code>/<code>shasum</code>) e passa solo quella: il file non transita né dal client né dai nostri server, un livello di privacy superiore anche al bot Telegram.</p>
+    <div class="link-row">
+      <a class="pill" href="https://attest-mcp-remote.it-e3f.workers.dev/mcp" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg>
+        attest-mcp-remote.it-e3f.workers.dev/mcp
+      </a>
+      <a class="pill" href="https://github.com/SPAZIO-GENESI/attest-mcp-remote" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        Codice sorgente (MIT)
+      </a>
+    </div>
+    <p style="margin-top:0.8rem;">Nessuna autenticazione richiesta per aggiungere il connettore: strumenti pubblici (stato del servizio, controllo ancoraggio, verifica) subito disponibili; per attestare, l'agente stesso ti guida in un'autorizzazione al volo (link + controllo anti-bot, come sul sito).</p>
+    <p>Otto strumenti: quattro pubblici (stato del servizio, controllo ancoraggio Bitcoin, verifica attestazione, ricerca certificato) e quattro con credenziale (autorizzazione, completamento autorizzazione, attestazione per impronta, download certificato PDF).</p>
+  </section>
+
+  <section class="blocco">
+    <h2>Quale credenziale funziona su quale client</h2>
+    <p>Il protocollo MCP non è uniforme sui client remoti: alcuni permettono di aggiungere header personalizzati, altri no. Questo determina se la <strong>tua</strong> chiave API (quota Sviluppatore o pool di Convenzione) è utilizzabile o se resta solo l'autorizzazione temporanea in sessione — meglio saperlo prima di scegliere il client, non scoprirlo a metà integrazione.</p>
+    <div class="tabella-wrap">
+      <table class="matrice">
+        <caption>Compatibilità tra credenziali e client MCP</caption>
+        <thead>
+          <tr>
+            <th scope="col"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Caratteristica</span></th>
+            <th scope="col">Claude Code / client con header personalizzati</th>
+            <th scope="col">claude.ai (connettore remoto)</th>
+            <th scope="col">MCP locale (stdio, npx)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Come autentica</th>
+            <td data-client="Claude Code / header personalizzati">Header <code>Authorization: Bearer</code> con la tua chiave <code>sg_k_…</code></td>
+            <td data-client="claude.ai">Solo autorizzazione al volo in sessione (link + controllo anti-bot) — claude.ai non supporta header personalizzati sui connettori</td>
+            <td data-client="MCP locale">La tua chiave <code>sg_k_…</code> nella configurazione del client</td>
+          </tr>
+          <tr>
+            <th scope="row">Quota che consuma</th>
+            <td data-client="Claude Code / header personalizzati"><strong>La tua</strong> — 50/mese (Sviluppatore) o il pool della tua Convenzione</td>
+            <td data-client="claude.ai">Sessione temporanea a sé: fino a 20 attestazioni, <strong>non</strong> la tua chiave né la tua Convenzione</td>
+            <td data-client="MCP locale"><strong>La tua</strong> — 50/mese (Sviluppatore) o il pool della tua Convenzione</td>
+          </tr>
+          <tr>
+            <th scope="row">Dura</th>
+            <td data-client="Claude Code / header personalizzati">Finché la chiave resta attiva (nessuna nuova autorizzazione)</td>
+            <td data-client="claude.ai">24 ore, poi va rifatta; anche riconnettendosi al connettore</td>
+            <td data-client="MCP locale">Finché la chiave resta attiva</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:0.6rem;">In breve: se hai una chiave e vuoi che le tue attestazioni contino sulla tua quota o convenzione, usa Claude Code (o un client con header) oppure il pacchetto locale <code>@spazio-genesi/attest-mcp</code>. Su claude.ai l'attestazione funziona, ma sempre con un'autorizzazione temporanea indipendente — il ponte chiave↔claude.ai (OAuth sul server MCP) è un possibile sviluppo futuro, non ancora costruito.</p>
   </section>
 
   <section class="blocco">

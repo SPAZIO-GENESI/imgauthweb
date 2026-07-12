@@ -95,6 +95,16 @@
 <main>
 
   <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Server MCP remoto — zero installazione</span><span class="data">12 luglio 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Attesta dal tuo agente AI senza installare nulla.</strong> Accanto al pacchetto locale <code>@spazio-genesi/attest-mcp</code>, ora c'è anche un server MCP <em>remoto</em>: basta aggiungere un URL come connettore (claude.ai, Claude Code e altri client MCP) e i tool sono subito disponibili — nessuna installazione, nessuna configurazione.</li>
+      <li><strong>Nessun upload, mai.</strong> L'agente calcola l'impronta SHA-256 eseguendo codice in locale e passa solo quella: il file non transita né dal client né dai nostri server — un livello di privacy pari (anzi superiore, perché non tocca nemmeno il nostro Worker) a quello del sito.</li>
+      <li><strong>Trasparenza sulle credenziali.</strong> La nuova pagina <a href="/developer/">Per sviluppatori e partner</a> spiega chiaramente dove funziona la tua chiave API e dove invece conta solo un'autorizzazione temporanea in sessione (su claude.ai, che non supporta header personalizzati) — da sapere prima di scegliere il client, non a integrazione avviata.</li>
+      <li>Codice sorgente pubblico su <a href="https://github.com/SPAZIO-GENESI/attest-mcp-remote" target="_blank" rel="noopener noreferrer">GitHub</a> (MIT).</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
     <summary><span class="seg">+</span><span class="tit">Attesta con la tua email istituzionale</span><span class="data">12 luglio 2026</span></summary>
     <div class="corpo"><ul>
       <li><strong>Le convenzioni ora si usano anche dal sito, non solo via API.</strong> Se la tua accademia o il tuo ente ha una convenzione con Spazio Genesi, nella scheda Attesta trovi il link "Hai una convenzione? Accedi con la tua email istituzionale": un accesso one-shot con Google, Microsoft o LinkedIn (nessuna password, nessun account) riconosce automaticamente le tue attestazioni.</li>
