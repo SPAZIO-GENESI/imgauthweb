@@ -914,7 +914,34 @@
     </details>
 
     <div class="passo"><span class="n">3</span><h2>Genera l'attestazione</h2></div>
-    <!-- Verifica anti-bot: richiesta per generare l'attestazione (hash + firma) -->
+
+    <!-- P25 §2.7: percorso "attesta con la tua email" per chi ha una convenzione
+         (accademie, enti) — OAuth one-shot su imgauth, nessuna chiave da gestire.
+         Stato anonimo: link discreto e chiuso, non si frappone all'azione principale. -->
+    <details id="convenzioneAnon" class="opz" style="margin-top:0.6rem;">
+      <summary>Hai una convenzione? Accedi con la tua email istituzionale</summary>
+      <p class="opz-nota">
+        Se la tua accademia o il tuo ente ha una convenzione con Spazio Genesi, verifica la tua
+        email istituzionale: le attestazioni verranno riconosciute automaticamente, con maggiore
+        garanzia di custodia del certificato. Nessuna password, nessun account: un solo accesso
+        one-shot, valido per questa sessione del browser.
+      </p>
+      <div class="actions" id="convenzioneProviderLinks">
+        <a class="btn-copy" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=google&purpose=attest">Continua con Google</a>
+        <a class="btn-copy" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=microsoft&purpose=attest">Continua con Microsoft</a>
+        <a class="btn-copy" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=linkedin&purpose=attest">Continua con LinkedIn</a>
+      </div>
+    </details>
+
+    <!-- Stato attivo: sostituisce il blocco anonimo quando un voucher valido è in
+         sessionStorage. Il file non lascia comunque mai il dispositivo. -->
+    <div id="convenzioneAttiva" class="opz-nota" style="display:none;margin-top:0.6rem;padding:0.7rem 0.9rem;border:1px solid var(--oro);border-radius:8px;">
+      <span id="convenzioneAttivaTesto"></span>
+      <button type="button" id="convenzioneEsciBtn" class="btn-copy" style="margin-left:0.6rem;">Esci</button>
+    </div>
+
+    <!-- Verifica anti-bot: richiesta per generare l'attestazione (hash + firma),
+         SALTATA quando un voucher email valido è attivo (barriera più forte). -->
     <div id="turnstileWidget" style="margin-top:0.6rem;"></div>
 
     <!-- Messaggio d'errore subito sopra il pulsante: su mobile resta vicino all'azione -->
@@ -931,6 +958,7 @@
     <div class="result-wrap" id="resultWrap" aria-live="polite">
       <div class="risultato-card">
         <p class="result-section-title"><span class="ris-ok">✓</span> La tua opera è attestata</p>
+        <p class="opz-nota" id="fasciaNota" style="display:none;"></p>
 
         <div class="hash-block">
           <div class="hash-label-small">Impronta digitale (SHA-256)</div>
@@ -1450,9 +1478,80 @@
   window.onloadTurnstileCallback = ensureTurnstile;
   document.addEventListener("DOMContentLoaded", ensureTurnstile);
 
+  // --- "ATTESTA CON LA TUA EMAIL" — voucher stateless dal sito (P25 §2.7) ---
+  // Nessun cookie né sessione server: il voucher firmato viaggia nel fragment
+  // URL (mai inviato a un server), viene letto una volta e tenuto in
+  // sessionStorage (sparisce alla chiusura della scheda). Il file continua a
+  // non lasciare mai il dispositivo: il voucher riguarda solo l'IDENTITÀ di
+  // chi attesta, non l'opera.
+  const SG_VOUCHER_KEY = "sgVoucher";
+
+  function base64UrlToStr(b64url) {
+    const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((b64url.length + 3) % 4);
+    return decodeURIComponent(
+      atob(b64).split("").map(c => "%" + c.charCodeAt(0).toString(16).padStart(2, "0")).join("")
+    );
+  }
+  function decodeVoucherPayload(token) {
+    try {
+      const dot = token.lastIndexOf(".");
+      if (dot < 0) return null;
+      return JSON.parse(base64UrlToStr(token.slice(0, dot)));
+    } catch { return null; }
+  }
+
+  // Al primo load: un fragment #sgv= appena arrivato dal redirect OAuth vince
+  // su un eventuale voucher già in sessionStorage (nuovo accesso esplicito).
+  (function captureVoucherFromFragment() {
+    const m = /(?:^|[#&])sgv=([^&]+)/.exec(location.hash);
+    if (!m) return;
+    const token = decodeURIComponent(m[1]);
+    sessionStorage.setItem(SG_VOUCHER_KEY, token);
+    history.replaceState(null, "", location.pathname + location.search);
+  })();
+
+  function getActiveVoucher() {
+    const token = sessionStorage.getItem(SG_VOUCHER_KEY);
+    if (!token) return null;
+    const payload = decodeVoucherPayload(token);
+    // Scadenza controllata anche lato client per la sola UI (il server la
+    // riverifica comunque ad ogni /api/hash: qui evitiamo solo di mostrare
+    // un banner "attivo" per un voucher già scaduto).
+    if (!payload || !payload.email || Date.now() > payload.exp) {
+      sessionStorage.removeItem(SG_VOUCHER_KEY);
+      return null;
+    }
+    return { token, payload };
+  }
+
+  function renderVoucherState() {
+    const active = getActiveVoucher();
+    const anonBox  = document.getElementById("convenzioneAnon");
+    const attivaBox = document.getElementById("convenzioneAttiva");
+    const tsWidget  = document.getElementById("turnstileWidget");
+    if (active) {
+      anonBox.style.display = "none";
+      attivaBox.style.display = "block";
+      document.getElementById("convenzioneAttivaTesto").textContent =
+        "Stai attestando come " + active.payload.email +
+        (active.payload.conv ? " — convenzione riconosciuta" : " — nessuna convenzione associata a questa email");
+      if (tsWidget) tsWidget.style.display = "none";
+    } else {
+      anonBox.style.display = "";
+      attivaBox.style.display = "none";
+      if (tsWidget) tsWidget.style.display = "";
+      ensureTurnstile();
+    }
+  }
+  document.addEventListener("DOMContentLoaded", renderVoucherState);
+  document.getElementById("convenzioneEsciBtn").addEventListener("click", () => {
+    sessionStorage.removeItem(SG_VOUCHER_KEY);
+    renderVoucherState();
+  });
+
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.16.8";
+  const APP_VERSION = "1.17.0";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
@@ -1597,9 +1696,14 @@
   attestBtn.addEventListener("click", async () => {
     if (!selectedFile) return;
 
-    // Token anti-bot Turnstile: il worker lo richiede per emettere l'attestazione.
+    // Voucher email attivo (P25 §2.7): bypassa la sola challenge Turnstile,
+    // come un token anti-bot alternativo — barriera più forte (OAuth one-shot).
+    const activeVoucher = getActiveVoucher();
+
+    // Token anti-bot Turnstile: il worker lo richiede per emettere l'attestazione
+    // — SALTATO se un voucher email valido è attivo.
     let tsToken = "";
-    if (turnstileEnabled()) {
+    if (!activeVoucher && turnstileEnabled()) {
       tsToken = (window.turnstile && window.turnstile.getResponse()) || "";
       if (!tsToken) {
         showErr("Completa la verifica anti-bot qui sopra, poi riprova.");
@@ -1623,9 +1727,11 @@
       // Invia JSON al Worker. I dati dell'opera (facoltativi) vengono
       // normalizzati dal server e vincolati alla firma HMAC dell'attestazione.
       btnLabel.textContent = "Attestazione…";
+      const hashHeaders = { "Content-Type": "application/json" };
+      if (activeVoucher) hashHeaders["X-SG-Voucher"] = activeVoucher.token;
       const res = await fetch(WORKER_HASH_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: hashHeaders,
         body: JSON.stringify({
           name: selectedFile.name,
           type: selectedFile.type,
@@ -1642,11 +1748,15 @@
       const d = await res.json();
 
       if (!res.ok) {
+        if (d.error === "voucher_scaduto") {
+          sessionStorage.removeItem(SG_VOUCHER_KEY);
+          renderVoucherState();
+          showErr("Il tuo accesso con email istituzionale è scaduto. Accedi di nuovo qui sopra, poi riprova.");
+          return;
+        }
         showErr(d.error || "Errore " + res.status);
         return;
       }
-
-      
 
       lastData = d;
       // Auto-fill campi verifica HMAC con i dati appena calcolati.
@@ -1673,6 +1783,27 @@
       document.getElementById("rTimestamp").textContent   = d.timestamp_leggibile;
       document.getElementById("rIssuer").textContent      = d.emesso_da;
       document.getElementById("rAttestation").textContent = d.attestazione;
+
+      // P25: avviso onesto sulla fascia applicata — mai un blocco, solo
+      // trasparenza su quale garanzia di custodia vale per questa attestazione
+      // (vedi /condizioni/). Silenzioso nei casi ordinari (base/sviluppatore
+      // senza convenzione): l'avviso serve solo dove cambia qualcosa.
+      const fasciaNota = document.getElementById("fasciaNota");
+      if (d.fascia === "convenzione" && d.convenzione) {
+        fasciaNota.textContent = "Attestazione riconosciuta dalla convenzione con " + d.convenzione.name +
+          ": il certificato è garantito recuperabile più a lungo (vedi le condizioni).";
+        fasciaNota.style.display = "";
+      } else if (d.fascia_motivo === "pool_esaurito") {
+        fasciaNota.textContent = "Il monte mensile della tua convenzione è esaurito per questo mese: " +
+          "l'attestazione è stata generata comunque, nella fascia gratuita di base (PDF recuperabile per almeno 6 mesi).";
+        fasciaNota.style.display = "";
+      } else if (d.fascia_motivo === "tetto_individuale") {
+        fasciaNota.textContent = "Hai raggiunto il tuo limite personale mensile nella convenzione: " +
+          "l'attestazione è stata generata comunque, nella fascia gratuita di base (PDF recuperabile per almeno 6 mesi).";
+        fasciaNota.style.display = "";
+      } else {
+        fasciaNota.style.display = "none";
+      }
 
       // Il link alla prova blockchain e il badge valgono per il PDF precedente:
       // nascondili finché non viene generato il PDF di QUESTA attestazione.
@@ -1814,9 +1945,15 @@
     downloadPdfBtn.disabled = true;
     pdfBtnLabel.textContent = "Generazione del certificato in corso…";
     try {
+      // Stesso voucher (se ancora attivo) allegato anche qui: serve solo a
+      // taggare correttamente la fascia nel sidecar del certificato (§2.4/2.7),
+      // non sblocca nulla che l'HMAC di lastData non garantisca già.
+      const pdfHeaders = { "Content-Type": "application/json" };
+      const activeVoucherForPdf = getActiveVoucher();
+      if (activeVoucherForPdf) pdfHeaders["X-SG-Voucher"] = activeVoucherForPdf.token;
       const res = await fetch(WORKER_PDF_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: pdfHeaders,
         body: JSON.stringify(lastData),
       });
       if (!res.ok) {
