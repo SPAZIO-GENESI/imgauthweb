@@ -142,9 +142,9 @@
     <p>Questa sottosezione riguarda <strong>esclusivamente</strong> chi richiede una chiave API self-service
     dalla pagina <code>imgauth.spaziogenesi.org/developer/keys</code> — non chi usa il servizio di attestazione
     dal sito: per quell'uso, come già descritto sopra, non trattiamo alcun dato personale identificativo.</p>
-    <p>Per emettere la chiave chiediamo di confermare la tua email tramite <strong>Google o Microsoft</strong>
-    (login "one-shot": leggiamo solo l'indirizzo email verificato dal provider, poi scartiamo il token —
-    nessuna sessione, nessun cookie, nessun accesso continuativo al tuo account Google/Microsoft). Trattiamo
+    <p>Per emettere la chiave chiediamo di confermare la tua email tramite <strong>Google, Microsoft o
+    LinkedIn</strong> (login "one-shot": leggiamo solo l'indirizzo email verificato dal provider, poi scartiamo
+    il token — nessuna sessione, nessun cookie, nessun accesso continuativo al tuo account). Trattiamo
     <strong>email, provider scelto e data di richiesta</strong>, per emettere la chiave, moderarne l'uso
     (comprese eventuali comunicazioni in caso di revoca o abuso sospetto) e mantenere una traccia anti-abuso.</p>
     <p class="meta"><strong>Base giuridica:</strong> misure precontrattuali/contrattuali richieste dall'interessato
@@ -199,17 +199,17 @@
     <tr><td>OpenTimestamps (calendar pubblici)</td><td>Ancoraggio in blockchain Bitcoin</td><td>Solo un hash <code>sha256(impronta‖nonce)</code> — nessun dato personale</td></tr>
   </table>
   <p>Inoltre, autorità pubbliche nei soli casi previsti dalla legge.</p>
-  <p><strong>Nota sul login per gli sviluppatori (§3.5):</strong> Google e Microsoft non agiscono come nostri
-  responsabili del trattamento, ma come <strong>titolari autonomi</strong> nel loro ruolo di provider di identità
-  scelto da chi richiede la chiave — trattano l'autenticazione secondo le proprie informative privacy. Noi
-  riceviamo solo l'email verificata, non il token di accesso.</p>
+  <p><strong>Nota sul login per gli sviluppatori (§3.5):</strong> Google, Microsoft e LinkedIn non agiscono come
+  nostri responsabili del trattamento, ma come <strong>titolari autonomi</strong> nel loro ruolo di provider di
+  identità scelto da chi richiede la chiave — trattano l'autenticazione secondo le proprie informative privacy.
+  Noi riceviamo solo l'email verificata, non il token di accesso.</p>
   <p><strong>Nota sul bot Telegram (§3.6):</strong> Telegram FZ-LLC non agisce come nostro responsabile del
   trattamento, ma come <strong>titolare autonomo</strong> nel suo ruolo di fornitore del trasporto — il file
   e i messaggi transitano sulla sua infrastruttura secondo la sua propria informativa privacy, prima di
   raggiungere il nostro Worker.</p>
 
   <h2>6. Trasferimenti fuori dall'UE</h2>
-  <p>Cloudflare, Microsoft, GitHub e DigiCert hanno sede negli Stati Uniti. Gli eventuali trasferimenti
+  <p>Cloudflare, Microsoft, GitHub, LinkedIn e DigiCert hanno sede negli Stati Uniti. Gli eventuali trasferimenti
   avvengono nel rispetto delle garanzie GDPR (clausole contrattuali standard / decisioni di adeguatezza).
   L'<strong>archivio dei certificati è mantenuto in giurisdizione UE</strong>; l'elaborazione all'edge è
   transitoria e non comporta conservazione fuori dall'UE.</p>
