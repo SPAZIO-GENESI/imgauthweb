@@ -505,6 +505,18 @@
   .btn-copy:hover{ border-color:var(--ink); color:var(--ink); }
   .btn-copy.ok{ border-color:var(--verde); color:var(--verde); }
 
+  /* Bottoni provider OAuth (voucher email, P25 §2.7) — a differenza di
+     .btn-copy (posizionato in assoluto sopra un blocco relativo) questi
+     stanno nel flusso normale, affiancati in riga. */
+  .provider-links{ display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.7rem; }
+  .provider-link{
+    display:inline-block; padding:0.55rem 1rem; background:var(--bianco);
+    border:1px solid var(--linea-forte); border-radius:6px; font-family:var(--sans);
+    font-size:0.82rem; font-weight:500; color:var(--ink-2); text-decoration:none;
+    transition:border-color 0.15s, color 0.15s;
+  }
+  .provider-link:hover{ border-color:var(--oro-testo); color:var(--oro-testo); }
+
   /* ── Messaggi d'errore ──────────────────────────────────────── */
   .error-msg{
     display:none; margin-top:1rem; padding:0.8rem 1rem;
@@ -926,10 +938,10 @@
         garanzia di custodia del certificato. Nessuna password, nessun account: un solo accesso
         one-shot, valido per questa sessione del browser.
       </p>
-      <div class="actions" id="convenzioneProviderLinks">
-        <a class="btn-copy" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=google&purpose=attest">Continua con Google</a>
-        <a class="btn-copy" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=microsoft&purpose=attest">Continua con Microsoft</a>
-        <a class="btn-copy" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=linkedin&purpose=attest">Continua con LinkedIn</a>
+      <div class="provider-links" id="convenzioneProviderLinks">
+        <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=google&purpose=attest">Continua con Google</a>
+        <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=microsoft&purpose=attest">Continua con Microsoft</a>
+        <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=linkedin&purpose=attest">Continua con LinkedIn</a>
       </div>
     </details>
 
@@ -937,7 +949,7 @@
          sessionStorage. Il file non lascia comunque mai il dispositivo. -->
     <div id="convenzioneAttiva" class="opz-nota" style="display:none;margin-top:0.6rem;padding:0.7rem 0.9rem;border:1px solid var(--oro);border-radius:8px;">
       <span id="convenzioneAttivaTesto"></span>
-      <button type="button" id="convenzioneEsciBtn" class="btn-copy" style="margin-left:0.6rem;">Esci</button>
+      <button type="button" id="convenzioneEsciBtn" class="provider-link" style="margin-left:0.6rem;cursor:pointer;">Esci</button>
     </div>
 
     <!-- Verifica anti-bot: richiesta per generare l'attestazione (hash + firma),
