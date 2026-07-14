@@ -7,6 +7,10 @@
 # produzione sono le tre costanti sostituite qui sotto. Il branch `main`
 # (produzione) non viene mai toccato da questo workflow.
 #
+# ⚠️ Dal refactoring CSP (rimozione 'unsafe-inline'), le tre costanti vivono
+# in js/app.js, non più in index.html — le sostituzioni sotto puntano a quel
+# file (vedi CLAUDE.md § authweb).
+#
 # Richiede il secret di repo STAGING_DEPLOY_TOKEN: PAT fine-grained,
 # scope SOLO sul repo attestazione-staging, permesso Contents: Read and
 # write (creato alla FASE 7 di P24-DESIGN-devops-cicd.md).
@@ -23,32 +27,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Punta index.html a imgauth-staging (Turnstile di test)
+      - name: Punta js/app.js a imgauth-staging (Turnstile di test)
         run: |
           set -e
           sed -i \
             -e 's#const WORKER_BASE       = "https://imgauth\.spaziogenesi\.org";#const WORKER_BASE       = "https://imgauth-staging.it-e3f.workers.dev";#' \
             -e 's#const CERT_PAGE_BASE    = "https://attestazione\.spaziogenesi\.org";#const CERT_PAGE_BASE    = "https://imgauth-staging.it-e3f.workers.dev";#' \
             -e 's#const TURNSTILE_SITEKEY = "0x4AAAAAADiPceBIwTz5n4hG";#const TURNSTILE_SITEKEY = "1x00000000000000000000AA";#' \
-            index.html
+            js/app.js
           # Verifica che le tre sostituzioni siano avvenute davvero (altrimenti
           # il sito di staging pubblicherebbe silenziosamente contro la produzione).
-          grep -q 'imgauth-staging.it-e3f.workers.dev' index.html
-          grep -q '1x00000000000000000000AA' index.html
+          grep -q 'imgauth-staging.it-e3f.workers.dev' js/app.js
+          grep -q '1x00000000000000000000AA' js/app.js
           echo "Sostituzioni applicate."
 
       - name: Correggi i percorsi assoluti per il sottopercorso GitHub Pages
         run: |
           set -e
           # In produzione (attestazione.spaziogenesi.org, dominio custom) i percorsi
-          # assoluti (/vendor/..., /status/, ...) risolvono correttamente alla radice.
-          # Il repo Pages secondario vive invece sotto spazio-genesi.github.io/attestazione-staging/
-          # (D2 del design: niente dominio custom per lo staging): senza questo passo,
-          # ogni riferimento assoluto punterebbe alla radice sbagliata (404) — scoperto
-          # nel collaudo browser reale di P24 FASE 7 (pdf.min.js 404, link interni rotti).
+          # assoluti (/vendor/..., /status/, /js/..., ...) risolvono correttamente alla
+          # radice. Il repo Pages secondario vive invece sotto
+          # spazio-genesi.github.io/attestazione-staging/ (D2 del design: niente
+          # dominio custom per lo staging): senza questo passo, ogni riferimento
+          # assoluto punterebbe alla radice sbagliata (404) — scoperto nel collaudo
+          # browser reale di P24 FASE 7 (pdf.min.js 404, link interni rotti).
           sed -i -E 's#(href|src)="(/[^/"][^"]*)"#\1="/attestazione-staging\2"#g' index.html
-          sed -i -E 's#workerSrc = "(/vendor[^"]*)"#workerSrc = "/attestazione-staging\1"#' index.html
-          grep -q '/attestazione-staging/vendor/pdf/pdf.min.js' index.html
+          sed -i -E 's#workerSrc = "(/vendor[^"]*)"#workerSrc = "/attestazione-staging\1"#' js/app.js
+          grep -q '/attestazione-staging/vendor/pdf/pdf.min.js' js/app.js
           echo "Percorsi assoluti corretti."
 
       - name: Pubblica su attestazione-staging (repo Pages secondario)
