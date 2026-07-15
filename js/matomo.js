@@ -5,7 +5,7 @@
     _paq.push(['trackPageView']);
     _paq.push(['enableLinkTracking']);
     (function() {
-    var u="//matomodocker.azurewebsites.net/";
+    var u="https://matomodocker.azurewebsites.net/";
     _paq.push(['setTrackerUrl', u+'matomo.php']);
     _paq.push(['setSiteId', '7']);
     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
