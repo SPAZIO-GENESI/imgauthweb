@@ -1,0 +1,43 @@
+# P29 FASE 1: la Swagger UI statica su /docs/ legge una copia locale di
+# openapi.json (zero chiamate passive al Worker; "Try it out" chiama
+# imgauth solo quando l'utente lo usa davvero, perché lo spec dichiara
+# "servers": ["https://imgauth.spaziogenesi.org"]).
+#
+# Il contratto cambia solo ai rilasci imgauth: la finestra settimanale
+# basta come rete di sicurezza; a un rilascio che tocca il contratto,
+# lanciare questo workflow a mano (workflow_dispatch) — annotato nella
+# checklist di rilascio in DEVOPS.md.
+
+name: Sync openapi.json da imgauth
+
+on:
+  schedule:
+    - cron: "17 4 * * 1" # ogni lunedì alle 04:17 UTC
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scarica openapi.json dal repo pubblico imgauth (raw GitHub)
+        run: |
+          set -e
+          curl -fsSL "https://raw.githubusercontent.com/SPAZIO-GENESI/imgauth/main/openapi.json" -o docs/openapi.json.new
+          # Validazione minima: dev'essere JSON e avere il campo "openapi".
+          node -e "const s=require('./docs/openapi.json.new'); if(!s.openapi) throw new Error('campo openapi mancante')"
+          mv docs/openapi.json.new docs/openapi.json
+
+      - name: Commit se cambiato
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- docs/openapi.json; then
+            echo "Nessuna modifica al contratto."
+            exit 0
+          fi
+          git add docs/openapi.json
+          git commit -m "docs: sincronizza openapi.json da imgauth"
+          git push
