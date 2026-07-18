@@ -62,7 +62,7 @@
 
 <main>
 
-  <p class="meta">Ultimo aggiornamento: 12 luglio 2026. La presente informativa riguarda specificamente il
+  <p class="meta">Ultimo aggiornamento: 18 luglio 2026. La presente informativa riguarda specificamente il
   servizio di attestazione disponibile su <strong>attestazione.spaziogenesi.org</strong>. Per il sito
   istituzionale vedi l'<a href="https://spaziogenesi.org/privacy-policy">informativa generale</a>.</p>
 
@@ -183,6 +183,40 @@
     tempo. Cancellazione anticipata su richiesta: vedi §7.</p>
   </div>
 
+  <div class="box">
+    <h3>3.8 Abbonamento Professionale</h3>
+    <p>Questa sottosezione riguarda <strong>esclusivamente</strong> chi attiva l'abbonamento annuale a
+    pagamento dalla pagina <code>imgauth.spaziogenesi.org/profilo</code>. Come per §3.5 e §3.7, l'identità è
+    confermata con lo stesso login "one-shot" Google, Microsoft o LinkedIn: nessuna password, nessun account
+    presso di noi, il voucher risultante vive solo nel tuo browser (<em>sessionStorage</em>, mai un cookie).</p>
+    <p>Per attivare e gestire l'abbonamento trattiamo <strong>email, provider di accesso, riferimenti
+    dell'abbonamento</strong> (identificativo Stripe, stato, data di scadenza, importo) e <strong>l'associazione
+    tra la tua email e le impronte delle opere che attesti in questa fascia</strong> — quest'ultima è ciò che
+    rende possibile mostrarti l'archivio dei tuoi certificati nella pagina profilo e onorare la garanzia di
+    recupero di almeno 5 anni. Il <strong>canale</strong> con cui hai prodotto ciascun certificato (sito, API,
+    MCP, bot Telegram) è annotato nello stesso log, dove distinguibile.</p>
+    <p>Puoi inoltre indicarci, <strong>facoltativamente e con consenso separato</strong>, il tuo settore e la
+    tua regione (profilazione Professionale) o l'applicazione/sistema operativo/ambiente di sviluppo che usi
+    (profilazione Sviluppatore, se hai anche una chiave API) — dati mai pubblici, che usiamo solo per proporti
+    condizioni di vantaggio o convenzioni quando disponibili. Modificabili e cancellabili in autonomia in
+    qualsiasi momento dalla pagina profilo, senza scriverci.</p>
+    <p><strong>Pagamenti:</strong> l'elaborazione del pagamento avviene interamente su <strong>Stripe</strong>
+    (pagina di Checkout e portale di gestione ospitati da Stripe): non vediamo né conserviamo mai i dati della
+    tua carta. Riceviamo da Stripe solo gli identificativi dell'abbonamento necessari a erogare il servizio
+    (non i dettagli del pagamento).</p>
+    <p class="meta"><strong>Base giuridica:</strong> esecuzione del contratto di abbonamento (art. 6.1.b);
+    obblighi contabili e fiscali sui riferimenti di pagamento (art. 6.1.c); consenso specifico per la
+    profilazione facoltativa (art. 6.1.a), revocabile in ogni momento senza conseguenze sull'abbonamento.
+    <strong>Conservazione:</strong> il log delle attestazioni e i riferimenti dell'abbonamento restano per
+    <strong>almeno 5 anni dalla produzione di ciascun certificato</strong> — è la garanzia stessa che offriamo,
+    quindi l'email non viene anonimizzata anticipatamente per un abbonamento cessato finché esistono
+    certificati ancora coperti da quella garanzia. La profilazione facoltativa è invece azzerata 180 giorni
+    dopo la cessazione, se non rimossa prima dall'interessato. Cancellazione anticipata su richiesta: vedi §7
+    — nota che, a differenza delle altre sezioni, qui la cancellazione comporta la <strong>perdita
+    dell'accesso al tuo archivio consultabile</strong> (i certificati già emessi restano comunque validi e
+    recuperabili per impronta, come per chiunque).</p>
+  </div>
+
   <h2>4. Conservazione e residenza dei dati</h2>
   <ul>
     <li><strong>File dell'opera:</strong> non inviato né conservato — resta sul tuo dispositivo (vedi §2).</li>
@@ -202,6 +236,10 @@
     durata della garanzia di custodia prevista dalla convenzione. Riguarda solo chi attesta nell'ambito di una
     convenzione attiva; il voucher dell'accesso dal sito non è mai conservato lato server (vive solo nel tuo
     browser, vedi §3.7).</li>
+    <li><strong>Dati dell'abbonamento Professionale (§3.8):</strong> conservati sulla stessa Cloudflare D1 del
+    motore, per almeno 5 anni dalla produzione di ciascun certificato (garanzia di recupero). I dati di
+    pagamento veri e propri (numero carta, ecc.) non transitano né sono conservati da noi: restano su Stripe,
+    che ne è titolare autonomo (vedi §5).</li>
   </ul>
 
   <h2>5. Destinatari (responsabili del trattamento e soggetti coinvolti)</h2>
@@ -213,6 +251,7 @@
     <tr><td>GitHub, Inc. (Microsoft)</td><td>Hosting dell'interfaccia (GitHub Pages)</td><td>Dati tecnici di navigazione</td></tr>
     <tr><td>DigiCert, Inc.</td><td>Autorità di marca temporale (RFC 3161)</td><td>Solo l'hash/firma da marcare — nessun dato personale</td></tr>
     <tr><td>OpenTimestamps (calendar pubblici)</td><td>Ancoraggio in blockchain Bitcoin</td><td>Solo un hash <code>sha256(impronta‖nonce)</code> — nessun dato personale</td></tr>
+    <tr><td>Stripe, Inc.</td><td>Elaborazione pagamenti abbonamento Professionale (§3.8)</td><td>Dati di pagamento (mai visti da noi), email per la fatturazione</td></tr>
   </table>
   <p>Inoltre, autorità pubbliche nei soli casi previsti dalla legge.</p>
   <p><strong>Nota sul login per gli sviluppatori (§3.5) e sulle convenzioni (§3.7):</strong> Google, Microsoft e
@@ -224,6 +263,10 @@
   trattamento, ma come <strong>titolare autonomo</strong> nel suo ruolo di fornitore del trasporto — il file
   e i messaggi transitano sulla sua infrastruttura secondo la sua propria informativa privacy, prima di
   raggiungere il nostro Worker.</p>
+  <p><strong>Nota sui pagamenti dell'abbonamento Professionale (§3.8):</strong> Stripe, Inc. non agisce come
+  nostro responsabile del trattamento, ma come <strong>titolare autonomo</strong> nel suo ruolo di fornitore
+  di servizi di pagamento — elabora i dati della tua carta secondo la propria informativa privacy; noi
+  riceviamo solo gli identificativi dell'abbonamento, mai i dati di pagamento.</p>
 
   <h2>6. Trasferimenti fuori dall'UE</h2>
   <p>Cloudflare, Microsoft, GitHub, LinkedIn e DigiCert hanno sede negli Stati Uniti. Gli eventuali trasferimenti
@@ -253,6 +296,12 @@
       <a href="mailto:info@spaziogenesi.org">info@spaziogenesi.org</a>: il log resta in forma pseudonima (le
       opere restano contate ai fini della garanzia e del rendiconto verso l'ente, ma senza più il tuo indirizzo
       email associato).</li>
+      <li>Se hai un <strong>abbonamento Professionale</strong> (§3.8), puoi chiedere in qualsiasi momento la
+      rimozione della tua email dal log, scrivendo a <a href="mailto:info@spaziogenesi.org">info@spaziogenesi.org</a>:
+      a differenza delle altre sezioni, questo comporta la <strong>perdita dell'accesso al tuo archivio
+      consultabile</strong> dalla pagina profilo (i certificati restano comunque validi e recuperabili per
+      impronta, come per chiunque). Su richiesta esplicita possiamo anche eliminare le copie dei PDF ancora
+      archiviate, quando non condivise con altre attestazioni.</li>
     </ul>
   </div>
 
@@ -285,6 +334,7 @@
         <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a>
         <a href="https://t.me/SGAttestBot">Bot Telegram</a>
         <a href="/condizioni/">Fasce e condizioni</a>
+        <a href="https://imgauth.spaziogenesi.org/profilo">Area professionale</a>
         <a href="/changelog/">Cronologia dei miglioramenti</a>
         <a href="/status/">Stato del servizio</a>
       </div>
