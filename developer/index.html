@@ -211,6 +211,46 @@
     </ul>
   </section>
 
+  <section class="blocco">
+    <h2>La tua app in produzione: due modelli</h2>
+    <p>Se costruisci un'applicazione che integra l'attestazione, in produzione hai due strade — non si escludono, dipende da chi possiede l'identità che finisce sul certificato.</p>
+    <div class="tabella-wrap">
+      <table class="matrice">
+        <caption>Modelli di produzione per applicazioni di terzi</caption>
+        <thead>
+          <tr>
+            <th scope="col"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Caratteristica</span></th>
+            <th scope="col">A — identità dell'utente finale</th>
+            <th scope="col">B — convenzione software house</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Credenziale</th>
+            <td data-client="Modello A">Dell'utente: abbonamento Professionale o Convenzione propria — chiave, voucher email o autorizzazione al volo</td>
+            <td data-client="Modello B">Chiave <code>sg_k_…</code> del tuo servizio, con un pool mensile dedicato</td>
+          </tr>
+          <tr>
+            <th scope="row">Garanzia di recupero</th>
+            <td data-client="Modello A">Dell'utente finale: il suo archivio, il suo <a href="https://imgauth.spaziogenesi.org/profilo">profilo</a></td>
+            <td data-client="Modello B">Tua: i tuoi utenti restano anonimi per noi — un vantaggio di privacy in più</td>
+          </tr>
+          <tr>
+            <th scope="row">Contabilità</th>
+            <td data-client="Modello A">Quota individuale dell'utente</td>
+            <td data-client="Modello B">Pool mensile condiviso, a scaglioni — su richiesta</td>
+          </tr>
+          <tr>
+            <th scope="row">Cosa serve fare</th>
+            <td data-client="Modello A">Niente: la tua app resta un client puro, come <a href="https://github.com/SPAZIO-GENESI/attest-mcp">attest-mcp</a></td>
+            <td data-client="Modello B">Scrivici per una convenzione: <a href="mailto:it@spaziogenesi.org">it@spaziogenesi.org</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:0.8rem;">Hai costruito un'integrazione (modello A o B)? Candidala alla <a href="https://imgauth.spaziogenesi.org/integrazioni">vetrina pubblica Integrazioni</a> dal tuo <a href="https://imgauth.spaziogenesi.org/profilo">profilo</a> — la pubblicazione è verificata a mano dal gestore prima di andare online.</p>
+  </section>
+
   <div class="nota">
     <strong style="color:#111;">Le garanzie restano identiche.</strong> Che l'attestazione parta dal sito, da un agente AI o da una chiave API, il meccanismo è lo stesso: impronta calcolata in locale, timestamp e firma generati sul server, ancoraggio in Bitcoin, certificato PDF firmato. Nessuna scorciatoia riduce le protezioni descritte nella <a href="/">pagina del servizio</a>.
   </div>
@@ -238,6 +278,7 @@
       <div class="footer-col">
         <h3>Sviluppatori</h3>
         <a href="/developer/">API &amp; server MCP</a>
+        <a href="https://imgauth.spaziogenesi.org/integrazioni">Vetrina Integrazioni</a>
       </div>
     </nav>
     <div class="footer-bottom">
