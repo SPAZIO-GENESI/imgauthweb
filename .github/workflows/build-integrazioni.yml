@@ -19,6 +19,9 @@ on:
     - cron: "43 4 * * 1" # ogni lunedì alle 04:43 UTC
   workflow_dispatch: {}
 
+permissions:
+  contents: write # serve al passo "Commit se cambiato" per pushare col GITHUB_TOKEN di default
+
 jobs:
   build:
     runs-on: ubuntu-latest
