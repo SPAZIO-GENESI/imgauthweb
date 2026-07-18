@@ -282,6 +282,17 @@
     .pwa-hint{ display:none !important; }
   }
 
+  /* Richiamo discreto alla fascia Professionale: una riga, nessun banner. */
+  .pro-hint{
+    display:flex; align-items:flex-start; gap:0.5rem;
+    margin-top:0.9rem; padding:0.5rem 0.75rem; max-width:34rem;
+    border:1px solid var(--linea-forte); border-radius:10px;
+    background:var(--bianco); font-size:0.74rem; color:var(--ink-3); line-height:1.5;
+  }
+  .pro-hint svg{ flex:0 0 auto; margin-top:0.15rem; color:var(--oro); }
+  .pro-hint a{ color:var(--oro); text-decoration:none; font-weight:500; }
+  .pro-hint a:hover{ text-decoration:underline; }
+
   /* Firma della pagina: l'impronta, dal vivo.
      Micro-demo WebCrypto — la stessa tecnologia dell'attestazione. */
   .demo{
@@ -796,6 +807,13 @@
     <p class="nota-legale">Il servizio fornisce attestazione crittografica di impronta digitale
       (hash) di file informatici. Non costituisce registrazione di diritto d'autore né
       certificazione legale della titolarità dell'opera.</p>
+    <p class="pro-hint">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/>
+      </svg>
+      <span>Attesti con continuità? C'è la <a href="/professionale/">fascia Professionale</a>:
+      200 attestazioni al mese e custodia 5 anni — in promozione a 20&nbsp;€ l'anno fino a fine 2026.</span>
+    </p>
     <p class="pwa-hint">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/>
