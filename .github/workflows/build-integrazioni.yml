@@ -1,0 +1,42 @@
+# P29 FASE 2: rigenera la vetrina statica /integrazioni/ leggendo
+# GET /api/integrations (JSON pubblico di imgauth) — zero chiamate a runtime
+# per visita. Si attiva:
+#   - repository_dispatch (event_type: integrations-updated), sparato dal
+#     Worker a ogni approvazione/rifiuto/rimozione/ritiro di una candidatura;
+#   - cron settimanale, come rete di sicurezza se il dispatch fallisse
+#     (secret assente/errore di rete — fail-safe lato Worker);
+#   - workflow_dispatch, per un run manuale.
+#
+# ⚠️ NON si attiva su `push`: il proprio commit (se cambia qualcosa)
+# altrimenti ritriggererebbe se stesso in loop.
+
+name: Rigenera vetrina Integrazioni
+
+on:
+  repository_dispatch:
+    types: [integrations-updated]
+  schedule:
+    - cron: "43 4 * * 1" # ogni lunedì alle 04:43 UTC
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Genera integrazioni/index.html + loghi
+        run: node scripts/build-integrazioni.mjs
+
+      - name: Commit se cambiato
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add integrazioni/
+          if git diff --cached --quiet; then
+            echo "Nessuna modifica alla vetrina."
+            exit 0
+          fi
+          git commit -m "chore: rigenera vetrina Integrazioni"
+          git push
