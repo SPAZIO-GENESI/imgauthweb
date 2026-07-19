@@ -142,7 +142,7 @@ const html = `<!DOCTYPE html>
 </header>
 
 <main>
-  <p class="muted">${lead} Hai costruito un'integrazione? <a href="https://imgauth.spaziogenesi.org/profilo">Candidala dal tuo profilo</a>.</p>
+  <p class="muted">${lead} Hai costruito un'integrazione? <a href="/profilo/">Candidala dal tuo profilo</a>.</p>
   <div class="grid">${cardsHtml || '<p class="muted">Nessuna integrazione pubblicata ancora.</p>'}</div>
 </main>
 
@@ -155,7 +155,7 @@ const html = `<!DOCTYPE html>
         <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a>
         <a href="https://t.me/SGAttestBot">Bot Telegram</a>
         <a href="/condizioni/">Fasce e condizioni</a>
-        <a href="https://imgauth.spaziogenesi.org/profilo">Area professionale</a>
+        <a href="/profilo/">Area professionale</a>
         <a href="/changelog/">Cronologia dei miglioramenti</a>
         <a href="/status/">Stato del servizio</a>
       </div>

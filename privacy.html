@@ -128,20 +128,23 @@
   <div class="box">
     <h3>3.5 Accesso per sviluppatori: richiesta di chiave API</h3>
     <p>Questa sottosezione riguarda <strong>esclusivamente</strong> chi richiede una chiave API self-service
-    dalla pagina <code>imgauth.spaziogenesi.org/developer/keys</code> — non chi usa il servizio di attestazione
+    dalla pagina <code>attestazione.spaziogenesi.org/developer/keys</code> — non chi usa il servizio di attestazione
     dal sito: per quell'uso, come già descritto sopra, non trattiamo alcun dato personale identificativo.</p>
     <p>Per emettere la chiave chiediamo di confermare la tua email tramite <strong>Google, Microsoft o
     LinkedIn</strong> (login "one-shot": leggiamo solo l'indirizzo email verificato dal provider, poi scartiamo
     il token — nessuna sessione, nessun cookie, nessun accesso continuativo al tuo account). Trattiamo
     <strong>email, provider scelto e data di richiesta</strong>, per emettere la chiave, moderarne l'uso
-    (comprese eventuali comunicazioni in caso di revoca o abuso sospetto) e mantenere una traccia anti-abuso.</p>
+    (comprese eventuali comunicazioni in caso di revoca o abuso sospetto) e mantenere una traccia anti-abuso.
+    La chiave stessa non è mai scritta in una risposta HTML: viaggia solo nel <em>fragment</em> dell'URL
+    (<code>#sgk=…</code>), che il browser non invia mai a un server — non un miglioramento cosmetico, un dato
+    in meno che potrebbe restare in un log.</p>
     <p class="meta"><strong>Base giuridica:</strong> misure precontrattuali/contrattuali richieste dall'interessato
     (art. 6.1.b) e legittimo interesse alla prevenzione degli abusi (art. 6.1.f).
     <strong>Conservazione:</strong> per tutta la durata della chiave attiva, poi <strong>180 giorni</strong> dalla
     revoca (traccia anti-abuso), trascorsi i quali l'email viene anonimizzata automaticamente. Cancellazione
     anticipata su richiesta: vedi §7.</p>
     <p>Chi ha una chiave attiva o un abbonamento Professionale può inoltre candidare la propria applicazione alla
-    <strong>vetrina pubblica "Integrazioni"</strong> (<code>imgauth.spaziogenesi.org/integrazioni</code>): in quel
+    <strong>vetrina pubblica "Integrazioni"</strong> (<code>attestazione.spaziogenesi.org/integrazioni</code>): in quel
     caso <strong>nome dell'applicazione, URL, descrizione ed eventuale logo</strong> — dati che scegli tu di
     fornire — diventano pubblici, ma solo dopo una verifica manuale del gestore (pre-moderazione: niente va online
     senza approvazione esplicita). La tua email resta sempre privata e non compare mai nella vetrina. Puoi
@@ -196,7 +199,7 @@
   <div class="box">
     <h3>3.8 Abbonamento Professionale</h3>
     <p>Questa sottosezione riguarda <strong>esclusivamente</strong> chi attiva l'abbonamento annuale a
-    pagamento dalla pagina <code>imgauth.spaziogenesi.org/profilo</code>. Come per §3.5 e §3.7, l'identità è
+    pagamento dalla pagina <code>attestazione.spaziogenesi.org/profilo</code>. Come per §3.5 e §3.7, l'identità è
     confermata con lo stesso login "one-shot" Google, Microsoft o LinkedIn: nessuna password, nessun account
     presso di noi, il voucher risultante vive solo nel tuo browser (<em>sessionStorage</em>, mai un cookie).</p>
     <p>Per attivare e gestire l'abbonamento trattiamo <strong>email, provider di accesso, riferimenti
@@ -344,7 +347,7 @@
         <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a>
         <a href="https://t.me/SGAttestBot">Bot Telegram</a>
         <a href="/condizioni/">Fasce e condizioni</a>
-        <a href="https://imgauth.spaziogenesi.org/profilo">Area professionale</a>
+        <a href="/profilo/">Area professionale</a>
         <a href="/changelog/">Cronologia dei miglioramenti</a>
         <a href="/status/">Stato del servizio</a>
       </div>
@@ -356,7 +359,7 @@
       <div class="footer-col">
         <h3>Sviluppatori</h3>
         <a href="/developer/">API &amp; server MCP</a>
-        <a href="https://imgauth.spaziogenesi.org/integrazioni">Vetrina Integrazioni</a>
+        <a href="/integrazioni/">Vetrina Integrazioni</a>
       </div>
     </nav>
     <div class="footer-bottom">
