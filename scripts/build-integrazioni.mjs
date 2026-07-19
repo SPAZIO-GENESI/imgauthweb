@@ -155,6 +155,7 @@ const html = `<!DOCTYPE html>
         <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a>
         <a href="https://t.me/SGAttestBot">Bot Telegram</a>
         <a href="/condizioni/">Fasce e condizioni</a>
+        <a href="/professionale/">Fascia Professionale</a>
         <a href="/profilo/">Area professionale</a>
         <a href="/changelog/">Cronologia dei miglioramenti</a>
         <a href="/status/">Stato del servizio</a>

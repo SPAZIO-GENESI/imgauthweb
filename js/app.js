@@ -81,9 +81,20 @@
     if (active) {
       anonBox.style.display = "none";
       attivaBox.style.display = "block";
-      document.getElementById("convenzioneAttivaTesto").textContent =
-        "Stai attestando come " + active.payload.email +
-        (active.payload.conv ? " — convenzione riconosciuta" : " — nessuna convenzione associata a questa email");
+      const testoEl = document.getElementById("convenzioneAttivaTesto");
+      testoEl.textContent = "Stai attestando come " + active.payload.email;
+      // Fascia effettiva dal server (Convenzione con X / Professionale /
+      // Sviluppatore / Base): il payload del voucher è solo un hint.
+      // Fail-safe: se la chiamata fallisce resta il testo neutro.
+      fetch(WORKER_BASE + "/api/pro/me", { headers: { "X-SG-Voucher": active.token } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d && d.contract && d.contract.label) {
+            testoEl.textContent = "Stai attestando come " + active.payload.email +
+              " — fascia: " + d.contract.label;
+          }
+        })
+        .catch(() => {});
       if (tsWidget) tsWidget.style.display = "none";
     } else {
       anonBox.style.display = "";
@@ -100,7 +111,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.21.0";
+  const APP_VERSION = "1.22.0";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
@@ -349,6 +360,15 @@
       } else if (d.fascia_motivo === "tetto_individuale") {
         fasciaNota.textContent = "Hai raggiunto il tuo limite personale mensile nella convenzione: " +
           "l'attestazione è stata generata comunque, nella fascia gratuita di base (PDF recuperabile per almeno 6 mesi).";
+        fasciaNota.style.display = "";
+      } else if (d.fascia === "professionale") {
+        fasciaNota.textContent = "Attestazione riconosciuta nella fascia Professionale: " +
+          "custodia del certificato garantita per almeno 5 anni.";
+        fasciaNota.style.display = "";
+      } else if (d.fascia_motivo === "quota_professionale_esaurita") {
+        fasciaNota.textContent = "Hai raggiunto le 200 attestazioni mensili della fascia Professionale: " +
+          "l'attestazione è stata generata comunque, nella fascia gratuita di base " +
+          "(PDF recuperabile per almeno 6 mesi).";
         fasciaNota.style.display = "";
       } else {
         fasciaNota.style.display = "none";

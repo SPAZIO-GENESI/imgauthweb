@@ -39,7 +39,7 @@
     });
   }
 
-  var states = ["Anon", "Onboard", "Developer", "Active", "Canceled"];
+  var states = ["Anon", "Onboard", "Developer", "Convention", "Active", "Canceled"];
   function showState(name) {
     states.forEach(function (s) {
       document.getElementById("state" + s).style.display = s.toLowerCase() === name ? "" : "none";
@@ -84,6 +84,11 @@
       var priceText = pricing
         ? "Abbonamento annuale: " + fmtEur(pricing.amount_cents) + "."
         : "Nessun listino attivo al momento: riprova più tardi.";
+      if (data.contract && data.contract.fascia === "convenzione") {
+        showState("convention");
+        loadIntegration();
+        return;
+      }
       if (data.contract && data.contract.fascia === "sviluppatore") {
         document.getElementById("devOnboardPrice").textContent = priceText;
         if (data.dev_profile) {
@@ -281,6 +286,7 @@
   function doLogout() { clearVoucher(); document.getElementById("identityBar").style.display = "none"; document.getElementById("integrationCard").style.display = "none"; showState("anon"); }
   document.getElementById("logoutBtnOnboard").addEventListener("click", doLogout);
   document.getElementById("logoutBtnDeveloper").addEventListener("click", doLogout);
+  document.getElementById("logoutBtnConvention").addEventListener("click", doLogout);
   document.getElementById("logoutBtnActive").addEventListener("click", doLogout);
   document.getElementById("logoutBtnCanceled").addEventListener("click", doLogout);
 
