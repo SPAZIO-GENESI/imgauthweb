@@ -48,9 +48,12 @@
   section.blocco code { font-family: 'Courier New', monospace; font-size: 0.8rem; background: #f4f4f2; padding: 1px 5px; border-radius: 3px; }
 
   .link-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1.1rem 0 0.3rem; }
-  .provider-link { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.86rem; font-weight: 600;
+  /* Specificità: batte "section.blocco a" (che imposterebbe lo stesso oro
+     del background, rendendo il testo invisibile — bug reale trovato nel
+     collaudo dal vivo, non nei test locali con Playwright). */
+  .link-row a.provider-link { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.86rem; font-weight: 600;
     color: #fff; background: var(--oro); border: 1px solid var(--oro); padding: 0.6rem 1.05rem; border-radius: 9px; text-decoration: none; }
-  .provider-link:hover { background: #765611; }
+  .link-row a.provider-link:hover { background: #765611; }
 
   /* Esito (mostrato via JS in base al fragment) */
   #result { display: none; margin-top: 1.3rem; }
