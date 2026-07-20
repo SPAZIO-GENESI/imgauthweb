@@ -29,7 +29,10 @@ jobs:
           set -e
           curl -fsSL "https://raw.githubusercontent.com/SPAZIO-GENESI/imgauth/main/openapi.json" -o docs/openapi.json.new
           # Validazione minima: dev'essere JSON e avere il campo "openapi".
-          node -e "const s=require('./docs/openapi.json.new'); if(!s.openapi) throw new Error('campo openapi mancante')"
+          # (require() sceglie il parser dall'estensione del file: ".new" non è ".json",
+          # quindi proverebbe a eseguirlo come JS e fallirebbe sempre — leggere+JSON.parse
+          # ignora l'estensione).
+          node -e "const s=JSON.parse(require('fs').readFileSync('./docs/openapi.json.new','utf8')); if(!s.openapi) throw new Error('campo openapi mancante')"
           mv docs/openapi.json.new docs/openapi.json
 
       - name: Commit se cambiato
