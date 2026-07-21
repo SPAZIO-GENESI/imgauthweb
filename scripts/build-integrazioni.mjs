@@ -166,6 +166,7 @@ const html = `<!DOCTYPE html>
       <div class="footer-col">
         <h3>Fiducia</h3>
         <a href="/privacy.html">Privacy</a>
+        <a href="/sicurezza/">Segnala una vulnerabilità</a>
         <a href="https://trust.spaziogenesi.org">Come verificarci</a>
       </div>
       <div class="footer-col">
