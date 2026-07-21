@@ -19,6 +19,13 @@ per l'attestazione né per la verifica; al motore viaggia solo l'impronta.
 Android e iOS. Nessun service worker: la pagina resta servita live da GitHub
 Pages (niente cache offline da invalidare).
 
+## Sicurezza
+
+Segnalazioni di vulnerabilità → [`/sicurezza/`](https://attestazione.spaziogenesi.org/sicurezza/)
+(policy di responsible disclosure, safe harbor per la ricerca in buona fede);
+`security.txt` conforme RFC 9116 su
+[`/.well-known/security.txt`](https://attestazione.spaziogenesi.org/.well-known/security.txt).
+
 ## Licenza
 
 Copyright (c) 2026 Spazio Genesi ETS — licenza **MIT** (vedi [LICENSE](LICENSE)).
