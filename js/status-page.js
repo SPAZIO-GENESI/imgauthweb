@@ -1,5 +1,11 @@
   const WORKER_BASE = "https://imgauth.spaziogenesi.org";
   const STATE_LABEL = { ok: "operativo", down: "non disponibile", degraded: "rallentato", nodata: "in raccolta dati" };
+  // Etichette per il CONTESTO GIORNALIERO (barre + riepilogo del giorno): il rollup
+  // conserva lo stato PEGGIORE osservato nel giorno, non una durata. Evitiamo quindi
+  // "non disponibile" (che suggerisce un'indisponibilità estesa a tutta la giornata):
+  // "disservizio rilevato" dice il vero — c'è stato un problema in giornata, il cui
+  // scope reale è nel dettaglio (episodi ed orari da health_log).
+  const DAY_STATE_LABEL = { ok: "operativo", down: "disservizio rilevato", degraded: "rallentamenti rilevati", nodata: "in raccolta dati" };
   const BANNER_TEXT = {
     ok: "Tutti i sistemi operativi",
     degraded: "Disservizio parziale in corso",
@@ -115,7 +121,7 @@
         const b = document.createElement("div");
         const s = day.s || "nodata";
         b.className = "bar " + s;
-        b.title = fmtDayIt(day.d) + " — " + (STATE_LABEL[s] || STATE_LABEL.nodata) +
+        b.title = fmtDayIt(day.d) + " — " + (DAY_STATE_LABEL[s] || DAY_STATE_LABEL.nodata) +
           (s !== "nodata" ? " · clicca per il dettaglio" : "");
         if (s !== "nodata") {                       // (b) cliccabile solo se ha dati
           b.classList.add("clickable");
@@ -154,9 +160,10 @@
     const s = (day && day.s) ? day.s : "nodata";
     const exp = (DAY_EXPLAIN[compKey] && DAY_EXPLAIN[compKey][s]) || DAY_EXPLAIN._default[s] || "";
     document.getElementById("dayBody").innerHTML =
+      '<div id="dayImpact"></div>' + // riempito da loadDayEvents con l'impatto reale
       '<div class="day-row"><div class="dr-head"><span class="dot ' + s + '"></span>' +
-      'Esito del giorno — <span class="comp-state ' + s + '">' +
-      (STATE_LABEL[s] || STATE_LABEL.nodata) + '</span></div>' +
+      'Riepilogo del giorno — <span class="comp-state ' + s + '">' +
+      (DAY_STATE_LABEL[s] || DAY_STATE_LABEL.nodata) + '</span></div>' +
       (exp ? '<div class="dr-exp">' + esc(exp) + '</div>' : '') + '</div>';
     document.getElementById("dayModal").classList.add("open");
     loadDayEvents(dateStr, compKey, label); // (c) eventi fini SOLO di questo componente
@@ -165,6 +172,31 @@
   // (c) Carica e mostra gli eventi fini del giorno (rallentamenti, degradi, errori)
   // da /api/health-log. Compaiono anche nei giorni "verdi": un rallentamento sotto
   // soglia non degrada il servizio ma viene registrato per l'analisi.
+  const fmtEvTime = (ts) => new Date(ts).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Rome" });
+
+  // Riepilogo d'impatto ONESTO ricavato dagli eventi reali del giorno (health_log):
+  // rende esplicito che un disservizio è stato circoscritto a pochi episodi con orario,
+  // NON esteso all'intera giornata (il rollup della barra conserva solo lo stato peggiore).
+  function impactHtml(evs) {
+    const downs = evs.filter((e) => e.status === "error");
+    const degs = evs.filter((e) => e.status === "degraded");
+    if (!downs.length && !degs.length) return ""; // nessun disservizio/degrado: niente riquadro
+    const bits = [];
+    if (downs.length) {
+      const times = downs.map((e) => fmtEvTime(e.ts)).join(", ");
+      bits.push((downs.length === 1 ? "1 episodio di indisponibilità" : downs.length + " episodi di indisponibilità") + " (" + times + ")");
+    }
+    if (degs.length) {
+      const times = degs.map((e) => fmtEvTime(e.ts)).join(", ");
+      bits.push((degs.length === 1 ? "1 rallentamento" : degs.length + " rallentamenti") + " (" + times + ")");
+    }
+    const lead = downs.length ? "Operativo per la maggior parte della giornata." : "Operativo, con rallentamenti puntuali.";
+    const tail = downs.length
+      ? "Negli altri momenti della giornata i controlli hanno risposto regolarmente: il disservizio è stato circoscritto, non esteso all'intera giornata."
+      : "Il servizio è rimasto utilizzabile per il resto della giornata.";
+    return '<div class="dr-impact"><strong>' + lead + '</strong> Nel dettaglio: ' + esc(bits.join("; ")) + '. ' + tail + '</div>';
+  }
+
   const CHECK_LABEL = { archive: "Archivio", signer: "Firma PDF", anchor: "Ancoraggio Bitcoin", worker: "Motore" };
   const CAUSE_LABEL = { slow: "rallentamento", timeout: "timeout", r2_error: "errore archivio", all_unreachable: "calendar irraggiungibili" };
   function evDotClass(e) {
@@ -197,6 +229,8 @@
     if (!data) { box.innerHTML = title + '<div class="ev-note err">Dettaglio degli eventi non disponibile al momento.</div>'; return; }
     // SOLO gli eventi di questo componente, così il dettaglio non è ambiguo.
     const evs = (data.events || []).filter((e) => e.check === compKey);
+    const impactEl = document.getElementById("dayImpact");
+    if (impactEl) impactEl.innerHTML = impactHtml(evs); // riepilogo d'impatto in testa al modale
     if (!evs.length) {
       box.innerHTML = title + '<div class="ev-note">Nessun rallentamento o disservizio registrato per questo componente: giornata regolare.</div>';
       return;
