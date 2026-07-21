@@ -67,6 +67,15 @@
   .bar.down { background: var(--down); }
   .bar.degraded { background: var(--deg); }
   .bar.nodata { background: var(--nd); }
+  /* P36-B: tacca proporzionale (mappa a 48 fasce/giorno) invece della barra
+     piena worst-of-day. Il contenitore torna verde (ok) e i segmenti rossi/
+     ambra si sovrappongono dal basso, in proporzione alle fasce coinvolte;
+     min-height mantiene visibile anche un solo intervallo su 48. Vince
+     sull'eventuale .bar.down/.bar.degraded per ordine di dichiarazione. */
+  .bar.bar-split { background: var(--ok); position: relative; overflow: hidden; }
+  .bar.bar-split .seg { position: absolute; left: 0; right: 0; display: block; }
+  .bar.bar-split .seg.down { background: var(--down); min-height: 2px; }
+  .bar.bar-split .seg.degraded { background: var(--deg); min-height: 2px; }
 
   .bars-meta { display: flex; justify-content: space-between; font-size: 0.72rem; color: #aaa; margin-top: 0.4rem; }
   .uptime { color: #777; }

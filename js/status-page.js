@@ -121,8 +121,24 @@
         const b = document.createElement("div");
         const s = day.s || "nodata";
         b.className = "bar " + s;
-        b.title = fmtDayIt(day.d) + " — " + (DAY_STATE_LABEL[s] || DAY_STATE_LABEL.nodata) +
-          (s !== "nodata" ? " · clicca per il dettaglio" : "");
+        let tip = fmtDayIt(day.d) + " — " + (DAY_STATE_LABEL[s] || DAY_STATE_LABEL.nodata);
+        // Giorno in nuovo formato (P36-B, mappa a 48 fasce da 30 min): tacca
+        // proporzionale invece della barra piena worst-of-day. `b` assente
+        // (giorno vecchio formato/nodata) → fallback identico a prima.
+        if (day.b && day.b.n > 0) {
+          b.classList.add("bar-split");
+          const pct = (x) => (x / day.b.n) * 100;
+          const segs = [];
+          if (day.b.down > 0) segs.push('<span class="seg down" style="height:' + pct(day.b.down) + '%;bottom:0"></span>');
+          if (day.b.degraded > 0) segs.push('<span class="seg degraded" style="height:' + pct(day.b.degraded) + '%;bottom:' + pct(day.b.down) + '%"></span>');
+          b.innerHTML = segs.join("");
+          const okPct = Math.round(pct(day.b.ok));
+          const nBad = day.b.down + day.b.degraded;
+          tip += " — operativo ~" + okPct + "% del giorno";
+          if (nBad) tip += " · " + nBad + (nBad === 1 ? " intervallo con disservizio" : " intervalli con disservizio");
+        }
+        tip += (s !== "nodata" ? " · clicca per il dettaglio" : "");
+        b.title = tip;
         if (s !== "nodata") {                       // (b) cliccabile solo se ha dati
           b.classList.add("clickable");
           b.addEventListener("click", () => openDay(day.d, c.key, c.label));
