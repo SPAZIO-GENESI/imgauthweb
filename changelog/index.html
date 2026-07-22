@@ -83,6 +83,14 @@
 <main>
 
   <details class="v">
+    <summary><span class="seg">+</span><span class="tit">CLI: un link di verifica corretto</span><span class="data">22 luglio 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Il link mostrava una pagina che non esisteva ancora.</strong> Il comando <code>sg-attest attest</code> senza l'opzione <code>--pdf</code> stampava sempre il link alla pagina pubblica di verifica, anche quando nulla era stato archiviato (serve un certificato per questo). Ora il link compare solo quando è stato generato davvero — altrimenti una nota spiega come ottenerlo.</li>
+      <li>Corretto nella versione 0.3.2 del pacchetto <code>@spazio-genesi/attest-mcp</code>.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
     <summary><span class="seg">+</span><span class="tit">Attestare dal terminale e dalla catena di build</span><span class="data">22 luglio 2026</span></summary>
     <div class="corpo"><ul>
       <li><strong>Una riga di comando.</strong> Chi lavora da terminale può attestare e verificare con <code>sg-attest</code>, senza aprire il browser. L'impronta è calcolata leggendo il file a flusso dal disco: il file non lascia il computer, e qui non c'è alcun limite di dimensione — il tetto di 1&nbsp;GB del sito è imposto dal browser, non dal servizio.</li>
