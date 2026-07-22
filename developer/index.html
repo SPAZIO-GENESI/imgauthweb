@@ -49,6 +49,8 @@
   section.blocco a { color: var(--oro); text-decoration: none; }
   section.blocco a:hover { text-decoration: underline; }
   section.blocco code { font-family: 'Courier New', monospace; font-size: 0.8rem; background: #f4f4f2; padding: 1px 5px; border-radius: 3px; }
+  section.blocco pre { font-family: 'Courier New', monospace; font-size: 0.78rem; line-height: 1.55; background: #f4f4f2; color: #333; padding: 0.7rem 0.8rem; border-radius: 4px; margin: 0.5rem 0; overflow-x: auto; }
+  section.blocco pre code { background: none; padding: 0; font-size: inherit; }
 
   .link-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.7rem; }
   .link-row a.pill { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 500; color: #111; background: #f4f2ea; border: 1px solid #e6e0cc; padding: 0.45rem 0.85rem; border-radius: 999px; text-decoration: none; }
@@ -118,6 +120,31 @@
       </a>
     </div>
     <p style="margin-top:0.8rem;">La Swagger UI include "Try it out": puoi chiamare gli endpoint direttamente dal browser, senza scrivere codice, per esplorare richieste e risposte.</p>
+  </section>
+
+  <section class="blocco">
+    <h2>Da terminale e da CI</h2>
+    <p>Lo stesso pacchetto npm porta anche <code>sg-attest</code>, una riga di comando: attesta e verifica senza aprire il browser. L'impronta è calcolata leggendo il file a flusso dal disco — il file non lascia la tua macchina — e qui non c'è alcun tetto di dimensione: il limite di 1 GB del sito è imposto dal browser, non dal servizio.</p>
+    <pre><code>npx -y -p @spazio-genesi/attest-mcp sg-attest authorize
+npx -y -p @spazio-genesi/attest-mcp sg-attest attest opera.zip</code></pre>
+    <p>Con <code>authorize</code> autorizzi una volta dal browser (24 ore, 20 attestazioni); se hai una chiave API, basta la variabile d'ambiente <code>IMGAUTH_API_KEY</code> e l'autorizzazione non serve. Ogni comando accetta <code>--json</code> per un output leggibile da uno script, e restituisce <code>0</code> se è andata bene, <code>1</code> in caso di errore, <code>2</code> quando una verifica dà esito negativo.</p>
+
+    <p style="margin-top:0.9rem;">In integrazione continua c'è un'azione GitHub pronta, che attesta gli artefatti di build: l'artefatto non lascia il runner, ne viaggia solo l'impronta.</p>
+    <pre><code>- uses: SPAZIO-GENESI/attest-action@v1
+  with:
+    files: dist/release.zip
+    api-key: ${{ secrets.SG_API_KEY }}</code></pre>
+    <p>Ogni file attestato riceve un certificato firmato e archiviato, e la sua pagina permanente <code>/c/&lt;impronta&gt;</code> resta verificabile molto dopo che il log del job è sparito.</p>
+    <div class="link-row">
+      <a class="pill" href="https://github.com/SPAZIO-GENESI/attest-action" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        Azione GitHub (MIT)
+      </a>
+      <a class="pill" href="/developer/keys/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg>
+        Ottieni una chiave API
+      </a>
+    </div>
   </section>
 
   <section class="blocco">

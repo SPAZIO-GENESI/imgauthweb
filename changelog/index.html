@@ -83,6 +83,15 @@
 <main>
 
   <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Attestare dal terminale e dalla catena di build</span><span class="data">22 luglio 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Una riga di comando.</strong> Chi lavora da terminale può attestare e verificare con <code>sg-attest</code>, senza aprire il browser. L'impronta è calcolata leggendo il file a flusso dal disco: il file non lascia il computer, e qui non c'è alcun limite di dimensione — il tetto di 1&nbsp;GB del sito è imposto dal browser, non dal servizio.</li>
+      <li><strong>Un'azione pronta per l'integrazione continua.</strong> Chi pubblica software può attestare automaticamente i pacchetti di ogni versione rilasciata: l'artefatto non lascia il server di build, ne viaggia solo l'impronta. Ogni file attestato riceve un certificato archiviato, con la sua pagina di verifica permanente che resta valida molto dopo che i registri della build sono spariti.</li>
+      <li>Tutto questo su <a href="/developer/">pagina per sviluppatori</a>; serve una chiave API, gratuita e self-service.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
     <summary><span class="seg">+</span><span class="tit">Un canale dichiarato per segnalare una vulnerabilità</span><span class="data">21 luglio 2026</span></summary>
     <div class="corpo"><ul>
       <li><strong>Una pagina dedicata.</strong> La nuova pagina <a href="/sicurezza/">Sicurezza e segnalazioni</a> spiega dove scrivere se trovi un problema di sicurezza, cosa copre, i tempi di risposta e il nostro impegno a non intraprendere azioni legali contro chi fa ricerca in buona fede.</li>
