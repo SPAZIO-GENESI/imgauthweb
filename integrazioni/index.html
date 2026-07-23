@@ -69,6 +69,31 @@
 </head>
 <body>
 
+<!-- Barra del servizio: logo Attestazione + rimando all'ente -->
+<style>
+  .sg-brandbar{ display:flex; align-items:center; justify-content:space-between; gap:.6rem 1.5rem;
+    flex-wrap:wrap; max-width:64rem; margin:0 auto; padding:1rem 1.5rem 0;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; }
+  .sg-brandbar .svc{ display:inline-flex; align-items:center; gap:.5rem; text-decoration:none;
+    font-size:1rem; font-weight:600; color:#211E15; letter-spacing:.01em; }
+  .sg-brandbar .svc svg{ width:26px; height:26px; display:block; flex:0 0 auto; }
+  .sg-brandbar .svc:hover{ color:#6E5310; }
+  .sg-brandbar .parent{ display:inline-flex; align-items:center; gap:.35rem; text-decoration:none;
+    font-size:.72rem; color:#8C8672; }
+  .sg-brandbar .parent svg{ width:13px; height:auto; display:block; }
+  .sg-brandbar .parent:hover{ color:#6E5310; }
+</style>
+<div class="sg-brandbar">
+  <a class="svc" href="/" aria-label="Attestazione — home del servizio">
+    <svg viewBox="0 0 700 700" aria-hidden="true"><path fill="#8B6914" d="M0,0 L700,0 L700,196.81 L597.87,196.81 L597.87,102.13 L102.13,102.13 L102.13,597.87 L597.87,597.87 L597.87,503.19 L700,503.19 L700,700 L0,700 Z"/><circle fill="#211E15" cx="350" cy="350" r="153.19"/><rect fill="#211E15" x="490.53" y="291.49" width="209.44" height="117.03"/></svg>
+    <span>Attestazione</span>
+  </a>
+  <a class="parent" href="https://spaziogenesi.org/" title="Spazio Genesi — l'ente dietro il servizio">
+    <svg viewBox="0 0 580 481" aria-hidden="true"><g transform="translate(0,481) scale(0.1,-0.1)" fill="currentColor" stroke="none"><path d="M2175 4799 c-729 -75 -1378 -467 -1780 -1074 -82 -124 -203 -366 -252 -505 -100 -282 -137 -506 -137 -815 0 -222 6 -283 46 -497 l23 -118 1396 0 1397 0 26 -83 c37 -117 49 -216 43 -332 -24 -405 -299 -739 -698 -847 -120 -32 -328 -32 -448 0 -105 29 -210 76 -301 138 -77 51 -201 176 -240 242 l-25 41 -368 1 -368 0 63 -76 c142 -172 345 -355 533 -479 124 -82 366 -203 505 -252 281 -100 505 -137 815 -137 310 0 534 37 815 137 139 49 381 170 505 252 265 175 514 425 690 690 94 141 214 391 269 558 l49 147 534 0 533 0 0 565 0 565 -1944 0 -1943 0 -27 59 c-53 119 -70 203 -70 361 0 168 18 251 84 388 51 106 88 161 169 246 83 86 166 145 275 197 142 66 218 82 391 82 122 0 165 -4 228 -21 99 -27 232 -89 310 -146 74 -52 190 -172 232 -238 l30 -48 413 0 c226 0 412 2 412 5 0 14 -172 214 -256 299 -190 190 -374 323 -619 447 -232 117 -479 196 -735 234 -127 19 -452 27 -575 14z"/></g></svg>
+    <span>un servizio di Spazio Genesi ↗</span>
+  </a>
+</div>
+
 <header>
   <h1>Integrazioni e <span>applicazioni</span></h1>
   <p class="sub">Chi ha costruito un'app, un bot o un servizio che integra l'attestazione — con o senza convenzione — può candidarsi qui. La pubblicazione è verificata a mano dal gestore.</p>
