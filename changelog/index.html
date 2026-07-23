@@ -83,6 +83,15 @@
 <main>
 
   <details class="v">
+    <summary><span class="seg">+</span><span class="tit">Un eseguibile CLI, senza installare nulla</span><span class="data">23 luglio 2026</span></summary>
+    <div class="corpo"><ul>
+      <li><strong>Niente Node.js richiesto.</strong> Chi lavora da terminale o da una pipeline senza Node può ora scaricare <code>sg-attest</code> come programma già pronto per Linux, macOS e Windows — stessi comandi della versione via <code>npx</code>, nessuna installazione.</li>
+      <li><strong>Una pagina dedicata.</strong> La nuova <a href="/developer/cli/">pagina Eseguibile CLI</a> spiega quale file scaricare per il proprio sistema, come verificarne l'integrità con i checksum pubblicati a ogni rilascio, e perché comparirà un avviso "editore sconosciuto" al primo avvio (i binari non sono firmati digitalmente: il checksum è la garanzia nel frattempo).</li>
+      <li><code>npx</code>/<code>npm</code> restano il canale principale, invariato — l'eseguibile è un canale in più, non una sostituzione.</li>
+    </ul></div>
+  </details>
+
+  <details class="v">
     <summary><span class="seg">+</span><span class="tit">CLI: un link di verifica corretto</span><span class="data">22 luglio 2026</span></summary>
     <div class="corpo"><ul>
       <li><strong>Il link mostrava una pagina che non esisteva ancora.</strong> Il comando <code>sg-attest attest</code> senza l'opzione <code>--pdf</code> stampava sempre il link alla pagina pubblica di verifica, anche quando nulla era stato archiviato (serve un certificato per questo). Ora il link compare solo quando è stato generato davvero — altrimenti una nota spiega come ottenerlo.</li>
@@ -474,6 +483,7 @@
       <div class="footer-col">
         <h3>Sviluppatori</h3>
         <a href="/developer/">API &amp; server MCP</a>
+        <a href="/developer/cli/">Eseguibile CLI</a>
         <a href="/integrazioni/">Vetrina Integrazioni</a>
       </div>
     </nav>

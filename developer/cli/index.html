@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eseguibile CLI sg-attest — Attestazione | Spazio Genesi</title>
+<meta name="description" content="Scarica ed esegui sg-attest come binario standalone, senza Node.js: attesta e verifica da terminale o in CI su Linux, macOS e Windows.">
+<link rel="canonical" href="https://attestazione.spaziogenesi.org/developer/cli/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta property="og:title" content="Eseguibile CLI sg-attest — Attestazione | Spazio Genesi">
+<meta property="og:description" content="Scarica ed esegui sg-attest come binario standalone, senza Node.js: attesta e verifica da terminale o in CI su Linux, macOS e Windows.">
+<meta property="og:image" content="https://attestazione.spaziogenesi.org/og.png">
+<meta property="og:url" content="https://attestazione.spaziogenesi.org/developer/cli/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="it_IT">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Attestazione", "item": "https://attestazione.spaziogenesi.org/" },
+    { "@type": "ListItem", "position": 2, "name": "Per sviluppatori e partner", "item": "https://attestazione.spaziogenesi.org/developer/" },
+    { "@type": "ListItem", "position": 3, "name": "Eseguibile CLI sg-attest", "item": "https://attestazione.spaziogenesi.org/developer/cli/" }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --oro: #8B6914; }
+  body { font-family: 'Inter', system-ui, sans-serif; font-weight: 300; background: #fff; color: #1a1a1a; line-height: 1.6; }
+  header { text-align: center; padding: 2.6rem 1.5rem 0; }
+  header h1 { font-family: 'EB Garamond', Georgia, serif; font-size: clamp(1.7rem, 4vw, 2.3rem); font-weight: 400; }
+  header h1 span { font-style: italic; color: var(--oro); }
+  header h1 code { font-family: 'Courier New', monospace; font-size: 0.75em; font-style: normal; }
+  .sub { margin-top: 0.6rem; font-size: 0.85rem; color: #777; max-width: 560px; margin-left: auto; margin-right: auto; }
+  .divider { width: 48px; height: 1.5px; background: var(--oro); margin: 1.4rem auto 0; }
+  main { max-width: 760px; margin: 0 auto; padding: 2.2rem 1.5rem 3rem; }
+
+  section.blocco { border-left: 3px solid var(--oro); background: #fffefb; border-radius: 0 6px 6px 0; padding: 1rem 1.2rem 1.1rem; }
+  section.blocco + section.blocco { margin-top: 0.9rem; }
+  section.blocco h2 { font-family: 'EB Garamond', Georgia, serif; font-weight: 500; font-size: 1.15rem; color: #111; margin-bottom: 0.5rem; }
+  section.blocco p { font-size: 0.88rem; color: #444; margin: 0.4rem 0; }
+  section.blocco ul, section.blocco ol { padding-left: 1.2rem; margin: 0.4rem 0; }
+  section.blocco li { font-size: 0.86rem; color: #555; margin: 0.4rem 0; }
+  section.blocco a { color: var(--oro); text-decoration: none; }
+  section.blocco a:hover { text-decoration: underline; }
+  section.blocco code { font-family: 'Courier New', monospace; font-size: 0.8rem; background: #f4f4f2; padding: 1px 5px; border-radius: 3px; }
+  section.blocco pre { font-family: 'Courier New', monospace; font-size: 0.78rem; line-height: 1.55; background: #f4f4f2; color: #333; padding: 0.7rem 0.8rem; border-radius: 4px; margin: 0.5rem 0; overflow-x: auto; }
+  section.blocco pre code { background: none; padding: 0; font-size: inherit; }
+  section.blocco.avviso { border-left-color: #b08a3e; background: #fdf9ee; }
+
+  .link-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.7rem; }
+  .link-row a.pill { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 500; color: #111; background: #f4f2ea; border: 1px solid #e6e0cc; padding: 0.45rem 0.85rem; border-radius: 999px; text-decoration: none; }
+  .link-row a.pill:hover { background: #ede7d4; text-decoration: none; }
+  .link-row a.pill svg { flex: 0 0 auto; }
+
+  .tabella-wrap { margin: 0.9rem 0 0.3rem; border: 1px solid #e6e0cc; border-radius: 6px; overflow: hidden; }
+  table.matrice { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  table.matrice caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  table.matrice th, table.matrice td { padding: 0.6rem 0.75rem; text-align: left; vertical-align: top; border-bottom: 1px solid #f0ede2; }
+  table.matrice thead th { background: #f8f5eb; font-family: 'EB Garamond', Georgia, serif; font-weight: 500; font-size: 0.92rem; color: #111; border-bottom: 2px solid #e6e0cc; }
+  table.matrice td code { font-family: 'Courier New', monospace; font-size: 0.78rem; background: #f4f4f2; padding: 1px 5px; border-radius: 3px; }
+  table.matrice td a { color: var(--oro); font-weight: 500; }
+  table.matrice tbody tr:last-child th, table.matrice tbody tr:last-child td { border-bottom: none; }
+  @media (max-width: 720px) {
+    .tabella-wrap { border: none; border-radius: 0; overflow: visible; }
+    table.matrice, table.matrice tbody, table.matrice tr, table.matrice th, table.matrice td { display: block; width: auto; }
+    table.matrice thead { display: none; }
+    table.matrice tr { border: 1px solid #e6e0cc; border-radius: 6px; margin-bottom: 0.8rem; overflow: hidden; background: #fffefb; }
+    table.matrice tbody tr:last-child { margin-bottom: 0; }
+    table.matrice td { border-bottom: 1px solid #f6f3ea; padding: 0.5rem 0.75rem; }
+    table.matrice tr:last-child td:last-child, table.matrice td:last-child { border-bottom: none; }
+    table.matrice td::before { content: attr(data-col); display: block; font-size: 0.64rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--oro); margin-bottom: 0.15rem; }
+  }
+
+  .nota { margin-top: 1.6rem; padding: 0.9rem 1.1rem; background: #f9f9f7; border: 1px solid #e5e5e0; border-radius: 6px; font-size: 0.82rem; color: #666; line-height: 1.6; }
+  footer { padding: 2rem 1.5rem 2.2rem; font-size: 0.78rem; color: #aaa; border-top: 1px solid #eee; }
+  footer a { color: #888; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .footer-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+  .footer-back { display: block; margin-bottom: 1rem; }
+  .footer-cols { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1.6rem 2.6rem; margin: 0 0 1.3rem; text-align: left; }
+  .footer-col { min-width: 150px; }
+  .footer-col h3 { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.06em; color: #999; font-weight: 600; margin-bottom: 0.5rem; }
+  .footer-col a { display: block; margin: 0.35rem 0; }
+  .footer-bottom { padding-top: 1rem; border-top: 1px solid #f0f0ee; }
+  @media (max-width: 480px) { .footer-cols { text-align: center; justify-content: space-around; } }
+</style>
+
+<!-- Matomo (sg-matomo) -->
+<script src="/js/matomo-sg.js"></script>
+<!-- End Matomo Code -->
+</head>
+<body>
+
+<header>
+  <h1>L'eseguibile <span><code>sg-attest</code></span>, senza installare nulla</h1>
+  <p class="sub">Un binario standalone per Linux, macOS e Windows: attesta e verifica da terminale o in CI senza Node.js, npm o rete verso un registro pacchetti — solo il download e i checksum qui sotto.</p>
+  <div class="divider"></div>
+</header>
+
+<main>
+
+  <section class="blocco">
+    <h2>Scarica</h2>
+    <p>Sei comandi, uno per sistema/architettura, pubblicati a ogni rilascio dalla <a href="https://github.com/SPAZIO-GENESI/attest-mcp/actions/workflows/release-binaries.yml" target="_blank" rel="noopener noreferrer">CI del repo</a> — nessun caricamento a mano. I link sotto puntano sempre all'ultima versione pubblicata.</p>
+    <div class="tabella-wrap">
+      <table class="matrice">
+        <caption>Binari sg-attest per sistema operativo e architettura</caption>
+        <thead>
+          <tr>
+            <th scope="col">Sistema</th>
+            <th scope="col">Architettura</th>
+            <th scope="col">Download</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-col="Sistema">Linux</td>
+            <td data-col="Architettura">x64</td>
+            <td data-col="Download"><a href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/sg-attest-linux-x64"><code>sg-attest-linux-x64</code></a></td>
+          </tr>
+          <tr>
+            <td data-col="Sistema">Linux</td>
+            <td data-col="Architettura">arm64</td>
+            <td data-col="Download"><a href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/sg-attest-linux-arm64"><code>sg-attest-linux-arm64</code></a></td>
+          </tr>
+          <tr>
+            <td data-col="Sistema">macOS</td>
+            <td data-col="Architettura">Intel</td>
+            <td data-col="Download"><a href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/sg-attest-macos-x64"><code>sg-attest-macos-x64</code></a></td>
+          </tr>
+          <tr>
+            <td data-col="Sistema">macOS</td>
+            <td data-col="Architettura">Apple Silicon</td>
+            <td data-col="Download"><a href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/sg-attest-macos-arm64"><code>sg-attest-macos-arm64</code></a></td>
+          </tr>
+          <tr>
+            <td data-col="Sistema">Windows</td>
+            <td data-col="Architettura">x64</td>
+            <td data-col="Download"><a href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/sg-attest-windows-x64.exe"><code>sg-attest-windows-x64.exe</code></a></td>
+          </tr>
+          <tr>
+            <td data-col="Sistema">Windows</td>
+            <td data-col="Architettura">ARM64</td>
+            <td data-col="Download"><a href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/sg-attest-windows-arm64.exe"><code>sg-attest-windows-arm64.exe</code></a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="link-row">
+      <a class="pill" href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        Tutte le versioni (Release GitHub)
+      </a>
+      <a class="pill" href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/SHA256SUMS.txt" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+        SHA256SUMS.txt
+      </a>
+    </div>
+  </section>
+
+  <section class="blocco">
+    <h2>Verifica l'integrità</h2>
+    <p>Ogni rilascio include <code>SHA256SUMS.txt</code> con l'impronta di ciascun binario. Confrontala prima di eseguire il file scaricato:</p>
+    <pre><code># Linux / macOS
+sha256sum -c SHA256SUMS.txt --ignore-missing
+
+# Windows (PowerShell)
+(Get-FileHash .\sg-attest-windows-x64.exe -Algorithm SHA256).Hash</code></pre>
+    <p>Ha senso usare lo stesso strumento del servizio per verificare se stesso: <code>sg-attest attest</code> calcola l'impronta di qualunque file, compreso questo eseguibile.</p>
+  </section>
+
+  <section class="blocco avviso">
+    <h2>Avviso "editore sconosciuto"</h2>
+    <p>Questi binari <strong>non sono firmati digitalmente</strong>: alla prima esecuzione, Windows SmartScreen o macOS Gatekeeper mostrano un avviso ("editore sconosciuto"/"sviluppatore non identificato"). È un compromesso dichiarato, non un difetto nascosto — la garanzia d'integrità nel frattempo è il checksum qui sopra, insieme al fatto che il binario è compilato pubblicamente dalla CI del repo, direttamente dal sorgente che puoi leggere.</p>
+    <p>Se preferisci evitare del tutto l'avviso, <code>npx</code> resta il canale primario e non lo mostra mai (vedi sotto).</p>
+  </section>
+
+  <section class="blocco">
+    <h2>Uso</h2>
+    <p>Stessi comandi della versione npm, si lancia il file direttamente:</p>
+    <pre><code># Linux / macOS: rendilo eseguibile la prima volta
+chmod +x ./sg-attest-linux-x64
+
+./sg-attest-linux-x64 status
+./sg-attest-linux-x64 authorize
+./sg-attest-linux-x64 attest ./opera.zip --pdf certificato.pdf
+./sg-attest-linux-x64 verify ./opera.zip --hash &lt;sha256&gt;</code></pre>
+    <p>Su Windows, lo stesso con <code>.\sg-attest-windows-x64.exe</code>. La chiave API va nella variabile d'ambiente <code>IMGAUTH_API_KEY</code>, mai passata come argomento (finirebbe nella cronologia della shell). Ogni comando accetta <code>--json</code> per l'uso in script; i codici d'uscita sono <code>0</code> successo, <code>1</code> errore operativo, <code>2</code> verifica con esito negativo.</p>
+    <p><code>attest</code> senza <code>--pdf</code> calcola solo impronta e firma (nulla viene archiviato); aggiungi <code>--pdf &lt;file&gt;</code> per generare anche il certificato firmato — solo allora l'opera è archiviata e la sua pagina <code>/c/&lt;impronta&gt;</code> esiste davvero.</p>
+    <p>L'elenco completo dei comandi (<code>verify-cert</code>, <code>cert</code>, <code>anchor</code>, …) è nel <a href="https://github.com/SPAZIO-GENESI/attest-mcp#cli-sg-attest" target="_blank" rel="noopener noreferrer">README del repo</a>.</p>
+  </section>
+
+  <section class="blocco">
+    <h2>Quando preferire il binario a <code>npx</code></h2>
+    <ul>
+      <li><strong>Macchina o runner senza Node.js</strong> — immagini minime, container distroless, ambienti dove installare un runtime è un costo che non vuoi pagare solo per attestare un file.</li>
+      <li><strong>Rete verso un registro pacchetti non disponibile</strong> — il binario, una volta scaricato, non contatta npm: solo l'API di attestazione.</li>
+      <li><strong>Avvio più rapido</strong> — nessuna risoluzione di dipendenze a ogni invocazione, a differenza di <code>npx</code> quando la cache è fredda.</li>
+    </ul>
+    <p style="margin-top:0.8rem;"><code>npx</code>/<code>npm</code> restano il canale primario, e sono quello che usa <a href="https://github.com/SPAZIO-GENESI/attest-action" target="_blank" rel="noopener noreferrer">attest-action</a> in CI: il binario è un canale in più, non una sostituzione.</p>
+  </section>
+
+  <div class="nota">
+    <strong style="color:#111;">Le garanzie restano identiche.</strong> Il binario è compilato dallo stesso sorgente del pacchetto npm (<code>src/cli.js</code>), senza dipendenze incluse oltre al runtime necessario per eseguirlo: stessa impronta calcolata in locale, stesso HMAC, stessa firma, stesso ancoraggio Bitcoin. Nessuna scorciatoia riduce le protezioni descritte nella <a href="/">pagina del servizio</a>.
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <a class="footer-back" href="/developer/">← Torna a Per sviluppatori e partner</a>
+    <nav class="footer-cols" aria-label="Collegamenti del footer">
+      <div class="footer-col">
+        <h3>Servizio</h3>
+        <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a>
+        <a href="https://t.me/SGAttestBot">Bot Telegram</a>
+        <a href="/changelog/">Cronologia dei miglioramenti</a>
+        <a href="/status/">Stato del servizio</a>
+      </div>
+      <div class="footer-col">
+        <h3>Fasce e accesso</h3>
+        <a href="/condizioni/">Fasce e condizioni</a>
+        <a href="/professionale/">Fascia Professionale</a>
+        <a href="/profilo/">Area professionale</a>
+      </div>
+      <div class="footer-col">
+        <h3>Fiducia</h3>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/sicurezza/">Segnala una vulnerabilità</a>
+        <a href="https://trust.spaziogenesi.org">Come verificarci</a>
+      </div>
+      <div class="footer-col">
+        <h3>Sviluppatori</h3>
+        <a href="/developer/">API &amp; server MCP</a>
+        <a href="/developer/cli/">Eseguibile CLI</a>
+        <a href="/integrazioni/">Vetrina Integrazioni</a>
+      </div>
+    </nav>
+    <div class="footer-bottom">
+      <a href="https://trust.spaziogenesi.org"><img src="https://trust.spaziogenesi.org/badge.svg" alt="Genesis Trust Score" height="16" style="vertical-align:middle;"></a>
+      <span>·</span>
+      <a href="https://spaziogenesi.org">Spazio Genesi</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -172,6 +172,7 @@ const html = `<!DOCTYPE html>
       <div class="footer-col">
         <h3>Sviluppatori</h3>
         <a href="/developer/">API &amp; server MCP</a>
+        <a href="/developer/cli/">Eseguibile CLI</a>
         <a href="/integrazioni/">Vetrina Integrazioni</a>
       </div>
     </nav>
