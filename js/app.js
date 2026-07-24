@@ -113,7 +113,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.31.0";
+  const APP_VERSION = "1.31.1";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
@@ -182,6 +182,29 @@
     if (b < 1024) return b + " B";
     if (b < 1048576) return (b/1024).toFixed(1) + " KB";
     return (b/1048576).toFixed(2) + " MB";
+  }
+
+  // Data leggibile dell'attestazione (P41). Il Worker restituisce sempre
+  // `timestamp_leggibile` in italiano: sulle pagine inglesi la ricalcoliamo
+  // dall'ISO — che è il dato autorevole, ed è l'unico che entra nella firma —
+  // con lo stesso identico formato che il certificato PDF usa in inglese
+  // (`humanTsEN` in worker.js), così pagina, .txt e certificato coincidono.
+  // ⚠️ I mesi stanno DENTRO la funzione di proposito: questo file non ha wrapper
+  // IIFE e condivide lo scope globale con ui-extensions.js/bindings.js — una
+  // costante in più qui è una collisione in attesa di accadere (cfr. P19).
+  function humanTimestamp(d) {
+    if (window.SG_I18N.lang !== "en" || !d || !d.timestamp_iso) {
+      return d ? (d.timestamp_leggibile || "") : "";
+    }
+    const MONTHS_EN = ["", "January", "February", "March", "April", "May", "June",
+                       "July", "August", "September", "October", "November", "December"];
+    const dt = new Date(d.timestamp_iso);
+    if (isNaN(dt.getTime())) return d.timestamp_leggibile || "";
+    const day = String(dt.getUTCDate()).padStart(2, "0");
+    const hh  = String(dt.getUTCHours()).padStart(2, "0");
+    const mm  = String(dt.getUTCMinutes()).padStart(2, "0");
+    const ss  = String(dt.getUTCSeconds()).padStart(2, "0");
+    return `${MONTHS_EN[dt.getUTCMonth() + 1]} ${day}, ${dt.getUTCFullYear()} — ${hh}:${mm}:${ss} UTC`;
   }
 
   // Miniatura: immagine reale per i file immagine, altrimenti un'icona generica
@@ -303,7 +326,10 @@
           titolo: document.getElementById("metaTitolo").value,
           autore: document.getElementById("metaAutore").value,
           anno:   document.getElementById("metaAnno").value,
-          note:   document.getElementById("metaNote").value
+          note:   document.getElementById("metaNote").value,
+          // Lingua della pagina da cui si sta attestando (P41): qui vale solo per
+          // gli eventuali messaggi d'errore del Worker. NON entra nella firma HMAC.
+          lang:   window.SG_I18N.lang
         })
       });
 
@@ -342,7 +368,7 @@
       document.getElementById("rFilename").textContent    = d.opera;
       document.getElementById("rSize").textContent        = fmt(d.dimensione_bytes);
       document.getElementById("rMime").textContent        = d.tipo_mime;
-      document.getElementById("rTimestamp").textContent   = d.timestamp_leggibile;
+      document.getElementById("rTimestamp").textContent   = humanTimestamp(d);
       document.getElementById("rIssuer").textContent      = d.emesso_da;
       document.getElementById("rAttestation").textContent = d.attestazione;
 
@@ -466,7 +492,7 @@
       t("txt.labelTipoMime") + lastData.tipo_mime,
       t("txt.labelSha256") + lastData.sha256,
       t("txt.labelTimestampIso") + lastData.timestamp_iso,
-      t("txt.labelTimestampLeggibile") + lastData.timestamp_leggibile,
+      t("txt.labelTimestampLeggibile") + humanTimestamp(lastData),
     ];
     // Dati dichiarati (se presenti): coperti dalla firma HMAC, vanno
     // reinseriti identici per una futura verifica della firma.
@@ -519,7 +545,10 @@
       const res = await fetch(WORKER_PDF_URL, {
         method: "POST",
         headers: pdfHeaders,
-        body: JSON.stringify(lastData),
+        // `lang` viaggia accanto a lastData, non dentro: sceglie la lingua della
+        // prosa del certificato (P41) e non tocca nulla di ciò che è firmato —
+        // il Worker verifica attestazione+hmac esattamente come prima.
+        body: JSON.stringify({ ...lastData, lang: window.SG_I18N.lang }),
       });
       if (!res.ok) {
         const errBody = await res.json().catch(() => ({ error: res.status }));
