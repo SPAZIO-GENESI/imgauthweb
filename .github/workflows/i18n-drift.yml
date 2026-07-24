@@ -1,0 +1,19 @@
+# P41 — guardia anti-divergenza tra le pagine italiane e le loro coppie
+# inglesi sotto /en/ (CLAUDE.md § P41, decisione D2). Lezione beta.html/
+# index2.html: le pagine duplicate divergono se nessuno se ne accorge —
+# questo workflow lo impedisce fallendo appena l'italiano cambia senza che
+# la traduzione EN e i18n/pairs.json vengano aggiornati nello stesso giro.
+name: i18n drift check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node scripts/check-i18n-drift.mjs

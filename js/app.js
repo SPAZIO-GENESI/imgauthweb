@@ -1,3 +1,6 @@
+  // i18n.js è caricato PRIMA di questo script e definisce window.SG_I18N.
+  const t = (k, p) => window.SG_I18N.t(k, p);
+
   const WORKER_BASE       = "https://imgauth.spaziogenesi.org";
   // Base della pagina di verifica permanente /c/<hash> (servita dal Worker, montata
   // su questo dominio via route Cloudflare): stesso valore stampato nel certificato.
@@ -82,7 +85,7 @@
       anonBox.style.display = "none";
       attivaBox.style.display = "block";
       const testoEl = document.getElementById("convenzioneAttivaTesto");
-      testoEl.textContent = "Stai attestando come " + active.payload.email;
+      testoEl.textContent = t("voucher.attivo", { email: active.payload.email });
       // Fascia effettiva dal server (Convenzione con X / Professionale /
       // Sviluppatore / Base): il payload del voucher è solo un hint.
       // Fail-safe: se la chiamata fallisce resta il testo neutro.
@@ -90,8 +93,7 @@
         .then((r) => (r.ok ? r.json() : null))
         .then((d) => {
           if (d && d.contract && d.contract.label) {
-            testoEl.textContent = "Stai attestando come " + active.payload.email +
-              " — fascia: " + d.contract.label;
+            testoEl.textContent = t("voucher.attivoFascia", { email: active.payload.email, fascia: d.contract.label });
           }
         })
         .catch(() => {});
@@ -134,10 +136,10 @@
   (function showVersion() {
     const el = document.getElementById("appVersion");
     if (!el) return;
-    el.textContent = "interfaccia v" + APP_VERSION;
+    el.textContent = t("footer.interfaccia", { v: APP_VERSION });
     fetch(WORKER_BASE + "/ping")
       .then(r => (r.ok ? r.json() : null))
-      .then(d => { if (d && d.version) el.textContent += " · motore v" + d.version; })
+      .then(d => { if (d && d.version) el.textContent += t("footer.motore", { v: d.version }); })
       .catch(() => {});
   })();
 
@@ -189,7 +191,7 @@
       "<svg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'>" +
       "<rect width='56' height='56' rx='4' fill='#eee' stroke='#ddd'/>" +
       "<text x='28' y='33' font-family='Inter,sans-serif' font-size='11' fill='#888' text-anchor='middle'>" +
-      (ext || "FILE") + "</text></svg>";
+      (ext || t("file.iconFallback")) + "</text></svg>";
     return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
   }
 
@@ -215,12 +217,12 @@
       selectedFile = null;
       attestBtn.disabled = true;
       previewRow.classList.remove("show");
-      showErr("File troppo grande (max 1 GB). L'impronta si calcola nel tuo browser e serve memoria sufficiente a leggere il file.");
+      showErr(t("err.fileTroppoGrande"));
       return;
     }
     selectedFile = f;
     previewName.textContent = f.name;
-    previewMeta.textContent = (f.type || "tipo sconosciuto") + " · " + fmt(f.size);
+    previewMeta.textContent = (f.type || t("file.tipoSconosciuto")) + " · " + fmt(f.size);
     setThumb(previewImg, f);
     previewRow.classList.add("show");
     attestBtn.disabled = false;
@@ -266,14 +268,14 @@
     if (!activeVoucher && turnstileEnabled()) {
       tsToken = (window.turnstile && window.turnstile.getResponse()) || "";
       if (!tsToken) {
-        showErr("Completa la verifica anti-bot qui sopra, poi riprova.");
+        showErr(t("err.turnstileMancante"));
         return;
       }
     }
 
     attestBtn.classList.add("loading");
     attestBtn.disabled = true;
-    btnLabel.textContent = "Elaborazione…";
+    btnLabel.textContent = t("btn.elaborazione");
     errorMsg.classList.remove("show");
     resultWrap.classList.remove("show");
 
@@ -281,12 +283,12 @@
       // Full privacy (1.14.0): l'impronta SHA-256 si calcola QUI, nel browser
       // (WebCrypto). Il file non lascia mai questo dispositivo: al server
       // viaggiano solo impronta, nome/tipo/dimensione e i dati dichiarati.
-      btnLabel.textContent = "Calcolo dell'impronta…";
+      btnLabel.textContent = t("btn.calcolo");
       const sha256 = await sha256Hex(selectedFile);
 
       // Invia JSON al Worker. I dati dell'opera (facoltativi) vengono
       // normalizzati dal server e vincolati alla firma HMAC dell'attestazione.
-      btnLabel.textContent = "Attestazione…";
+      btnLabel.textContent = t("btn.attestazione");
       const hashHeaders = { "Content-Type": "application/json" };
       if (activeVoucher) hashHeaders["X-SG-Voucher"] = activeVoucher.token;
       const res = await fetch(WORKER_HASH_URL, {
@@ -311,10 +313,10 @@
         if (d.error === "voucher_scaduto") {
           sessionStorage.removeItem(SG_VOUCHER_KEY);
           renderVoucherState();
-          showErr("Il tuo accesso con email istituzionale è scaduto. Accedi di nuovo qui sopra, poi riprova.");
+          showErr(t("err.voucherScaduto"));
           return;
         }
-        showErr(d.error || "Errore " + res.status);
+        showErr(d.error || t("err.httpStatus", { status: res.status }));
         return;
       }
 
@@ -350,25 +352,19 @@
       // senza convenzione): l'avviso serve solo dove cambia qualcosa.
       const fasciaNota = document.getElementById("fasciaNota");
       if (d.fascia === "convenzione" && d.convenzione) {
-        fasciaNota.textContent = "Attestazione riconosciuta dalla convenzione con " + d.convenzione.name +
-          ": il certificato è garantito recuperabile più a lungo (vedi le condizioni).";
+        fasciaNota.textContent = t("fascia.convenzione", { nome: d.convenzione.name });
         fasciaNota.style.display = "";
       } else if (d.fascia_motivo === "pool_esaurito") {
-        fasciaNota.textContent = "Il monte mensile della tua convenzione è esaurito per questo mese: " +
-          "l'attestazione è stata generata comunque, nella fascia gratuita di base (PDF recuperabile per almeno 6 mesi).";
+        fasciaNota.textContent = t("fascia.poolEsaurito");
         fasciaNota.style.display = "";
       } else if (d.fascia_motivo === "tetto_individuale") {
-        fasciaNota.textContent = "Hai raggiunto il tuo limite personale mensile nella convenzione: " +
-          "l'attestazione è stata generata comunque, nella fascia gratuita di base (PDF recuperabile per almeno 6 mesi).";
+        fasciaNota.textContent = t("fascia.tettoIndividuale");
         fasciaNota.style.display = "";
       } else if (d.fascia === "professionale") {
-        fasciaNota.textContent = "Attestazione riconosciuta nella fascia Professionale: " +
-          "custodia del certificato garantita per almeno 5 anni.";
+        fasciaNota.textContent = t("fascia.professionale");
         fasciaNota.style.display = "";
       } else if (d.fascia_motivo === "quota_professionale_esaurita") {
-        fasciaNota.textContent = "Hai raggiunto le 200 attestazioni mensili della fascia Professionale: " +
-          "l'attestazione è stata generata comunque, nella fascia gratuita di base " +
-          "(PDF recuperabile per almeno 6 mesi).";
+        fasciaNota.textContent = t("fascia.quotaProfessionaleEsaurita");
         fasciaNota.style.display = "";
       } else {
         fasciaNota.style.display = "none";
@@ -386,18 +382,18 @@
       resultWrap.classList.add("show");
       resultWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } catch (e) {
-      showErr("Impossibile completare l'attestazione (" + e.message + "). Se il file è molto grande la memoria del browser potrebbe non bastare; altrimenti controlla la connessione.");
+      showErr(t("err.attestazioneFallita", { msg: e.message }));
     } finally {
       attestBtn.classList.remove("loading");
       attestBtn.disabled = false;
-      btnLabel.textContent = "Genera attestazione SHA-256";
+      btnLabel.textContent = t("btn.genera");
       // Il token Turnstile è monouso: resetta il widget per una nuova attestazione.
       if (turnstileEnabled() && window.turnstile) window.turnstile.reset();
     }
   });
 
   function showErr(msg) {
-    errorMsg.textContent = "Errore: " + msg;
+    errorMsg.textContent = t("errore.generico", { msg: msg });
     errorMsg.classList.add("show");
   }
 
@@ -407,10 +403,10 @@
     if (!h) return;
     navigator.clipboard.writeText(h).then(() => {
       const b = document.getElementById("copyBtn");
-      b.textContent = "Copiato";
+      b.textContent = t("btn.copiato");
       b.classList.add("ok");
       setTimeout(() => {
-        b.textContent = "Copia";
+        b.textContent = t("btn.copia");
         b.classList.remove("ok");
       }, 2000);
     });
@@ -441,7 +437,7 @@
     if (!ta) return;
     navigator.clipboard.writeText(ta.value).then(() => {
       const orig = btn.textContent;
-      btn.textContent = "Copiato ✓";
+      btn.textContent = t("btn.copiatoCheck");
       setTimeout(() => { btn.textContent = orig; }, 2000);
     });
   }
@@ -452,7 +448,7 @@
     if (!a || !a.href) return;
     navigator.clipboard.writeText(a.href).then(() => {
       const orig = btn.textContent;
-      btn.textContent = "Copiato ✓";
+      btn.textContent = t("btn.copiatoCheck");
       setTimeout(() => { btn.textContent = orig; }, 2000);
     });
   }
@@ -462,36 +458,36 @@
   downloadBtn.addEventListener("click", () => {
     if (!lastData) return;
     const lines = [
-      "SPAZIO GENESI ETS — CERTIFICATO DI ATTESTAZIONE OPERA",
+      t("txt.intestazione"),
       "=".repeat(54),
       "",
-      "Opera:              " + lastData.opera,
-      "Dimensione:         " + fmt(lastData.dimensione_bytes),
-      "Tipo MIME:          " + lastData.tipo_mime,
-      "SHA-256:            " + lastData.sha256,
-      "Timestamp ISO:      " + lastData.timestamp_iso,
-      "Timestamp leggibile:" + lastData.timestamp_leggibile,
+      t("txt.labelOpera") + lastData.opera,
+      t("txt.labelDimensione") + fmt(lastData.dimensione_bytes),
+      t("txt.labelTipoMime") + lastData.tipo_mime,
+      t("txt.labelSha256") + lastData.sha256,
+      t("txt.labelTimestampIso") + lastData.timestamp_iso,
+      t("txt.labelTimestampLeggibile") + lastData.timestamp_leggibile,
     ];
     // Dati dichiarati (se presenti): coperti dalla firma HMAC, vanno
     // reinseriti identici per una futura verifica della firma.
     const declared = [
-      ["Titolo (dichiarato):   ", lastData.titolo],
-      ["Autore (dichiarato):   ", lastData.autore],
-      ["Anno/versione:         ", lastData.anno],
-      ["Note (dichiarate):     ", lastData.note],
+      [t("txt.labelTitolo"), lastData.titolo],
+      [t("txt.labelAutore"), lastData.autore],
+      [t("txt.labelAnno"), lastData.anno],
+      [t("txt.labelNote"), lastData.note],
     ].filter(([, v]) => v);
     if (declared.length) {
-      lines.push("", "Dati dell'opera dichiarati dall'autore (vincolati alla firma HMAC):");
+      lines.push("", t("txt.datiDichiaratiTitolo"));
       for (const [label, v] of declared) lines.push(label + v);
     }
     lines.push(
       "",
-      "Stringa di attestazione:",
+      t("txt.stringaAttestazione"),
       lastData.attestazione,
       "",
-      "Firma HMAC (server): " + (lastData.hmac || "n/d"),
+      t("txt.firmaHmac") + (lastData.hmac || t("txt.nd")),
       "",
-      "Emesso da: " + lastData.emesso_da,
+      t("txt.emessoDa") + lastData.emesso_da,
     );
     const txt = lines.join("\n");
 
@@ -512,7 +508,7 @@
     const labelOriginale = pdfBtnLabel.textContent;
     downloadPdfBtn.classList.add("loading");
     downloadPdfBtn.disabled = true;
-    pdfBtnLabel.textContent = "Generazione del certificato in corso…";
+    pdfBtnLabel.textContent = t("btn.generazionePdf");
     try {
       // Stesso voucher (se ancora attivo) allegato anche qui: serve solo a
       // taggare correttamente la fascia nel sidecar del certificato (§2.4/2.7),
@@ -527,7 +523,7 @@
       });
       if (!res.ok) {
         const errBody = await res.json().catch(() => ({ error: res.status }));
-        alert("Errore generazione PDF: " + (errBody.error || res.status));
+        alert(t("err.generazionePdfFallita", { msg: errBody.error || res.status }));
         return;
       }
       const blob = await res.blob();
@@ -559,7 +555,7 @@
       fillBadge("badge", lastData.sha256);
       document.getElementById("badgeDetails").style.display = "";
     } catch (e) {
-      alert("Errore di rete durante il download del PDF: " + e.message);
+      alert(t("err.retePdf", { msg: e.message }));
     } finally {
       downloadPdfBtn.classList.remove("loading");
       downloadPdfBtn.disabled = false;
@@ -572,7 +568,7 @@
     ev.preventDefault();
     const hash = (verifyHashInput.value || "").trim().toLowerCase();
     if (!/^[0-9a-f]{64}$/.test(hash)) {
-      alert("Inserisci prima l'hash dichiarato (64 caratteri esadecimali) nel campo qui sopra.");
+      alert(t("err.hashMancante"));
       return;
     }
     window.open(WORKER_BASE + "/api/ots?hash=" + hash, "_blank");
@@ -582,7 +578,7 @@
   function loadVerifyFile(f) {
     verifyFile = f;
     verifyPreviewName.textContent = f.name;
-    verifyPreviewMeta.textContent = (f.type || "tipo sconosciuto") + " · " + fmt(f.size);
+    verifyPreviewMeta.textContent = (f.type || t("file.tipoSconosciuto")) + " · " + fmt(f.size);
     setThumb(verifyPreviewImg, f);
     verifyPreviewRow.classList.add("show");
     verifyErrorMsg.classList.remove("show");
@@ -712,31 +708,29 @@
   async function loadCertPdf(f) {
     certReadBox.style.display = "block";
     certReadBox.style.color = "#666";
-    certReadBox.textContent = "Lettura del certificato in corso…";
+    certReadBox.textContent = t("cert.lettura");
     if (!pdfjsReady()) {
       certReadBox.style.color = "#c0392b";
-      certReadBox.textContent = "Lettore PDF non ancora pronto: attendi un istante e riprova.";
+      certReadBox.textContent = t("cert.pdfjsNonPronto");
       return;
     }
     try {
       const f2 = await extractCertFields(f);
       if (!f2.hash) {
         certReadBox.style.color = "#c0392b";
-        certReadBox.innerHTML = "Non riesco a leggere un'impronta valida da questo PDF. " +
-          "Assicurati che sia un certificato emesso da questo servizio, oppure inserisci l'impronta manualmente qui sotto.";
+        certReadBox.innerHTML = t("cert.impossibileLeggereImpronta");
         return;
       }
       applyCertFields(f2);
-      const bits = ["impronta SHA-256"];
-      if (f2.hmac) bits.push("firma di sicurezza");
-      const meta = [f2.titolo && "titolo", f2.autore && "autore", f2.anno && "anno", f2.note && "note"].filter(Boolean);
-      if (meta.length) bits.push("dati dichiarati (" + meta.join(", ") + ")");
+      const bits = [t("cert.bitImpronta")];
+      if (f2.hmac) bits.push(t("cert.bitFirma"));
+      const meta = [f2.titolo && t("cert.campoTitolo"), f2.autore && t("cert.campoAutore"), f2.anno && t("cert.campoAnno"), f2.note && t("cert.campoNote")].filter(Boolean);
+      if (meta.length) bits.push(t("cert.bitDatiDichiarati", { campi: meta.join(", ") }));
       certReadBox.style.color = "#1e7e34";
-      certReadBox.innerHTML = "✓ Letto dal certificato: " + bits.join(", ") +
-        ".<br><span style='color:#777'>Ora scegli il file dell'opera (passo 1), poi premi «Verifica il certificato».</span>";
+      certReadBox.innerHTML = t("cert.lettoOk", { bits: bits.join(", ") });
     } catch (e) {
       certReadBox.style.color = "#c0392b";
-      certReadBox.textContent = "Impossibile leggere questo PDF. Inserisci l'impronta manualmente qui sotto.";
+      certReadBox.textContent = t("cert.letturaFallita");
     }
   }
 
@@ -783,20 +777,16 @@
       workBlock.style.order = "1";
       certBlock.style.order = "2";
       certBlock.open = false;
-      workHeading.textContent = "Scegli il file dell'opera da controllare";
-      certSummary.textContent = "Verifica anche la firma del certificato (facoltativo)";
+      workHeading.textContent = t("verify.headingQr");
+      certSummary.textContent = t("verify.certSummaryQr");
       ctx.style.display = "block";
-      ctx.innerHTML =
-        "Stai verificando il certificato con impronta " +
-        "<code style=\"font-size:0.78rem; word-break:break-all;\">" + hash + "</code>.<br>" +
-        "Scegli qui sotto il file dell'opera per controllare che corrisponda. " +
-        "Vuoi la verifica completa, anche di firma e data? Aggiungi il certificato PDF.";
+      ctx.innerHTML = t("verify.ctxQr", { hash: hash });
     } else {
       certBlock.style.order = "1";
       workBlock.style.order = "2";
       certBlock.open = true;
-      workHeading.textContent = "Scegli il file dell'opera da confrontare";
-      certSummary.textContent = "Apri il certificato PDF — lo legge il tuo browser";
+      workHeading.textContent = t("verify.headingCold");
+      certSummary.textContent = t("verify.certSummaryCold");
       ctx.style.display = "none";
     }
   }
@@ -829,7 +819,7 @@
     if (!verifyFile || !verifyHashInput.value.trim()) return;
 
     verifyBtn.disabled = true;
-    verifyBtnLabel.textContent = "Verifica in corso…";
+    verifyBtnLabel.textContent = t("verify.inCorso");
     verifyErrorMsg.classList.remove("show");
     verifyResultWrap.classList.remove("show");
     const rows = document.getElementById("verdictRows");
@@ -840,7 +830,7 @@
       // e il confronto con quella dichiarata avviene in locale — il file non
       // viene inviato al server. Al worker si chiede solo ciò che il browser
       // non può fare da solo: verificare la firma HMAC (il segreto è suo).
-      verifyBtnLabel.textContent = "Calcolo dell'impronta…";
+      verifyBtnLabel.textContent = t("btn.calcolo");
       const claimed  = verifyHashInput.value.trim().toLowerCase();
       const digest   = await sha256Hex(verifyFile);
       const coincide = digest === claimed;
@@ -848,7 +838,7 @@
       let hasMeta = false;
       let hmacValido = null;
       if (verifyAttestInput.value.trim() && verifyHmacInput.value.trim()) {
-        verifyBtnLabel.textContent = "Verifica della firma…";
+        verifyBtnLabel.textContent = t("verify.verificaFirma");
         const fd = new FormData();
         fd.append("hash", claimed);
         fd.append("attestazione", verifyAttestInput.value.trim());
@@ -863,7 +853,7 @@
         const res = await fetch(WORKER_VERIFY_URL, { method: "POST", body: fd });
         const d = await res.json();
         if (!res.ok) {
-          verifyErrorMsg.textContent = "Errore: " + (d.error || ("HTTP " + res.status));
+          verifyErrorMsg.textContent = t("errore.generico", { msg: d.error || ("HTTP " + res.status) });
           verifyErrorMsg.classList.add("show");
           return;
         }
@@ -883,42 +873,42 @@
 
       // 1) Corrispondenza opera ↔ certificato (confronto fatto in locale)
       rows.appendChild(verdictRow(coincide ? "ok" : "bad",
-        coincide ? "L'opera corrisponde al certificato."
-                 : "L'opera NON corrisponde a questo certificato."));
+        coincide ? t("verify.corrisponde")
+                 : t("verify.nonCorrisponde")));
 
       // 2) Autenticità (firma HMAC del server) + integrità dei dati dichiarati
       if (hmacValido === true) {
-        rows.appendChild(verdictRow("ok", "Certificato autentico, emesso da Spazio Genesi."));
-        if (hasMeta) rows.appendChild(verdictRow("ok", "Dati dichiarati integri: non alterati dopo l'emissione."));
+        rows.appendChild(verdictRow("ok", t("verify.certificatoAutentico")));
+        if (hasMeta) rows.appendChild(verdictRow("ok", t("verify.datiIntegri")));
       } else if (hmacValido === false) {
-        rows.appendChild(verdictRow("bad", "Firma di sicurezza NON valida: certificato non riconosciuto o dati alterati."));
-        if (hasMeta) rows.appendChild(verdictRow("info", "Se hai aperto il PDF, controlla i dati letti nei «Dettagli tecnici» (passo 2): un errore di lettura può invalidare la firma."));
+        rows.appendChild(verdictRow("bad", t("verify.firmaNonValida")));
+        if (hasMeta) rows.appendChild(verdictRow("info", t("verify.suggerimentoLettura")));
       } else {
-        rows.appendChild(verdictRow("info", "Firma non verificata: manca la firma di sicurezza. Apri il certificato PDF (passo 2) per il controllo completo."));
+        rows.appendChild(verdictRow("info", t("verify.firmaNonVerificata")));
       }
 
       // 3) Ancoraggio blockchain (OpenTimestamps): presenza della prova .ots
-      const otsPlaceholder = verdictRow("info", "Controllo dell'ancoraggio blockchain…");
+      const otsPlaceholder = verdictRow("info", t("verify.controlloAncoraggio"));
       rows.appendChild(otsPlaceholder);
       try {
         const otsRes = await fetch(WORKER_BASE + "/api/ots?hash=" + verifyHashInput.value.trim().toLowerCase());
         if (otsRes.ok) {
-          otsPlaceholder.replaceWith(verdictRow("ok", "Esistenza ancorata nella blockchain di Bitcoin (OpenTimestamps)."));
+          otsPlaceholder.replaceWith(verdictRow("ok", t("verify.ancoraggioOk")));
         } else {
-          otsPlaceholder.replaceWith(verdictRow("info", "Nessun ancoraggio blockchain per questa impronta (certificati anteriori alla v1.7)."));
+          otsPlaceholder.replaceWith(verdictRow("info", t("verify.ancoraggioAssente")));
         }
       } catch {
-        otsPlaceholder.replaceWith(verdictRow("info", "Ancoraggio blockchain non verificabile in questo momento."));
+        otsPlaceholder.replaceWith(verdictRow("info", t("verify.ancoraggioNonVerificabile")));
       }
 
       verifyResultWrap.classList.add("show");
       verifyResultWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } catch (e) {
-      verifyErrorMsg.textContent = "Errore durante la verifica: riprova (file troppo grande per la memoria del browser, o problema di rete).";
+      verifyErrorMsg.textContent = t("verify.erroreGenerico");
       verifyErrorMsg.classList.add("show");
     } finally {
       verifyBtn.disabled = false;
-      verifyBtnLabel.textContent = "Verifica il certificato";
+      verifyBtnLabel.textContent = t("btn.verificaIlCertificato");
     }
   });
 
@@ -957,24 +947,22 @@
   recoverBtn.addEventListener("click", async () => {
     recoverMsg.style.display = "none";
     recoverBtn.disabled = true;
-    recoverBtnLabel.textContent = "Ricerca in archivio…";
+    recoverBtnLabel.textContent = t("recupero.ricerca");
     try {
       let hash = verifyHashInput.value.trim().toLowerCase();
       if (!HEX64_RE.test(hash)) {
         if (!verifyFile) return;
-        recoverBtnLabel.textContent = "Calcolo dell'impronta…";
+        recoverBtnLabel.textContent = t("btn.calcolo");
         hash = await sha256Hex(verifyFile);
       }
       const res = await fetch(WORKER_BASE + "/api/cert?hash=" + hash);
       if (res.status === 404) {
-        showRecoverMsg("Nessun certificato in archivio per questa opera. " +
-          "Nota: il recupero vale per i certificati emessi dal 13 giugno 2026 in poi; " +
-          "per quelli precedenti scrivici indicando l'impronta.", false);
+        showRecoverMsg(t("recupero.nonTrovato"), false);
         return;
       }
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        showRecoverMsg("Errore: " + (err.error || ("HTTP " + res.status)), false);
+        showRecoverMsg(t("errore.generico", { msg: err.error || ("HTTP " + res.status) }), false);
         return;
       }
       const blob = await res.blob();
@@ -984,13 +972,12 @@
       a.download = "certificato-" + hash.slice(0, 12) + ".pdf";
       a.click();
       URL.revokeObjectURL(url);
-      showRecoverMsg("Certificato recuperato: è la copia firmata conservata nel nostro archivio " +
-        "(in caso di più emissioni per la stessa opera, la prima — quella con la data più antica).", true);
+      showRecoverMsg(t("recupero.trovato"), true);
     } catch (e) {
-      showRecoverMsg("Errore di rete durante il recupero. Riprova tra qualche istante.", false);
+      showRecoverMsg(t("recupero.erroreRete"), false);
     } finally {
       recoverBtn.disabled = false;
-      recoverBtnLabel.textContent = "Recupera il certificato dall'archivio";
+      recoverBtnLabel.textContent = t("btn.recupera");
       updateRecoverState();
     }
   });
@@ -1005,7 +992,7 @@
   // Principio prudente: si inibisce SOLO su un "down" certo; se lo stato non è
   // raggiungibile, neutro (grigio) e nessun blocco.
   const WORKER_STATUS_URL = WORKER_BASE + "/api/status";
-  const SVC_LABELS = { ok: "operativo", down: "non disponibile", degraded: "rallentato", "n/d": "non rilevato", na: "non rilevato" };
+  const SVC_LABELS = { ok: t("svc.ok"), down: t("svc.down"), degraded: t("svc.degraded"), "n/d": t("svc.nonRilevato"), na: t("svc.nonRilevato") };
 
   let svcPdfNote = null;
   function ensurePdfNote() {
@@ -1032,8 +1019,8 @@
       btn.disabled = true;
       if (note) {
         note.textContent = archiveDown
-          ? "Archivio temporaneamente non disponibile: puoi comunque generare l'attestazione e scaricare il .txt; riprova più tardi per il certificato PDF."
-          : "Firma del certificato temporaneamente non disponibile: puoi scaricare il .txt; riprova più tardi per il PDF.";
+          ? t("svc.notaArchivioGiu")
+          : t("svc.notaFirmaGiu");
         note.style.display = "block";
       }
     } else {
@@ -1051,20 +1038,20 @@
       const v = st ? (st[k] || "n/d") : "na";
       const cls = v === "ok" ? "ok" : v === "down" ? "down" : v === "degraded" ? "degraded" : "na";
       if (dot) dot.className = "svc-dot " + cls;
-      if (lab) lab.textContent = SVC_LABELS[v] || "non rilevato";
+      if (lab) lab.textContent = SVC_LABELS[v] || t("svc.nonRilevato");
       if (cls === "down") down++; else if (cls === "degraded") degraded++; else if (cls === "na") na++;
     }
     const checked = document.getElementById("svcChecked");
     if (checked) checked.textContent = st
-      ? "Ultimo controllo: " + new Date().toLocaleTimeString("it-IT")
-      : "Ultimo controllo: stato non raggiungibile";
+      ? t("svc.ultimoControllo", { ora: new Date().toLocaleTimeString("it-IT") })
+      : t("svc.ultimoControlloIrraggiungibile");
 
     const fdot = document.querySelector("#svcFooter .svc-dot");
     const ftxt = document.getElementById("svcFooterText");
-    let fcls = "ok", ftext = "Servizi operativi";
-    if (!st || na === keys.length) { fcls = "na"; ftext = "Stato dei servizi non disponibile"; }
-    else if (down > 0) { fcls = "down"; ftext = "Disservizio parziale in corso"; }
-    else if (degraded > 0) { fcls = "degraded"; ftext = "Servizi operativi (un componente rallentato)"; }
+    let fcls = "ok", ftext = t("svc.operativi");
+    if (!st || na === keys.length) { fcls = "na"; ftext = t("svc.nonDisponibile"); }
+    else if (down > 0) { fcls = "down"; ftext = t("svc.disservizioParziale"); }
+    else if (degraded > 0) { fcls = "degraded"; ftext = t("svc.operativoRallentato"); }
     if (fdot) fdot.className = "svc-dot " + fcls;
     if (ftxt) ftxt.textContent = ftext;
   }

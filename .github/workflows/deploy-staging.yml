@@ -51,7 +51,12 @@ jobs:
           # dominio custom per lo staging): senza questo passo, ogni riferimento
           # assoluto punterebbe alla radice sbagliata (404) — scoperto nel collaudo
           # browser reale di P24 FASE 7 (pdf.min.js 404, link interni rotti).
-          sed -i -E 's#(href|src)="(/[^/"][^"]*)"#\1="/attestazione-staging\2"#g' index.html
+          # P41: stesso trattamento per en/index.html, non solo index.html — un
+          # find/glob invece di un secondo sed copiato (CLAUDE.md § authweb, trappola 3).
+          for f in $(find . -maxdepth 2 -name index.html \( -path './index.html' -o -path './en/index.html' \)); do
+            sed -i -E 's#(href|src)="(/[^/"][^"]*)"#\1="/attestazione-staging\2"#g' "$f"
+            grep -q '/attestazione-staging/js/app.js' "$f"
+          done
           sed -i -E 's#workerSrc = "(/vendor[^"]*)"#workerSrc = "/attestazione-staging\1"#' js/app.js
           grep -q '/attestazione-staging/vendor/pdf/pdf.min.js' js/app.js
           echo "Percorsi assoluti corretti."
