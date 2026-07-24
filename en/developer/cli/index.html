@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eseguibile CLI sg-attest — Attestazione | Spazio Genesi</title>
-<meta name="description" content="Scarica ed esegui sg-attest come binario standalone, senza Node.js: attesta e verifica da terminale o in CI su Linux, macOS e Windows.">
+<title>sg-attest CLI executable — Attestation | Spazio Genesi</title>
+<meta name="description" content="Download and run sg-attest as a standalone binary, no Node.js required: attest and verify from the terminal or in CI on Linux, macOS, and Windows.">
 <link rel="canonical" href="https://attestazione.spaziogenesi.org/developer/cli/">
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-<meta property="og:title" content="Eseguibile CLI sg-attest — Attestazione | Spazio Genesi">
-<meta property="og:description" content="Scarica ed esegui sg-attest come binario standalone, senza Node.js: attesta e verifica da terminale o in CI su Linux, macOS e Windows.">
+<meta property="og:title" content="sg-attest CLI executable — Attestation | Spazio Genesi">
+<meta property="og:description" content="Download and run sg-attest as a standalone binary, no Node.js required: attest and verify from the terminal or in CI on Linux, macOS, and Windows.">
 <meta property="og:image" content="https://attestazione.spaziogenesi.org/og.png">
 <meta property="og:url" content="https://attestazione.spaziogenesi.org/developer/cli/">
 <meta property="og:type" content="website">
@@ -22,9 +22,9 @@
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Attestazione", "item": "https://attestazione.spaziogenesi.org/" },
-    { "@type": "ListItem", "position": 2, "name": "Per sviluppatori e partner", "item": "https://attestazione.spaziogenesi.org/developer/" },
-    { "@type": "ListItem", "position": 3, "name": "Eseguibile CLI sg-attest", "item": "https://attestazione.spaziogenesi.org/developer/cli/" }
+    { "@type": "ListItem", "position": 1, "name": "Attestation", "item": "https://attestazione.spaziogenesi.org/" },
+    { "@type": "ListItem", "position": 2, "name": "For developers and partners", "item": "https://attestazione.spaziogenesi.org/developer/" },
+    { "@type": "ListItem", "position": 3, "name": "sg-attest CLI binary", "item": "https://attestazione.spaziogenesi.org/developer/cli/" }
   ]
 }
 </script>
@@ -120,69 +120,69 @@
   .sg-brandbar .lang:hover{ background:#FFFFFF; }
 </style>
 <div class="sg-brandbar">
-  <a class="svc" href="/" aria-label="Attestazione — home del servizio">
+  <a class="svc" href="/en/" aria-label="Attestation — service home">
     <svg viewBox="0 0 700 700" aria-hidden="true"><path fill="#8B6914" d="M0,0 L700,0 L700,196.81 L597.87,196.81 L597.87,102.13 L102.13,102.13 L102.13,597.87 L597.87,597.87 L597.87,503.19 L700,503.19 L700,700 L0,700 Z"/><circle fill="#211E15" cx="350" cy="350" r="153.19"/><rect fill="#211E15" x="490.53" y="291.49" width="209.44" height="117.03"/></svg>
-    <span>Attestazione</span>
+    <span>Attestation</span>
   </a>
   <div class="brandbar-right">
-    <a class="parent" href="https://spaziogenesi.org/" title="Spazio Genesi — l'ente dietro il servizio">
+    <a class="parent" href="https://spaziogenesi.org/" title="Spazio Genesi — the organization behind the service">
       <svg viewBox="0 0 580 481" aria-hidden="true"><g transform="translate(0,481) scale(0.1,-0.1)" fill="currentColor" stroke="none"><path d="M2175 4799 c-729 -75 -1378 -467 -1780 -1074 -82 -124 -203 -366 -252 -505 -100 -282 -137 -506 -137 -815 0 -222 6 -283 46 -497 l23 -118 1396 0 1397 0 26 -83 c37 -117 49 -216 43 -332 -24 -405 -299 -739 -698 -847 -120 -32 -328 -32 -448 0 -105 29 -210 76 -301 138 -77 51 -201 176 -240 242 l-25 41 -368 1 -368 0 63 -76 c142 -172 345 -355 533 -479 124 -82 366 -203 505 -252 281 -100 505 -137 815 -137 310 0 534 37 815 137 139 49 381 170 505 252 265 175 514 425 690 690 94 141 214 391 269 558 l49 147 534 0 533 0 0 565 0 565 -1944 0 -1943 0 -27 59 c-53 119 -70 203 -70 361 0 168 18 251 84 388 51 106 88 161 169 246 83 86 166 145 275 197 142 66 218 82 391 82 122 0 165 -4 228 -21 99 -27 232 -89 310 -146 74 -52 190 -172 232 -238 l30 -48 413 0 c226 0 412 2 412 5 0 14 -172 214 -256 299 -190 190 -374 323 -619 447 -232 117 -479 196 -735 234 -127 19 -452 27 -575 14z"/></g></svg>
-      <span>un servizio di Spazio Genesi ↗</span>
+      <span>A Spazio Genesi service ↗</span>
     </a>
     <a class="lang" href="/developer/cli/" hreflang="it" lang="it">IT</a>
   </div>
 </div>
 
 <header>
-  <h1>L'eseguibile <span><code>sg-attest</code></span>, senza installare nulla</h1>
-  <p class="sub">Un binario standalone per Linux, macOS e Windows: attesta e verifica da terminale o in CI senza Node.js, npm o rete verso un registro pacchetti — solo il download e i checksum qui sotto.</p>
+  <h1>The <span><code>sg-attest</code></span> executable, with nothing to install</h1>
+  <p class="sub">A standalone binary for Linux, macOS, and Windows: attest and verify from the terminal or in CI without Node.js, npm, or network access to a package registry — just the download and checksums below.</p>
   <div class="divider"></div>
 </header>
 
 <main>
 
   <section class="blocco">
-    <h2>Scarica</h2>
-    <p>Sei comandi, uno per sistema/architettura, pubblicati a ogni rilascio dalla <a href="https://github.com/SPAZIO-GENESI/attest-mcp/actions/workflows/release-binaries.yml" target="_blank" rel="noopener noreferrer">CI del repo</a> — nessun caricamento a mano. I link sotto puntano sempre all'ultima versione pubblicata.</p>
+    <h2>Download</h2>
+    <p>Six binaries, one per system/architecture, published on every release by the repo's <a href="https://github.com/SPAZIO-GENESI/attest-mcp/actions/workflows/release-binaries.yml" target="_blank" rel="noopener noreferrer">CI</a> — nothing done by hand. The links below always point to the latest published version.</p>
     <div class="tabella-wrap">
       <table class="matrice">
-        <caption>Binari sg-attest per sistema operativo e architettura</caption>
+        <caption>sg-attest binaries by operating system and architecture</caption>
         <thead>
           <tr>
-            <th scope="col">Sistema</th>
-            <th scope="col">Architettura</th>
+            <th scope="col">System</th>
+            <th scope="col">Architecture</th>
             <th scope="col">Download</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td data-col="Sistema">Linux</td>
-            <td data-col="Architettura">x64</td>
+            <td data-col="System">Linux</td>
+            <td data-col="Architecture">x64</td>
             <td data-col="Download"><a href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/sg-attest-linux-x64"><code>sg-attest-linux-x64</code></a></td>
           </tr>
           <tr>
-            <td data-col="Sistema">Linux</td>
-            <td data-col="Architettura">arm64</td>
+            <td data-col="System">Linux</td>
+            <td data-col="Architecture">arm64</td>
             <td data-col="Download"><a href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/sg-attest-linux-arm64"><code>sg-attest-linux-arm64</code></a></td>
           </tr>
           <tr>
-            <td data-col="Sistema">macOS</td>
-            <td data-col="Architettura">Intel</td>
+            <td data-col="System">macOS</td>
+            <td data-col="Architecture">Intel</td>
             <td data-col="Download"><a href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/sg-attest-macos-x64"><code>sg-attest-macos-x64</code></a></td>
           </tr>
           <tr>
-            <td data-col="Sistema">macOS</td>
-            <td data-col="Architettura">Apple Silicon</td>
+            <td data-col="System">macOS</td>
+            <td data-col="Architecture">Apple Silicon</td>
             <td data-col="Download"><a href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/sg-attest-macos-arm64"><code>sg-attest-macos-arm64</code></a></td>
           </tr>
           <tr>
-            <td data-col="Sistema">Windows</td>
-            <td data-col="Architettura">x64</td>
+            <td data-col="System">Windows</td>
+            <td data-col="Architecture">x64</td>
             <td data-col="Download"><a href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/sg-attest-windows-x64.exe"><code>sg-attest-windows-x64.exe</code></a></td>
           </tr>
           <tr>
-            <td data-col="Sistema">Windows</td>
-            <td data-col="Architettura">ARM64</td>
+            <td data-col="System">Windows</td>
+            <td data-col="Architecture">ARM64</td>
             <td data-col="Download"><a href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/sg-attest-windows-arm64.exe"><code>sg-attest-windows-arm64.exe</code></a></td>
           </tr>
         </tbody>
@@ -191,7 +191,7 @@
     <div class="link-row">
       <a class="pill" href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest" target="_blank" rel="noopener noreferrer">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-        Tutte le versioni (Release GitHub)
+        All versions (GitHub Releases)
       </a>
       <a class="pill" href="https://github.com/SPAZIO-GENESI/attest-mcp/releases/latest/download/SHA256SUMS.txt" target="_blank" rel="noopener noreferrer">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
@@ -201,81 +201,81 @@
   </section>
 
   <section class="blocco">
-    <h2>Verifica l'integrità</h2>
-    <p>Ogni rilascio include <code>SHA256SUMS.txt</code> con l'impronta di ciascun binario. Confrontala prima di eseguire il file scaricato:</p>
+    <h2>Verify integrity</h2>
+    <p>Every release includes <code>SHA256SUMS.txt</code> with the fingerprint of each binary. Compare it before running the downloaded file:</p>
     <pre><code># Linux / macOS
 sha256sum -c SHA256SUMS.txt --ignore-missing
 
 # Windows (PowerShell)
 (Get-FileHash .\sg-attest-windows-x64.exe -Algorithm SHA256).Hash</code></pre>
-    <p>Ha senso usare lo stesso strumento del servizio per verificare se stesso: <code>sg-attest attest</code> calcola l'impronta di qualunque file, compreso questo eseguibile.</p>
+    <p>It makes sense to use the service's own tool to verify itself: <code>sg-attest attest</code> computes the fingerprint of any file, including this very executable.</p>
   </section>
 
   <section class="blocco avviso">
-    <h2>Avviso "editore sconosciuto"</h2>
-    <p>Questi binari <strong>non sono firmati digitalmente</strong>: alla prima esecuzione, Windows SmartScreen o macOS Gatekeeper mostrano un avviso ("editore sconosciuto"/"sviluppatore non identificato"). È un compromesso dichiarato, non un difetto nascosto — la garanzia d'integrità nel frattempo è il checksum qui sopra, insieme al fatto che il binario è compilato pubblicamente dalla CI del repo, direttamente dal sorgente che puoi leggere.</p>
-    <p>Se preferisci evitare del tutto l'avviso, <code>npx</code> resta il canale primario e non lo mostra mai (vedi sotto).</p>
+    <h2>"Unknown publisher" warning</h2>
+    <p>These binaries are <strong>not digitally signed</strong>: on first run, Windows SmartScreen or macOS Gatekeeper will show a warning ("unknown publisher"/"unidentified developer"). This is a declared trade-off, not a hidden flaw — in the meantime, the integrity guarantee is the checksum above, together with the fact that the binary is built publicly by the repo's CI, directly from source you can read.</p>
+    <p>If you'd rather avoid the warning altogether, <code>npx</code> remains the primary channel and never triggers it (see below).</p>
   </section>
 
   <section class="blocco">
-    <h2>Uso</h2>
-    <p>Stessi comandi della versione npm, si lancia il file direttamente:</p>
-    <pre><code># Linux / macOS: rendilo eseguibile la prima volta
+    <h2>Usage</h2>
+    <p>Same commands as the npm version — you just run the file directly:</p>
+    <pre><code># Linux / macOS: make it executable the first time
 chmod +x ./sg-attest-linux-x64
 
 ./sg-attest-linux-x64 status
 ./sg-attest-linux-x64 authorize
 ./sg-attest-linux-x64 attest ./opera.zip --pdf certificato.pdf
 ./sg-attest-linux-x64 verify ./opera.zip --hash &lt;sha256&gt;</code></pre>
-    <p>Su Windows, lo stesso con <code>.\sg-attest-windows-x64.exe</code>. La chiave API va nella variabile d'ambiente <code>IMGAUTH_API_KEY</code>, mai passata come argomento (finirebbe nella cronologia della shell). Ogni comando accetta <code>--json</code> per l'uso in script; i codici d'uscita sono <code>0</code> successo, <code>1</code> errore operativo, <code>2</code> verifica con esito negativo.</p>
-    <p><code>attest</code> senza <code>--pdf</code> calcola solo impronta e firma (nulla viene archiviato); aggiungi <code>--pdf &lt;file&gt;</code> per generare anche il certificato firmato — solo allora l'opera è archiviata e la sua pagina <code>/c/&lt;impronta&gt;</code> esiste davvero.</p>
-    <p>L'elenco completo dei comandi (<code>verify-cert</code>, <code>cert</code>, <code>anchor</code>, …) è nel <a href="https://github.com/SPAZIO-GENESI/attest-mcp#cli-sg-attest" target="_blank" rel="noopener noreferrer">README del repo</a>.</p>
+    <p>On Windows, the same with <code>.\sg-attest-windows-x64.exe</code>. The API key goes in the <code>IMGAUTH_API_KEY</code> environment variable, never passed as an argument (it would end up in the shell history). Every command accepts <code>--json</code> for use in scripts; exit codes are <code>0</code> success, <code>1</code> operational error, <code>2</code> failed verification.</p>
+    <p><code>attest</code> without <code>--pdf</code> only computes the fingerprint and signature (nothing is archived); add <code>--pdf &lt;file&gt;</code> to also generate the signed certificate — only then is the work archived and its <code>/c/&lt;fingerprint&gt;</code> page actually exists.</p>
+    <p>The full list of commands (<code>verify-cert</code>, <code>cert</code>, <code>anchor</code>, …) is in the repo's <a href="https://github.com/SPAZIO-GENESI/attest-mcp#cli-sg-attest" target="_blank" rel="noopener noreferrer">README</a>.</p>
   </section>
 
   <section class="blocco">
-    <h2>Quando preferire il binario a <code>npx</code></h2>
+    <h2>When to prefer the binary over <code>npx</code></h2>
     <ul>
-      <li><strong>Macchina o runner senza Node.js</strong> — immagini minime, container distroless, ambienti dove installare un runtime è un costo che non vuoi pagare solo per attestare un file.</li>
-      <li><strong>Rete verso un registro pacchetti non disponibile</strong> — il binario, una volta scaricato, non contatta npm: solo l'API di attestazione.</li>
-      <li><strong>Avvio più rapido</strong> — nessuna risoluzione di dipendenze a ogni invocazione, a differenza di <code>npx</code> quando la cache è fredda.</li>
+      <li><strong>A machine or runner without Node.js</strong> — minimal images, distroless containers, environments where installing a runtime is a cost you don't want to pay just to attest a file.</li>
+      <li><strong>No network access to a package registry</strong> — once downloaded, the binary doesn't contact npm: only the attestation API.</li>
+      <li><strong>Faster startup</strong> — no dependency resolution on every invocation, unlike <code>npx</code> with a cold cache.</li>
     </ul>
-    <p style="margin-top:0.8rem;"><code>npx</code>/<code>npm</code> restano il canale primario, e sono quello che usa <a href="https://github.com/SPAZIO-GENESI/attest-action" target="_blank" rel="noopener noreferrer">attest-action</a> in CI: il binario è un canale in più, non una sostituzione.</p>
+    <p style="margin-top:0.8rem;"><code>npx</code>/<code>npm</code> remain the primary channel, and are what <a href="https://github.com/SPAZIO-GENESI/attest-action" target="_blank" rel="noopener noreferrer">attest-action</a> uses in CI: the binary is an additional channel, not a replacement.</p>
   </section>
 
   <div class="nota">
-    <strong style="color:#111;">Le garanzie restano identiche.</strong> Il binario è compilato dallo stesso sorgente del pacchetto npm (<code>src/cli.js</code>), senza dipendenze incluse oltre al runtime necessario per eseguirlo: stessa impronta calcolata in locale, stesso HMAC, stessa firma, stesso ancoraggio Bitcoin. Nessuna scorciatoia riduce le protezioni descritte nella <a href="/">pagina del servizio</a>.
+    <strong style="color:#111;">The guarantees remain identical.</strong> The binary is built from the same source as the npm package (<code>src/cli.js</code>), with no dependencies included beyond the runtime needed to run it: the same fingerprint computed locally, the same HMAC, the same signature, the same Bitcoin anchoring. No shortcut reduces the protections described on the <a href="/en/">service page</a>.
   </div>
 
 </main>
 
 <footer>
   <div class="footer-inner">
-    <a class="footer-back" href="/developer/">← Torna a Per sviluppatori e partner</a>
+    <a class="footer-back" href="/en/developer/">← Back to For developers and partners</a>
     <nav class="footer-cols" aria-label="Collegamenti del footer">
       <div class="footer-col">
-        <h3>Servizio</h3>
-        <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a>
-        <a href="https://t.me/SGAttestBot">Bot Telegram</a>
-        <a href="/changelog/">Cronologia dei miglioramenti</a>
-        <a href="/status/">Stato del servizio</a>
+        <h3>Service</h3>
+        <a href="https://spaziogenesi.org/servizi#attestazione">How the service works</a>
+        <a href="https://t.me/SGAttestBot">Telegram bot</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/status/">Service status</a>
       </div>
       <div class="footer-col">
-        <h3>Fasce e accesso</h3>
-        <a href="/condizioni/">Fasce e condizioni</a>
-        <a href="/professionale/">Fascia Professionale</a>
-        <a href="/profilo/">Area professionale</a>
+        <h3>Tiers and access</h3>
+        <a href="/en/condizioni/">Tiers and terms</a>
+        <a href="/professionale/">Professional tier</a>
+        <a href="/profilo/">Professional area</a>
       </div>
       <div class="footer-col">
-        <h3>Fiducia</h3>
-        <a href="/privacy.html">Privacy</a>
-        <a href="/sicurezza/">Segnala una vulnerabilità</a>
-        <a href="https://trust.spaziogenesi.org">Come verificarci</a>
+        <h3>Trust</h3>
+        <a href="/en/privacy.html">Privacy</a>
+        <a href="/sicurezza/">Report a vulnerability</a>
+        <a href="https://trust.spaziogenesi.org">How to verify us</a>
       </div>
       <div class="footer-col">
-        <h3>Sviluppatori</h3>
-        <a href="/developer/">API &amp; server MCP</a>
-        <a href="/developer/cli/">Eseguibile CLI</a>
-        <a href="/integrazioni/">Vetrina Integrazioni</a>
+        <h3>Developers</h3>
+        <a href="/en/developer/">API &amp; MCP server</a>
+        <a href="/en/developer/cli/">CLI executable</a>
+        <a href="/integrazioni/">Integrations showcase</a>
       </div>
     </nav>
     <div class="footer-bottom">

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Attestazione opere digitali — SHA-256 gratis | Spazio Genesi</title>
-<meta name="description" content="Attesta gratis la tua opera digitale: impronta SHA-256 calcolata nel browser, certificato PDF con marca temporale e ancoraggio Bitcoin. Open source.">
+<title>Digital work attestation — free SHA-256 | Spazio Genesi</title>
+<meta name="description" content="Attest your digital work for free: SHA-256 fingerprint computed in your browser, PDF certificate with timestamp and Bitcoin anchoring. Open source.">
 <link rel="canonical" href="https://attestazione.spaziogenesi.org/">
 <meta name="robots" content="index, follow">
 <meta name="color-scheme" content="light">
@@ -18,8 +18,8 @@
 <meta name="apple-mobile-web-app-title" content="Attestazione">
 
 <!-- Open Graph / Twitter -->
-<meta property="og:title" content="Attestazione opere digitali — Spazio Genesi">
-<meta property="og:description" content="Impronta SHA-256, data certificata da terza parte e ancoraggio in Bitcoin. Gratuito e open source: il file non viene conservato.">
+<meta property="og:title" content="Digital work attestation — Spazio Genesi">
+<meta property="og:description" content="SHA-256 fingerprint, date certified by a third party, and Bitcoin anchoring. Free and open source: the file is never kept.">
 <meta property="og:image" content="https://attestazione.spaziogenesi.org/og.png">
 <meta property="og:url" content="https://attestazione.spaziogenesi.org/">
 <meta property="og:type" content="website">
@@ -53,11 +53,11 @@
     },
     {
       "@type": "WebApplication",
-      "name": "Attestazione opere digitali — Spazio Genesi",
+      "name": "Digital work attestation — Spazio Genesi",
       "url": "https://attestazione.spaziogenesi.org/",
-      "description": "Attesta gratis la tua opera digitale: impronta SHA-256 calcolata nel browser, certificato PDF con marca temporale e ancoraggio Bitcoin.",
+      "description": "Attest your digital work for free: SHA-256 fingerprint computed in your browser, PDF certificate with timestamp and Bitcoin anchoring.",
       "applicationCategory": "SecurityApplication",
-      "operatingSystem": "Qualsiasi dispositivo con browser",
+      "operatingSystem": "Any device with a browser",
       "isAccessibleForFree": true,
       "offers": {
         "@type": "Offer",
@@ -68,33 +68,33 @@
     },
     {
       "@type": "HowTo",
-      "name": "Come attestare un'opera digitale",
-      "description": "Tre passi per ottenere un certificato di data certa per un file, calcolando l'impronta direttamente nel browser.",
+      "name": "How to attest a digital work",
+      "description": "Three steps to get a certificate with a certain date for a file, computing the fingerprint directly in your browser.",
       "step": [
         {
           "@type": "HowToStep",
           "position": 1,
-          "name": "Scegli l'opera",
-          "text": "Trascina il file nella scheda «Attesta». Qualsiasi formato, fino a 1 GB."
+          "name": "Choose the work",
+          "text": "Drag the file into the «Attest» tab. Any format, up to 1 GB."
         },
         {
           "@type": "HowToStep",
           "position": 2,
-          "name": "Genera l'attestazione",
-          "text": "Il browser calcola l'impronta SHA-256 senza inviare il file: scarica il certificato PDF (o il .txt) e conservalo."
+          "name": "Generate the attestation",
+          "text": "Your browser computes the SHA-256 fingerprint without sending the file: download the PDF certificate (or the .txt) and keep it."
         },
         {
           "@type": "HowToStep",
           "position": 3,
-          "name": "Verifica quando vuoi",
-          "text": "Trascina di nuovo il file nella scheda «Verifica»: il servizio conferma che è identico all'originale attestato."
+          "name": "Verify whenever you want",
+          "text": "Drag the file again into the «Verify» tab: the service confirms it's identical to the attested original."
         }
       ]
     },
     {
       "@type": "VideoObject",
-      "name": "Video guida al servizio di attestazione Spazio Genesi",
-      "description": "Come attestare e verificare un'opera digitale con il servizio di Spazio Genesi, in meno di due minuti.",
+      "name": "Video guide to the Spazio Genesi attestation service",
+      "description": "How to attest and verify a digital work with the Spazio Genesi service, in under two minutes.",
       "thumbnailUrl": "https://spaziogenesi.org/assets/video/guida-attestazione-poster.jpg",
       "contentUrl": "https://spaziogenesi.org/assets/video/guida-attestazione.mp4",
       "uploadDate": "2026-07-02"
@@ -104,58 +104,58 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "Come funziona l'impronta digitale SHA-256?",
+          "name": "How does the SHA-256 digital fingerprint work?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "L'impronta è calcolata sui byte esatti del file: basta che cambi un solo pixel o una virgola perché diventi completamente diversa. Funziona con qualsiasi formato (immagini, video, audio, documenti, modelli 3D, archivi) e dimostra che il file non è stato modificato."
+            "text": "The fingerprint is computed on the exact bytes of the file: changing just one pixel or one comma makes it completely different. It works with any format (images, video, audio, documents, 3D models, archives) and proves the file hasn't been modified."
           }
         },
         {
           "@type": "Question",
-          "name": "Il mio file viene caricato sui vostri server?",
+          "name": "Is my file sent to your servers?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. Il calcolo dell'impronta avviene direttamente nel browser (tecnologia WebCrypto): l'opera non viene mai caricata né trasmessa. I server ricevono e attestano soltanto l'impronta, sia per l'attestazione sia per la verifica. Il codice è open source e chiunque può verificarlo."
+            "text": "No. The fingerprint is computed directly in your browser (WebCrypto technology): the work is never sent or transmitted. The servers receive and attest only the fingerprint, both for attestation and for verification. The code is open source and anyone can verify it."
           }
         },
         {
           "@type": "Question",
-          "name": "Come faccio a sapere che la data del certificato è vera?",
+          "name": "How do I know the certificate's date is genuine?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Il certificato PDF include una marca temporale emessa da DigiCert, autorità nella lista di fiducia di Adobe: la data non è dichiarata da Spazio Genesi, ma attestata da una terza parte indipendente e verificabile in Adobe Acrobat."
+            "text": "The PDF certificate includes a timestamp issued by DigiCert, an authority on Adobe's trust list: the date isn't declared by Spazio Genesi, but attested by an independent third party and verifiable in Adobe Acrobat."
           }
         },
         {
           "@type": "Question",
-          "name": "Cos'è l'ancoraggio nella blockchain di Bitcoin?",
+          "name": "What is anchoring in the Bitcoin blockchain?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Ogni certificato registra l'impronta nella blockchain di Bitcoin tramite il protocollo aperto OpenTimestamps: una prova di esistenza indipendente dai server di Spazio Genesi, verificabile su opentimestamps.org."
+            "text": "Every certificate records the fingerprint in the Bitcoin blockchain via the open OpenTimestamps protocol: proof of existence independent of Spazio Genesi's servers, verifiable at opentimestamps.org."
           }
         },
         {
           "@type": "Question",
-          "name": "Conservate la mia opera dopo l'attestazione?",
+          "name": "Do you keep my work after attestation?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. Il file viene elaborato in memoria solo il tempo di calcolarne l'impronta e poi scartato: non viene salvato né ceduto a terzi. Negli archivi resta solo il certificato PDF, che contiene l'impronta, non l'opera."
+            "text": "No. The file is processed in memory only for the time needed to compute its fingerprint, then discarded: it isn't saved or handed to third parties. Only the PDF certificate — which contains the fingerprint, not the work — remains in our archives."
           }
         },
         {
           "@type": "Question",
-          "name": "Dove vengono conservati i dati del certificato?",
+          "name": "Where is the certificate data stored?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Il certificato PDF e la prova di esistenza sono conservati su storage Cloudflare R2 con residenza dei dati nell'Unione Europea, in linea con il GDPR."
+            "text": "The PDF certificate and the proof of existence are stored on Cloudflare R2 storage with data residency in the European Union, in line with the GDPR."
           }
         },
         {
           "@type": "Question",
-          "name": "La verifica del certificato è gratuita?",
+          "name": "Is verifying a certificate free?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Sì, sempre e per chiunque. Ogni certificato contiene un QR code e un link che aprono questa pagina con l'impronta già compilata: chi lo riceve trascina il file e ottiene subito l'esito, senza registrarsi né pagare."
+            "text": "Yes, always and for anyone. Every certificate contains a QR code and a link that open this page with the fingerprint already filled in: whoever receives it drags in the file and gets the result immediately, with no registration or payment."
           }
         }
       ]
@@ -788,11 +788,11 @@
 
 <body>
 
-<a class="salta" href="#contenuto">Salta al contenuto</a>
+<a class="salta" href="#contenuto">Skip to content</a>
 
 <!-- Barra ente: logo ufficiale + rimando alla pagina del servizio sul sito -->
 <div class="topbar">
-  <a href="https://spaziogenesi.org/" class="brand" title="Spazio Genesi — sito dell'associazione">
+  <a href="https://spaziogenesi.org/" class="brand" title="Spazio Genesi — the association's website">
     <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="26" viewBox="0 0 580 481" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
       <g transform="translate(0,481) scale(0.1,-0.1)" fill="currentColor" stroke="none">
         <path d="M2175 4799 c-729 -75 -1378 -467 -1780 -1074 -82 -124 -203 -366 -252 -505 -100 -282 -137 -506 -137 -815 0 -222 6 -283 46 -497 l23 -118 1396 0 1397 0 26 -83 c37 -117 49 -216 43 -332 -24 -405 -299 -739 -698 -847 -120 -32 -328 -32 -448 0 -105 29 -210 76 -301 138 -77 51 -201 176 -240 242 l-25 41 -368 1 -368 0 63 -76 c142 -172 345 -355 533 -479 124 -82 366 -203 505 -252 281 -100 505 -137 815 -137 310 0 534 37 815 137 139 49 381 170 505 252 265 175 514 425 690 690 94 141 214 391 269 558 l49 147 534 0 533 0 0 565 0 565 -1944 0 -1943 0 -27 59 c-53 119 -70 203 -70 361 0 168 18 251 84 388 51 106 88 161 169 246 83 86 166 145 275 197 142 66 218 82 391 82 122 0 165 -4 228 -21 99 -27 232 -89 310 -146 74 -52 190 -172 232 -238 l30 -48 413 0 c226 0 412 2 412 5 0 14 -172 214 -256 299 -190 190 -374 323 -619 447 -232 117 -479 196 -735 234 -127 19 -452 27 -575 14z"/>
@@ -801,7 +801,7 @@
     Spazio Genesi
   </a>
   <div class="topbar-right">
-    <a href="https://spaziogenesi.org/servizi#attestazione" class="link-servizi">Cos'è questo servizio? ↗</a>
+    <a href="https://spaziogenesi.org/servizi#attestazione" class="link-servizi">What is this service? ↗</a>
     <a href="/" class="lang-switch" hreflang="it" lang="it">IT</a>
   </div>
 </div>
@@ -809,73 +809,73 @@
 <!-- Hero: la tesi a sinistra, la firma della pagina a destra -->
 <header class="hero">
   <div>
-    <p class="eyebrow">Gratuito · open source · senza registrazione</p>
+    <p class="eyebrow">Free · open source · no registration</p>
     <div class="titolo-riga">
       <svg class="logo-hero" viewBox="0 0 700 700" aria-hidden="true">
         <path fill="var(--oro)" d="M0,0 L700,0 L700,196.81 L597.87,196.81 L597.87,102.13 L102.13,102.13 L102.13,597.87 L597.87,597.87 L597.87,503.19 L700,503.19 L700,700 L0,700 Z"/>
         <circle fill="var(--ink)" cx="350" cy="350" r="153.19"/>
         <rect fill="var(--ink)" x="490.53" y="291.49" width="209.44" height="117.03"/>
       </svg>
-      <h1>Attestazione delle <em>opere digitali</em></h1>
+      <h1>Attestation for <em>digital works</em></h1>
     </div>
-    <p class="lead">Dimostra che la tua opera esisteva oggi, esattamente così com'è:
-      scegli il file, ottieni un certificato da conservare. Gratis, in un minuto —
-      e il file non lascia mai il tuo dispositivo.</p>
-    <div class="chips" aria-label="Caratteristiche del servizio">
-      <span class="chip">Il file resta da te</span>
-      <span class="chip chip-md">Qualsiasi formato, fino a 1 GB</span>
-      <span class="chip">Verifica gratuita per sempre</span>
+    <p class="lead">Prove that your work existed today, exactly as it is:
+      choose the file, get a certificate to keep. Free, in a minute —
+      and the file never leaves your device.</p>
+    <div class="chips" aria-label="Service features">
+      <span class="chip">The file stays with you</span>
+      <span class="chip chip-md">Any format, up to 1 GB</span>
+      <span class="chip">Verification free, forever</span>
     </div>
-    <p class="nota-legale">Il servizio fornisce attestazione crittografica di impronta digitale
-      (hash) di file informatici. Non costituisce registrazione di diritto d'autore né
-      certificazione legale della titolarità dell'opera.</p>
+    <p class="nota-legale">The service provides cryptographic attestation of the digital
+      fingerprint (hash) of computer files. It doesn't constitute copyright registration
+      or legal certification of ownership of the work.</p>
     <p class="pro-hint">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/>
       </svg>
-      <span>Attesti con continuità? C'è la <a href="/professionale/">fascia Professionale</a>:
-      200 attestazioni al mese e custodia 5 anni — in promozione a 20&nbsp;€ l'anno fino a fine 2026.</span>
+      <span>Attesting regularly? There's the <a href="/professionale/">Professional tier</a>:
+      200 attestations a month and 5-year custody — on promotion at €20&nbsp;a year until the end of 2026.</span>
     </p>
     <p class="pwa-hint">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/>
       </svg>
-      Puoi installare questa pagina come app: dal menu del browser scegli
-      "Aggiungi alla schermata Home" (o "Installa app").
+      You can install this page as an app: from your browser menu choose
+      "Add to Home screen" (or "Install app").
     </p>
   </div>
 
   <!-- L'impronta, dal vivo: micro-demo WebCrypto (stessa tecnologia dell'attestazione).
        Solo didattica: nulla viene inviato, tutto accade nel browser. -->
   <details class="demo" id="demoBox">
-    <summary class="demo-summary">Cos'è un'impronta? Guardala dal vivo</summary>
+    <summary class="demo-summary">What's a fingerprint? Watch it live</summary>
     <div class="demo-inner">
-    <p class="demo-label" id="demoLabel">L'impronta, dal vivo</p>
+    <p class="demo-label" id="demoLabel">The fingerprint, live</p>
     <input id="demoFrase" type="text" maxlength="80" spellcheck="false"
-           value="La mia opera, oggi"
+           value="My work, today"
            aria-describedby="demoSpiega"
-           aria-label="Scrivi una frase e osserva la sua impronta SHA-256 cambiare">
+           aria-label="Type a sentence and watch its SHA-256 fingerprint change">
     <p class="demo-hash" id="demoHash" aria-live="off"></p>
-    <p class="demo-caption" id="demoSpiega">Questa è un'impronta SHA-256, calcolata nel tuo
-      browser. Cambia una sola lettera qui sopra e cambierà tutta: per questo dimostra
-      che un file è rimasto esattamente com'era.</p>
+    <p class="demo-caption" id="demoSpiega">This is a SHA-256 fingerprint, computed in your
+      browser. Change just one letter above and it changes completely: that's why it proves
+      a file has stayed exactly as it was.</p>
     </div>
   </details>
 </header>
 
 <!-- Navigazione principale: tablist ARIA, sticky -->
 <div class="tabs-bar">
-  <nav class="tabs" aria-label="Sezioni del servizio">
+  <nav class="tabs" aria-label="Service sections">
     <div role="tablist" id="navTabs" style="display:flex; width:100%;">
       <button id="tabBtnAttesta" class="attiva" type="button" role="tab"
               aria-selected="true" aria-controls="tabAttesta"
-             >Attesta</button>
+             >Attest</button>
       <button id="tabBtnVerifica" type="button" role="tab"
               aria-selected="false" aria-controls="tabVerifica" tabindex="-1"
-             >Verifica</button>
+             >Verify</button>
       <button id="tabBtnIstruzioni" type="button" role="tab"
               aria-selected="false" aria-controls="tabIstruzioni" tabindex="-1"
-             >Come funziona</button>
+             >How it works</button>
     </div>
   </nav>
 </div>
@@ -887,15 +887,15 @@
        =========================== -->
   <section id="tabAttesta" role="tabpanel" aria-labelledby="tabBtnAttesta" tabindex="0">
 
-    <div class="passo"><span class="n">1</span><h2>Scegli la tua opera</h2><span class="hint">qualsiasi file, fino a 1 GB</span></div>
+    <div class="passo"><span class="n">1</span><h2>Choose your work</h2><span class="hint">any file, up to 1 GB</span></div>
 
     <div class="drop-zone" id="dropZone">
-      <input type="file" id="fileInput" aria-label="Seleziona il file dell'opera da attestare">
+      <input type="file" id="fileInput" aria-label="Select the file of the work to attest">
       <div class="drop-icona" aria-hidden="true">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       </div>
-      <p class="drop-primary">Trascina il file qui, o clicca per selezionare</p>
-      <p class="drop-hint">Qualsiasi formato — l'impronta si calcola nel tuo browser, il file non viene inviato</p>
+      <p class="drop-primary">Drag the file here, or click to choose it</p>
+      <p class="drop-hint">Any format — the fingerprint is computed in your browser, the file is never sent</p>
     </div>
 
     <div class="preview-row" id="previewRow">
@@ -908,51 +908,51 @@
 
     <!-- Dati dell'opera (facoltativi): auto-dichiarazioni stampate sul certificato
          e vincolate alla firma HMAC (non alterabili dopo l'emissione) -->
-    <div class="passo"><span class="n">2</span><h2>Racconta l'opera</h2><span class="hint">facoltativo</span></div>
+    <div class="passo"><span class="n">2</span><h2>Describe the work</h2><span class="hint">optional</span></div>
     <details id="metaDetails" class="opz">
-      <summary>Aggiungi titolo, autore, anno e note — compariranno sul certificato</summary>
+      <summary>Add title, author, year and notes — they'll appear on the certificate</summary>
       <p class="opz-nota">
-        Questi dati compaiono sul certificato come dichiarazioni dell'autore e vengono
-        vincolati alla firma di sicurezza: non saranno modificabili dopo l'emissione.
+        This data appears on the certificate as the author's declarations and is bound
+        to the security signature: it can't be changed after issuance.
       </p>
       <div class="opz-griglia">
         <div>
-          <label class="field-label" for="metaTitolo">Titolo dell'opera</label>
+          <label class="field-label" for="metaTitolo">Title of the work</label>
           <input id="metaTitolo" class="campo" type="text" maxlength="150">
         </div>
         <div>
-          <label class="field-label" for="metaAutore">Autore o pseudonimo</label>
+          <label class="field-label" for="metaAutore">Author or pseudonym</label>
           <input id="metaAutore" class="campo" type="text" maxlength="100">
         </div>
         <div>
-          <label class="field-label" for="metaAnno">Anno o versione</label>
-          <input id="metaAnno" class="campo" type="text" maxlength="50" placeholder="es. 2026, seconda stesura">
+          <label class="field-label" for="metaAnno">Year or version</label>
+          <input id="metaAnno" class="campo" type="text" maxlength="50" placeholder="e.g. 2026, second draft">
         </div>
         <div>
-          <label class="field-label" for="metaNote">Note</label>
-          <input id="metaNote" class="campo" type="text" maxlength="300" placeholder="es. tecnica, committente, contesto">
+          <label class="field-label" for="metaNote">Notes</label>
+          <input id="metaNote" class="campo" type="text" maxlength="300" placeholder="e.g. technique, client, context">
         </div>
       </div>
     </details>
 
-    <div class="passo"><span class="n">3</span><h2>Genera l'attestazione</h2></div>
+    <div class="passo"><span class="n">3</span><h2>Generate the attestation</h2></div>
 
     <!-- P25 §2.7: percorso "attesta con la tua email" per chi ha una convenzione
          (accademie, enti) — OAuth one-shot su imgauth, nessuna chiave da gestire.
          Stato anonimo: link discreto e chiuso, non si frappone all'azione principale. -->
     <details id="convenzioneAnon" class="opz" style="margin-top:0.6rem;">
-      <summary>Hai una convenzione o un abbonamento Professionale? Accedi con la tua email</summary>
+      <summary>Have an agreement or a Professional subscription? Sign in with your email</summary>
       <p class="opz-nota">
-        Se la tua accademia, il tuo ente o la tua azienda ha una convenzione con Spazio Genesi —
-        o se hai un abbonamento Professionale — verifica la tua email: le attestazioni verranno
-        riconosciute automaticamente nella tua fascia, con maggiore garanzia di custodia del
-        certificato. Nessuna password, nessun account: un solo accesso one-shot, valido per
-        questa sessione del browser.
+        If your academy, institution or company has an agreement with Spazio Genesi —
+        or if you have a Professional subscription — verify your email: attestations will
+        be automatically recognized under your tier, with a stronger guarantee of
+        certificate custody. No password, no account: a single one-shot sign-in, valid
+        for this browser session.
       </p>
       <div class="provider-links" id="convenzioneProviderLinks">
-        <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=google&purpose=attest">Continua con Google</a>
-        <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=microsoft&purpose=attest">Continua con Microsoft</a>
-        <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=linkedin&purpose=attest">Continua con LinkedIn</a>
+        <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=google&purpose=attest">Continue with Google</a>
+        <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=microsoft&purpose=attest">Continue with Microsoft</a>
+        <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=linkedin&purpose=attest">Continue with LinkedIn</a>
       </div>
     </details>
 
@@ -960,7 +960,7 @@
          sessionStorage. Il file non lascia comunque mai il dispositivo. -->
     <div id="convenzioneAttiva" class="opz-nota" style="display:none;margin-top:0.6rem;padding:0.7rem 0.9rem;border:1px solid var(--oro);border-radius:8px;">
       <span id="convenzioneAttivaTesto"></span>
-      <button type="button" id="convenzioneEsciBtn" class="provider-link" style="margin-left:0.6rem;cursor:pointer;">Esci</button>
+      <button type="button" id="convenzioneEsciBtn" class="provider-link" style="margin-left:0.6rem;cursor:pointer;">Sign out</button>
     </div>
 
     <!-- Verifica anti-bot: richiesta per generare l'attestazione (hash + firma),
@@ -973,40 +973,40 @@
     <div class="btn-row">
       <button class="primary" id="attestBtn" type="button" disabled>
         <span class="spinner" aria-hidden="true"></span>
-        <span id="btnLabel">Genera attestazione SHA-256</span>
+        <span id="btnLabel">Generate SHA-256 attestation</span>
       </button>
     </div>
 
     <!-- RISULTATO -->
     <div class="result-wrap" id="resultWrap" aria-live="polite">
       <div class="risultato-card">
-        <p class="result-section-title"><span class="ris-ok">✓</span> La tua opera è attestata</p>
+        <p class="result-section-title"><span class="ris-ok">✓</span> Your work is attested</p>
         <p class="opz-nota" id="fasciaNota" style="display:none;"></p>
 
         <div class="hash-block">
-          <div class="hash-label-small">Impronta digitale (SHA-256)</div>
+          <div class="hash-label-small">Digital fingerprint (SHA-256)</div>
           <div class="hash-string" id="rHash"></div>
-          <button class="btn-copy" id="copyBtn" type="button">Copia</button>
+          <button class="btn-copy" id="copyBtn" type="button">Copy</button>
         </div>
 
         <table class="meta-table">
-          <tr><td>Opera</td><td id="rFilename"></td></tr>
-          <tr id="rowTitolo" style="display:none;"><td>Titolo (dichiarato)</td><td id="rTitolo"></td></tr>
-          <tr id="rowAutore" style="display:none;"><td>Autore (dichiarato)</td><td id="rAutore"></td></tr>
-          <tr id="rowAnno" style="display:none;"><td>Anno/versione</td><td id="rAnno"></td></tr>
-          <tr id="rowNote" style="display:none;"><td>Note (dichiarate)</td><td id="rNote"></td></tr>
-          <tr><td>Data e ora</td><td id="rTimestamp"></td></tr>
-          <tr><td>Emesso da</td><td id="rIssuer"></td></tr>
+          <tr><td>Work</td><td id="rFilename"></td></tr>
+          <tr id="rowTitolo" style="display:none;"><td>Title (declared)</td><td id="rTitolo"></td></tr>
+          <tr id="rowAutore" style="display:none;"><td>Author (declared)</td><td id="rAutore"></td></tr>
+          <tr id="rowAnno" style="display:none;"><td>Year/version</td><td id="rAnno"></td></tr>
+          <tr id="rowNote" style="display:none;"><td>Notes (declared)</td><td id="rNote"></td></tr>
+          <tr><td>Date and time</td><td id="rTimestamp"></td></tr>
+          <tr><td>Issued by</td><td id="rIssuer"></td></tr>
         </table>
 
         <details class="tecnici">
-          <summary>Dettagli tecnici (dimensione, stringa di attestazione)</summary>
+          <summary>Technical details (size, attestation string)</summary>
           <table class="meta-table" style="margin-top:0.6rem;">
-            <tr><td>Dimensione</td><td id="rSize"></td></tr>
-            <tr><td>Tipo file</td><td id="rMime"></td></tr>
+            <tr><td>Size</td><td id="rSize"></td></tr>
+            <tr><td>File type</td><td id="rMime"></td></tr>
           </table>
           <div class="attestation-block">
-            <strong>Stringa di attestazione</strong>
+            <strong>Attestation string</strong>
             <span id="rAttestation"></span>
           </div>
         </details>
@@ -1016,46 +1016,46 @@
           <button class="azione-primaria" id="downloadPdfBtn" type="button">
             <span class="spinner" aria-hidden="true"></span>
             <svg id="pdfBtnIcon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span id="pdfBtnLabel">Scarica il certificato PDF</span>
+            <span id="pdfBtnLabel">Download the PDF certificate</span>
           </button>
           <button class="azione-secondaria" id="downloadBtn" type="button">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Scarica versione testo (.txt)
+            Download text version (.txt)
           </button>
           <!-- Prova blockchain: disponibile dopo la generazione del PDF -->
           <div id="otsRow" style="display:none; text-align:center;">
             <a id="otsLink" class="azione-terziaria" href="#">
               <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#F7931A"/><text x="12" y="16.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff" font-family="Arial" transform="rotate(14 12 12)">&#8383;</text></svg>
-              Scarica la prova blockchain (.ots)
+              Download the blockchain proof (.ots)
             </a>
           </div>
           <!-- URL pubblico e stabile dell'opera, disponibile dopo il PDF -->
           <div id="permaRow" style="display:none; text-align:center; margin-top:0.6rem;">
-            <p style="margin:0 0 0.3rem; font-size:0.8rem; color:var(--ink-2);">Pagina di verifica permanente da condividere:</p>
+            <p style="margin:0 0 0.3rem; font-size:0.8rem; color:var(--ink-2);">Permanent verification page to share:</p>
             <a id="permaLink" href="#" target="_blank" rel="noopener" style="font-family:var(--mono); font-size:0.78rem; word-break:break-all; color:var(--oro-testo);"></a>
-            <button class="azione-secondaria" id="copyPermaBtn" type="button" style="display:block; margin:0.5rem auto 0;">Copia il link</button>
+            <button class="azione-secondaria" id="copyPermaBtn" type="button" style="display:block; margin:0.5rem auto 0;">Copy the link</button>
           </div>
-          <p class="microcopy">Il certificato PDF è il documento da conservare, insieme al file originale dell'opera.<br>
-          Suggerimento: invialo via PEC a te stessə — alla prova matematica aggiungi una prova legale del possesso.</p>
+          <p class="microcopy">The PDF certificate is the document to keep, together with the original file of the work.<br>
+          Tip: send it to yourself by registered/certified mail — add legal proof of possession to the mathematical proof.</p>
         </div>
 
         <!-- Badge "Opera attestata" da incorporare nel proprio sito o profilo -->
         <details class="tecnici" id="badgeDetails" style="margin-top:1.4rem; display:none;">
-          <summary>Badge "Opera attestata" per il tuo sito o profilo</summary>
+          <summary>"Attested work" badge for your site or profile</summary>
           <div class="dettaglio-corpo">
-            <p>Mostra che l'opera è attestata e rendi la verifica raggiungibile in un click.
-            Il badge resta verde finché l'opera risulta nei nostri archivi; chi lo clicca
-            arriva alla pagina di verifica con l'impronta già inserita.</p>
-            <p style="margin-bottom:0.4rem; color:var(--ink-3);">Anteprima:</p>
-            <p style="margin-bottom:0.9rem;"><img id="badgePreview" alt="Opera attestata — Spazio Genesi" height="28"></p>
+            <p>Show that the work is attested and make verification reachable in one click.
+            The badge stays green as long as the work is in our archives; anyone who clicks
+            it lands on the verification page with the fingerprint already filled in.</p>
+            <p style="margin-bottom:0.4rem; color:var(--ink-3);">Preview:</p>
+            <p style="margin-bottom:0.9rem;"><img id="badgePreview" alt="Attested work — Spazio Genesi" height="28"></p>
 
-            <label class="field-label" for="badgeHtml">Codice HTML (per siti web)</label>
+            <label class="field-label" for="badgeHtml">HTML code (for websites)</label>
             <textarea id="badgeHtml" class="badge-textarea" readonly rows="3"></textarea>
-            <button class="azione-secondaria mt-04" type="button" data-copy-badge="badgeHtml">Copia codice HTML</button>
+            <button class="azione-secondaria mt-04" type="button" data-copy-badge="badgeHtml">Copy HTML code</button>
 
-            <label class="field-label mt-09" for="badgeMd" style="margin-top:0.9rem;">Markdown (per GitHub, README e simili)</label>
+            <label class="field-label mt-09" for="badgeMd" style="margin-top:0.9rem;">Markdown (for GitHub, README and similar)</label>
             <textarea id="badgeMd" class="badge-textarea" readonly rows="2"></textarea>
-            <button class="azione-secondaria mt-04" type="button" data-copy-badge="badgeMd">Copia Markdown</button>
+            <button class="azione-secondaria mt-04" type="button" data-copy-badge="badgeMd">Copy Markdown</button>
           </div>
         </details>
       </div>
@@ -1077,14 +1077,14 @@
 
       <!-- BLOCCO OPERA -->
       <div id="workBlock">
-        <div class="passo"><h2 id="workHeading">Scegli il file da controllare</h2></div>
+        <div class="passo"><h2 id="workHeading">Choose the file to check</h2></div>
         <div class="drop-zone" id="verifyDropZone">
-          <input type="file" id="verifyFileInput" aria-label="Seleziona il file originale da verificare">
+          <input type="file" id="verifyFileInput" aria-label="Select the original file to verify">
           <div class="drop-icona" aria-hidden="true">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-8 8.5-4.5-1-8-3.5-8-8.5V6l8-3 8 3z"/><path d="m9 12 2 2 4-4"/></svg>
           </div>
-          <p class="drop-primary">Trascina qui il file ricevuto, o clicca per sceglierlo</p>
-          <p class="drop-hint">deve essere il file originale, non il certificato PDF</p>
+          <p class="drop-primary">Drag in the file you received, or click to choose it</p>
+          <p class="drop-hint">it must be the original file, not the PDF certificate</p>
         </div>
         <div class="preview-row" id="verifyPreviewRow">
           <img class="preview-thumb" id="verifyPreviewImg" src="" alt="">
@@ -1097,12 +1097,12 @@
 
       <!-- BLOCCO CERTIFICATO PDF -->
       <details id="certBlock">
-        <summary id="certSummary">Apri il certificato PDF</summary>
+        <summary id="certSummary">Open the PDF certificate</summary>
         <div style="margin-top:0.9rem;">
           <div class="drop-zone" id="certDropZone">
-            <input type="file" id="certFileInput" accept="application/pdf,.pdf" aria-label="Seleziona il certificato PDF da leggere">
-            <p class="drop-primary">Trascina qui il certificato PDF, o clicca per sceglierlo</p>
-            <p class="drop-hint">ne leggiamo impronta, firma e dati dichiarati</p>
+            <input type="file" id="certFileInput" accept="application/pdf,.pdf" aria-label="Select the certificate PDF to read">
+            <p class="drop-primary">Drag in the PDF certificate, or click to choose it</p>
+            <p class="drop-hint">we read its fingerprint, signature and declared data</p>
           </div>
 
           <!-- Esito della lettura automatica del certificato -->
@@ -1110,33 +1110,33 @@
 
           <!-- Alternativa: chi non ha il PDF inserisce l'impronta a mano -->
           <details id="manualHashDetails" class="opz" style="margin-top:0.9rem;">
-            <summary>Non hai il certificato PDF? Inserisci l'impronta manualmente</summary>
+            <summary>Don't have the PDF certificate? Enter the fingerprint manually</summary>
             <div style="margin-top:0.7rem;">
-              <label class="field-label visually-hidden" for="verifyHashInput">Impronta SHA-256 (64 caratteri)</label>
+              <label class="field-label visually-hidden" for="verifyHashInput">SHA-256 fingerprint (64 characters)</label>
               <input id="verifyHashInput" class="campo campo-mono" type="text" spellcheck="false"
-                     placeholder="es. cdf242cec64d65e0…  (64 caratteri, dal certificato)">
+                     placeholder="e.g. cdf242cec64d65e0…  (64 characters, from the certificate)">
             </div>
           </details>
 
           <!-- Campi tecnici: auto-compilati leggendo il PDF; restano visibili per
                trasparenza e come fallback se la lettura automatica fallisse. -->
           <details id="verifyAdvanced" class="opz" style="margin-top:0.9rem;">
-            <summary>Verifica avanzata: firma di sicurezza e dati dichiarati (dal certificato)</summary>
+            <summary>Advanced verification: security signature and declared data (from the certificate)</summary>
             <div style="margin-top:0.8rem;">
-              <label class="field-label" for="verifyAttestInput">Stringa di attestazione</label>
+              <label class="field-label" for="verifyAttestInput">Attestation string</label>
               <input id="verifyAttestInput" class="campo campo-mono" type="text" spellcheck="false" placeholder="SHA-256:abc123...@2026-...">
             </div>
             <div style="margin-top:0.6rem;">
-              <label class="field-label" for="verifyHmacInput">Firma HMAC</label>
+              <label class="field-label" for="verifyHmacInput">HMAC signature</label>
               <input id="verifyHmacInput" class="campo campo-mono" type="text" spellcheck="false" placeholder="base64...">
             </div>
             <details id="verifyMetaDetails">
-              <summary>Dati dichiarati sul certificato (solo se presenti)</summary>
+              <summary>Data declared on the certificate (only if present)</summary>
               <div style="margin-top:0.6rem; display:grid; gap:0.5rem;">
-                <input id="vMetaTitolo" class="campo" type="text" maxlength="150" placeholder="Titolo dell'opera" aria-label="Titolo dell'opera dichiarato sul certificato">
-                <input id="vMetaAutore" class="campo" type="text" maxlength="100" placeholder="Autore / pseudonimo" aria-label="Autore o pseudonimo dichiarato sul certificato">
-                <input id="vMetaAnno" class="campo" type="text" maxlength="50" placeholder="Anno o versione" aria-label="Anno o versione dichiarati sul certificato">
-                <input id="vMetaNote" class="campo" type="text" maxlength="300" placeholder="Note" aria-label="Note dichiarate sul certificato">
+                <input id="vMetaTitolo" class="campo" type="text" maxlength="150" placeholder="Title of the work" aria-label="Title of the work declared on the certificate">
+                <input id="vMetaAutore" class="campo" type="text" maxlength="100" placeholder="Author / pseudonym" aria-label="Author or pseudonym declared on the certificate">
+                <input id="vMetaAnno" class="campo" type="text" maxlength="50" placeholder="Year or version" aria-label="Year or version declared on the certificate">
+                <input id="vMetaNote" class="campo" type="text" maxlength="300" placeholder="Notes" aria-label="Notes declared on the certificate">
               </div>
             </details>
           </details>
@@ -1149,39 +1149,39 @@
 
     <div class="btn-row" style="margin-top:1.1rem;">
       <button class="primary" id="verifyBtn" type="button" disabled>
-        <span id="verifyBtnLabel">Verifica il certificato</span>
+        <span id="verifyBtnLabel">Verify the certificate</span>
       </button>
     </div>
 
     <div class="result-wrap" id="verifyResultWrap" aria-live="polite">
       <div class="risultato-card">
-        <p class="result-section-title">Esito della verifica</p>
+        <p class="result-section-title">Verification result</p>
         <div id="verdictRows" style="display:flex; flex-direction:column; gap:0.55rem;"></div>
         <details class="tecnici" style="margin-top:1rem;">
-          <summary>Dettagli tecnici della verifica</summary>
+          <summary>Technical details of the verification</summary>
           <div class="hash-block" style="margin-top:0.6rem;">
-            <div class="hash-label-small">Hash calcolato dal file scelto</div>
+            <div class="hash-label-small">Hash computed from the chosen file</div>
             <div class="hash-string" id="verifyHashCalc"></div>
           </div>
         </details>
 
         <!-- Badge "Opera attestata": compare solo dopo verifica con corrispondenza positiva -->
         <details class="tecnici" id="vBadgeDetails" style="margin-top:1rem; display:none;">
-          <summary>Badge "Opera attestata" per il tuo sito o profilo</summary>
+          <summary>"Attested work" badge for your site or profile</summary>
           <div class="dettaglio-corpo">
-            <p>Incorpora questo distintivo nel tuo sito o profilo: mostra che l'opera è
-            attestata e, con un click, porta alla verifica. Resta verde finché l'opera
-            risulta nei nostri archivi.</p>
-            <p style="margin-bottom:0.4rem; color:var(--ink-3);">Anteprima:</p>
-            <p style="margin-bottom:0.9rem;"><img id="vBadgePreview" alt="Opera attestata — Spazio Genesi" height="28"></p>
+            <p>Embed this badge on your site or profile: it shows the work is
+            attested and, with one click, leads to verification. It stays green as long
+            as the work is in our archives.</p>
+            <p style="margin-bottom:0.4rem; color:var(--ink-3);">Preview:</p>
+            <p style="margin-bottom:0.9rem;"><img id="vBadgePreview" alt="Attested work — Spazio Genesi" height="28"></p>
 
-            <label class="field-label" for="vBadgeHtml">Codice HTML (per siti web)</label>
+            <label class="field-label" for="vBadgeHtml">HTML code (for websites)</label>
             <textarea id="vBadgeHtml" class="badge-textarea" readonly rows="3"></textarea>
-            <button class="azione-secondaria mt-04" type="button" data-copy-badge="vBadgeHtml">Copia codice HTML</button>
+            <button class="azione-secondaria mt-04" type="button" data-copy-badge="vBadgeHtml">Copy HTML code</button>
 
-            <label class="field-label" for="vBadgeMd" style="margin-top:0.9rem;">Markdown (per GitHub, README e simili)</label>
+            <label class="field-label" for="vBadgeMd" style="margin-top:0.9rem;">Markdown (for GitHub, README and similar)</label>
             <textarea id="vBadgeMd" class="badge-textarea" readonly rows="2"></textarea>
-            <button class="azione-secondaria mt-04" type="button" data-copy-badge="vBadgeMd">Copia Markdown</button>
+            <button class="azione-secondaria mt-04" type="button" data-copy-badge="vBadgeMd">Copy Markdown</button>
           </div>
         </details>
       </div>
@@ -1189,51 +1189,51 @@
 
     <!-- Come verificare l'ancoraggio blockchain (OpenTimestamps) -->
     <details class="dettagli-semplici">
-      <summary>Verifica blockchain (OpenTimestamps) — come si fa</summary>
+      <summary>Blockchain verification (OpenTimestamps) — how to</summary>
       <div class="corpo-info">
         <p style="margin:0 0 0.6rem;">
-          I certificati emessi dalla versione 1.7 in poi ancorano l'impronta dell'opera nella
-          blockchain di Bitcoin tramite il protocollo aperto OpenTimestamps: una prova di
-          esistenza indipendente dai nostri server, che nessuno può retrodatare.
+          Certificates issued from version 1.7 onward anchor the work's fingerprint in the
+          Bitcoin blockchain via the open OpenTimestamps protocol: proof of existence
+          independent of our servers, which no one can backdate.
         </p>
         <ol>
           <li>
-            <strong>Procurati la prova <code>.ots</code></strong>: la scarichi dal link che compare
-            dopo "Scarica il certificato PDF", dall'indirizzo stampato nei "Dettagli tecnici" del
-            certificato, oppure — se hai inserito qui sopra l'hash dichiarato —
-            <a href="#" id="otsVerifyLink">scaricala per l'hash inserito</a>.
+            <strong>Get the <code>.ots</code> proof</strong>: download it from the link that appears
+            after "Download the PDF certificate", from the address printed in the certificate's
+            "Technical details", or — if you entered the declared hash above —
+            <a href="#" id="otsVerifyLink">download it for the entered hash</a>.
           </li>
           <li>
-            Vai su <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">opentimestamps.org</a>,
-            riquadro <em>Stamp&nbsp;&amp;&nbsp;verify</em>.
+            Go to <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">opentimestamps.org</a>,
+            the <em>Stamp&nbsp;&amp;&nbsp;verify</em> panel.
           </li>
           <li>
-            Trascina nel riquadro il file <code>.ots</code> e poi, quando richiesto, l'opera
-            originale (il file esatto che hai attestato).
+            Drag the <code>.ots</code> file into the panel, then, when asked, the original
+            work (the exact file you attested).
           </li>
           <li>
-            Esito atteso: <em>"Bitcoin attests data existed as of …"</em> con la data garantita
-            dalla blockchain. Nelle prime ore dopo l'emissione può comparire
-            <em>"Pending confirmation"</em>: la conferma definitiva matura con il blocco Bitcoin.
+            Expected result: <em>"Bitcoin attests data existed as of …"</em> with the date
+            guaranteed by the blockchain. In the first hours after issuance you may see
+            <em>"Pending confirmation"</em>: the final confirmation matures with the Bitcoin block.
           </li>
         </ol>
         <p style="margin:0;">
-          La verifica funziona anche offline e fra decenni: la prova dipende solo dal file
-          <code>.ots</code>, dall'opera originale e dalla blockchain pubblica di Bitcoin.
+          Verification works offline too, and decades from now: the proof depends only on the
+          <code>.ots</code> file, the original work, and the public Bitcoin blockchain.
         </p>
       </div>
     </details>
 
     <!-- RECUPERO CERTIFICATO SMARRITO -->
-    <div class="passo" style="margin-top:2.2rem;"><span class="n" aria-hidden="true">★</span><h2>Hai smarrito il certificato?</h2></div>
+    <div class="passo" style="margin-top:2.2rem;"><span class="n" aria-hidden="true">★</span><h2>Lost your certificate?</h2></div>
     <p class="testo-recupero">
-      Conserviamo una copia di ogni certificato emesso. Scegli qui sopra il file
-      originale dell'opera (o inserisci la sua impronta) e riscarica il tuo
-      certificato PDF firmato, identico all'originale.
+      We keep a copy of every certificate issued. Choose the original file of the work
+      above (or enter its fingerprint) and re-download your signed PDF certificate,
+      identical to the original.
     </p>
     <button class="azione-secondaria" id="recoverBtn" type="button" disabled>
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <span id="recoverBtnLabel">Recupera il certificato dall'archivio</span>
+      <span id="recoverBtnLabel">Retrieve the certificate from the archive</span>
     </button>
     <p id="recoverMsg" role="status" style="display:none; font-size:0.82rem; margin-top:0.6rem; line-height:1.55;"></p>
 
@@ -1242,68 +1242,68 @@
   <section id="tabIstruzioni" class="tab-nascosta istr" role="tabpanel" aria-labelledby="tabBtnIstruzioni" tabindex="0">
 
     <p>
-      Questo servizio genera l'<em>impronta digitale</em> della tua opera — qualsiasi file,
-      fino a 1&nbsp;GB — e la lega a una data certa con un certificato PDF firmato.
-      L'impronta si calcola <strong>direttamente nel tuo browser</strong>: il file non
-      lascia mai il tuo dispositivo. Conservando l'attestazione potrai sempre provare
-      che quel preciso file esisteva, immutato, in quel momento: utile prima di
-      pubblicare, partecipare a un concorso o consegnare una bozza.
+      This service generates the <em>digital fingerprint</em> of your work — any file,
+      up to 1&nbsp;GB — and ties it to a certain date with a signed PDF certificate.
+      The fingerprint is computed <strong>directly in your browser</strong>: the file
+      never leaves your device. By keeping the attestation you'll always be able to
+      prove that exactly that file existed, unchanged, at that moment: useful before
+      publishing, entering a competition, or delivering a draft.
     </p>
 
-    <p><strong>Come si usa</strong> — tre passi:</p>
+    <p><strong>How to use it</strong> — three steps:</p>
     <ol class="passi">
-      <li><strong>Trascina il file</strong> nella scheda «Attesta».</li>
-      <li>Il tuo browser calcola l'impronta (il file resta sul tuo dispositivo): <strong>scarica il certificato PDF</strong> (o il .txt) e conservalo.</li>
-      <li>In qualsiasi momento, <strong>verifica</strong>: trascini di nuovo il file nella scheda «Verifica» e il servizio conferma che è identico.</li>
+      <li><strong>Drag the file</strong> into the «Attest» tab.</li>
+      <li>Your browser computes the fingerprint (the file stays on your device): <strong>download the PDF certificate</strong> (or the .txt) and keep it.</li>
+      <li>At any time, <strong>verify</strong>: drag the file again into the «Verify» tab and the service confirms it's identical.</li>
     </ol>
 
-    <p><strong>Video guida</strong> — il servizio completo in meno di due minuti:</p>
+    <p><strong>Video guide</strong> — the whole service in under two minutes:</p>
     <video controls preload="none" playsinline
       poster="https://spaziogenesi.org/assets/video/guida-attestazione-poster.jpg"
-      aria-label="Video guida al servizio di attestazione">
+      aria-label="Video guide to the attestation service">
       <source src="https://spaziogenesi.org/assets/video/guida-attestazione.mp4" type="video/mp4">
-      Il tuo browser non supporta la riproduzione video:
-      <a href="https://spaziogenesi.org/assets/video/guida-attestazione.mp4">scarica il video</a>.
+      Your browser doesn't support video playback:
+      <a href="https://spaziogenesi.org/assets/video/guida-attestazione.mp4">download the video</a>.
     </video>
 
-    <h3>Le garanzie, in breve</h3>
-    <p style="font-size:0.8rem; margin-top:0.1rem;">Ogni riga è un vantaggio: aprila per leggere come funziona e come si verifica.</p>
+    <h3>The guarantees, in brief</h3>
+    <p style="font-size:0.8rem; margin-top:0.1rem;">Each line is a benefit: open it to read how it works and how to verify it.</p>
 
     <div class="garanzie">
 
       <details class="g">
-        <summary><span class="segno">+</span><span><span class="titolo">Impronta digitale unica</span><br>
-          <span class="breve">Un codice di 64 caratteri identifica il tuo file in modo univoco e irripetibile.</span></span></summary>
+        <summary><span class="segno">+</span><span><span class="titolo">A unique digital fingerprint</span><br>
+          <span class="breve">A 64-character code identifies your file uniquely — it can't be repeated by chance.</span></span></summary>
         <div class="corpo">
-          <p>L'impronta (hash <strong>SHA-256</strong>) è calcolata sui byte esatti del
-          file: basta che cambi un solo pixel — o una virgola — e l'impronta diventa completamente diversa.
-          Per questo dimostra che il file non è stato modificato.</p>
-          <p>Funziona con qualsiasi formato: immagini, video, audio, documenti, modelli 3D, archivi.</p>
+          <p>The fingerprint (<strong>SHA-256</strong> hash) is computed on the exact bytes of the
+          file: change just one pixel — or one comma — and the fingerprint becomes completely different.
+          That's why it proves the file hasn't been modified.</p>
+          <p>It works with any format: images, video, audio, documents, 3D models, archives.</p>
         </div>
       </details>
 
       <details class="g">
-        <summary><span class="segno">+</span><span><span class="titolo">Privacy totale: il file non lascia il tuo dispositivo</span><br>
-          <span class="breve">L'impronta si calcola nel tuo browser: a noi arriva solo il codice, mai l'opera.</span></span></summary>
+        <summary><span class="segno">+</span><span><span class="titolo">Total privacy: the file never leaves your device</span><br>
+          <span class="breve">The fingerprint is computed in your browser: only the code reaches us, never the work.</span></span></summary>
         <div class="corpo">
-          <p>Il calcolo dell'impronta avviene <strong>direttamente nel tuo browser</strong> (tecnologia
-          WebCrypto, standard del web): l'opera non viene caricata né trasmessa ai nostri server, che
-          ricevono e attestano soltanto l'impronta. Vale sia per l'attestazione sia per la verifica.</p>
-          <p><strong>Come si verifica:</strong> il codice del servizio è
+          <p>The fingerprint is computed <strong>directly in your browser</strong> (WebCrypto
+          technology, a web standard): the work is never sent to our servers, which
+          receive and attest only the fingerprint. This holds for both attestation and verification.</p>
+          <p><strong>How to verify it:</strong> the service's code is
           <a href="https://github.com/SPAZIO-GENESI/imgauthweb" target="_blank" rel="noopener noreferrer">open source</a>:
-          chiunque può controllare che il file non venga inviato (per esempio osservando il traffico
-          di rete del browser durante l'attestazione).</p>
+          anyone can check that the file is never sent (for example by watching the browser's
+          network traffic during attestation).</p>
         </div>
       </details>
 
       <details class="g">
-        <summary><span class="segno">+</span><span><span class="titolo">Data certa, garantita da terzi</span><br>
-          <span class="breve">La data di emissione è certificata da un'autorità indipendente riconosciuta da Adobe.</span></span></summary>
+        <summary><span class="segno">+</span><span><span class="titolo">A certain date, guaranteed by a third party</span><br>
+          <span class="breve">The issuance date is certified by an independent authority recognized by Adobe.</span></span></summary>
         <div class="corpo">
-          <p>Il certificato PDF include una <strong>marca temporale</strong> emessa da DigiCert, autorità
-          presente nella lista di fiducia di Adobe: la data non la dichiariamo noi, la attesta una terza parte.</p>
-          <p><strong>Come si verifica:</strong> apri il PDF in Adobe Acrobat → pannello Firme →
-          "La firma include una marca temporale incorporata".</p>
+          <p>The PDF certificate includes a <strong>timestamp</strong> issued by DigiCert, an authority
+          on Adobe's trust list: we don't declare the date ourselves — a third party attests it.</p>
+          <p><strong>How to verify it:</strong> open the PDF in Adobe Acrobat → Signatures panel →
+          "The signature includes an embedded timestamp."</p>
           <div class="badge-row">
             <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-8 8.5-4.5-1-8-3.5-8-8.5V6l8-3 8 3z"/><path d="m9 12 2 2 4-4"/></svg>DigiCert · Timestamp Authority</span>
             <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Adobe Approved Trust List</span>
@@ -1312,19 +1312,19 @@
       </details>
 
       <details class="g">
-        <summary><span class="segno">+</span><span><span class="titolo">Ancorata nella blockchain di Bitcoin</span><br>
-          <span class="breve">L'impronta viene registrata anche su Bitcoin: nessuno può retrodatarla, nemmeno noi.</span></span></summary>
+        <summary><span class="segno">+</span><span><span class="titolo">Anchored in the Bitcoin blockchain</span><br>
+          <span class="breve">The fingerprint is also recorded on Bitcoin: no one can backdate it, not even us.</span></span></summary>
         <div class="corpo">
-          <p>Quando generi il certificato, l'impronta viene registrata nella blockchain di Bitcoin tramite
-          il protocollo aperto <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">OpenTimestamps</a>:
-          una prova di esistenza che non dipende dai nostri server.</p>
-          <p><strong>Come si verifica:</strong></p>
+          <p>When you generate the certificate, the fingerprint is recorded in the Bitcoin blockchain via
+          the open <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">OpenTimestamps</a> protocol:
+          proof of existence that doesn't depend on our servers.</p>
+          <p><strong>How to verify it:</strong></p>
           <ol>
-            <li>Scarica il file di prova <code>.ots</code> (il link compare dopo "Scarica il certificato PDF").</li>
-            <li>Vai su <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">opentimestamps.org</a>, riquadro <em>Stamp&nbsp;&amp;&nbsp;verify</em>.</li>
-            <li>Trascina il file <code>.ots</code> e l'opera originale: otterrai <em>"Bitcoin attests data existed as of…"</em>.</li>
+            <li>Download the <code>.ots</code> proof file (the link appears after "Download the PDF certificate").</li>
+            <li>Go to <a href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer">opentimestamps.org</a>, the <em>Stamp&nbsp;&amp;&nbsp;verify</em> panel.</li>
+            <li>Drag in the <code>.ots</code> file and the original work: you'll get <em>"Bitcoin attests data existed as of…"</em>.</li>
           </ol>
-          <p>La conferma definitiva matura in poche ore dall'emissione.</p>
+          <p>The final confirmation matures within a few hours of issuance.</p>
           <div class="badge-row">
             <span class="badge"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#F7931A"/><text x="12" y="16.6" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff" font-family="Arial" transform="rotate(14 12 12)">&#8383;</text></svg>Bitcoin</span>
             <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>OpenTimestamps</span>
@@ -1333,89 +1333,90 @@
       </details>
 
       <details class="g">
-        <summary><span class="segno">+</span><span><span class="titolo">La tua opera non viene conservata</span><br>
-          <span class="breve">Il file serve solo a calcolare l'impronta: non viene memorizzato né ceduto a nessuno.</span></span></summary>
+        <summary><span class="segno">+</span><span><span class="titolo">Your work is not kept</span><br>
+          <span class="breve">The file is used only to compute the fingerprint: it's never stored or handed to anyone.</span></span></summary>
         <div class="corpo">
-          <p>Il file viene elaborato in memoria il tempo di calcolarne l'impronta e poi scartato:
-          <strong>non viene salvato, né ceduto a terzi</strong>, né usato per altri scopi. Nei nostri
-          archivi resta soltanto il certificato PDF — che contiene l'impronta, non l'opera — e la prova blockchain.</p>
+          <p>The file is processed in memory for the time it takes to compute its fingerprint, then discarded:
+          <strong>it's never saved, nor handed to third parties</strong>, nor used for any other purpose. In our
+          archives, only the PDF certificate — which contains the fingerprint, not the work — and the blockchain proof remain.</p>
         </div>
       </details>
 
       <details class="g">
-        <summary><span class="segno">+</span><span><span class="titolo">Dati archiviati in Europa (UE)</span><br>
-          <span class="breve">Il certificato e la prova restano su infrastruttura con residenza dei dati nell'Unione Europea.</span></span></summary>
+        <summary><span class="segno">+</span><span><span class="titolo">Data stored in Europe (EU)</span><br>
+          <span class="breve">The certificate and proof stay on infrastructure with data residency in the European Union.</span></span></summary>
         <div class="corpo">
-          <p>Il certificato PDF e la prova di esistenza vengono conservati su storage
-          <strong>Cloudflare R2 in giurisdizione Unione Europea</strong>: i dati restano fisicamente
-          nell'UE, in linea con il GDPR. L'opera in sé, come detto, non viene comunque conservata.</p>
+          <p>The PDF certificate and the proof of existence are stored on
+          <strong>Cloudflare R2 in the European Union jurisdiction</strong>: the data physically stays
+          in the EU, in line with the GDPR. The work itself, as noted, isn't kept in any case.</p>
           <div class="badge-row">
-            <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>Residenza dati UE</span>
+            <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>EU data residency</span>
           </div>
         </div>
       </details>
 
       <details class="g">
-        <summary><span class="segno">+</span><span><span class="titolo">Codice aperto, verificabile da chiunque</span><br>
-          <span class="breve">Tutto il codice del servizio è pubblico: non devi crederci sulla parola.</span></span></summary>
+        <summary><span class="segno">+</span><span><span class="titolo">Open code, verifiable by anyone</span><br>
+          <span class="breve">All the service's code is public: you don't have to take our word for it.</span></span></summary>
         <div class="corpo">
-          <p>"Open source" significa che il codice che fa funzionare il servizio è pubblicato integralmente:
-          chiunque — anche un esperto di tua fiducia — può leggerlo e verificare che faccia esattamente ciò
-          che dichiara, comprese le promesse sulla non conservazione dei file. La fiducia non te la chiediamo:
-          te la dimostriamo.</p>
-          <p>Le chiavi crittografiche non sono nel codice: pubblicarlo non indebolisce nulla.</p>
+          <p>"Open source" means the code that runs the service is published in full:
+          anyone — even an expert you trust — can read it and verify it does exactly what
+          it claims, including the promises about not keeping files. We don't ask for your
+          trust: we demonstrate it.</p>
+          <p>The cryptographic keys aren't in the code: publishing it doesn't weaken anything.</p>
           <div class="badge-row">
-            <a class="badge" href="https://github.com/SPAZIO-GENESI/imgauth" target="_blank" rel="noopener noreferrer"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Motore</a>
-            <a class="badge" href="https://github.com/SPAZIO-GENESI/imgauthweb" target="_blank" rel="noopener noreferrer"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Interfaccia</a>
-            <a class="badge" href="https://github.com/SPAZIO-GENESI/autart-signer" target="_blank" rel="noopener noreferrer"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Firma</a>
-            <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Licenze GNU AGPL-3.0 · MIT</span>
+            <a class="badge" href="https://github.com/SPAZIO-GENESI/imgauth" target="_blank" rel="noopener noreferrer"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Engine</a>
+            <a class="badge" href="https://github.com/SPAZIO-GENESI/imgauthweb" target="_blank" rel="noopener noreferrer"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Interface</a>
+            <a class="badge" href="https://github.com/SPAZIO-GENESI/autart-signer" target="_blank" rel="noopener noreferrer"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Signing</a>
+            <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>GNU AGPL-3.0 · MIT licenses</span>
           </div>
         </div>
       </details>
 
       <details class="g">
-        <summary><span class="segno">+</span><span><span class="titolo">Verifica gratuita, per sempre, per chiunque</span><br>
-          <span class="breve">Chi riceve il tuo certificato può controllarlo in un click, senza registrarsi né pagare.</span></span></summary>
+        <summary><span class="segno">+</span><span><span class="titolo">Free verification, forever, for anyone</span><br>
+          <span class="breve">Anyone who receives your certificate can check it in one click, with no registration or payment.</span></span></summary>
         <div class="corpo">
-          <p>Ogni certificato contiene un <strong>QR code</strong> e un link che aprono questa pagina con
-          l'impronta già compilata: chi lo riceve trascina il file e ottiene subito l'esito. La verifica
-          resterà sempre gratuita e aperta a tutti — è ciò che dà valore al certificato.</p>
+          <p>Every certificate contains a <strong>QR code</strong> and a link that open this page with
+          the fingerprint already filled in: whoever receives it drags in the file and gets the result
+          right away. Verification will always stay free and open to everyone — that's what gives the
+          certificate its value.</p>
         </div>
       </details>
 
       <details class="g">
-        <summary><span class="segno">+</span><span><span class="titolo">Certificato PDF firmato</span><br>
-          <span class="breve">Ogni attestazione produce un certificato firmato digitalmente, con QR di verifica.</span></span></summary>
+        <summary><span class="segno">+</span><span><span class="titolo">Signed PDF certificate</span><br>
+          <span class="breve">Every attestation produces a digitally signed certificate, with a verification QR code.</span></span></summary>
         <div class="corpo">
-          <p>Il certificato è firmato digitalmente da <strong>Spazio Genesi ETS</strong> con un certificato
-          valido ma autonomo (emesso dall'associazione): la data è già garantita dalla marca temporale di
-          terza parte e dalla blockchain. Prossimamente il servizio potrà evolvere con un
-          <strong>sigillo elettronico riconosciuto</strong> anche per l'identità dell'emittente.</p>
-          <p>Se hai dichiarato titolo, autore, anno o note, questi dati sono "sigillati" nella firma di
-          sicurezza: dopo l'emissione nessuno può modificarli.</p>
+          <p>The certificate is digitally signed by <strong>Spazio Genesi ETS</strong> with a valid but
+          self-issued certificate (issued by the association itself): the date is already guaranteed by
+          the third-party timestamp and by the blockchain. In the future the service may evolve with a
+          <strong>recognized electronic seal</strong> for the issuer's identity too.</p>
+          <p>If you declared a title, author, year or notes, this data is "sealed" into the security
+          signature: no one can change it after issuance.</p>
         </div>
       </details>
 
     </div>
 
-    <p style="font-size:0.85rem; margin-top:1.4rem;">Stato dei servizi in tempo reale e storico a 90 giorni:
-    <a href="/status/" style="color:var(--oro-testo);">pagina di stato</a>.</p>
+    <p style="font-size:0.85rem; margin-top:1.4rem;">Real-time service status and 90-day history:
+    <a href="/status/" style="color:var(--oro-testo);">status page</a>.</p>
 
-    <p style="font-size:0.85rem; margin-top:0.6rem;">Preferisci restare dentro Telegram? Il bot
-    <a href="https://t.me/SGAttestBot" style="color:var(--oro-testo);">@SGAttestBot</a> attesta e verifica
-    anche lì — è un canale di <strong>comodità</strong>, non a privacy totale come il sito: il file che gli
-    invii transita per Telegram e per il nostro server (l'impronta si calcola subito e i byte vengono
-    scartati, nulla viene salvato). Per la privacy assoluta resta il sito.</p>
+    <p style="font-size:0.85rem; margin-top:0.6rem;">Prefer to stay inside Telegram? The bot
+    <a href="https://t.me/SGAttestBot" style="color:var(--oro-testo);">@SGAttestBot</a> attests and verifies
+    there too — it's a <strong>convenience</strong> channel, not full-privacy like the site: the file you
+    send it passes through Telegram and our server (the fingerprint is computed right away and the bytes
+    are discarded, nothing is saved). For absolute privacy, use the site.</p>
 
     <div class="nota-box">
-      <strong style="color:#111;">Nota.</strong> Il servizio fornisce un'attestazione crittografica,
-      <em>non</em> una registrazione di copyright né una prova legale di proprietà.
-      Per saperne di più: <a href="https://spaziogenesi.org/servizi#attestazione">la pagina del servizio</a>
-      e la <a href="/changelog/">cronologia dei miglioramenti</a>.
+      <strong style="color:#111;">Note.</strong> The service provides a cryptographic attestation,
+      <em>not</em> a copyright registration or legal proof of ownership.
+      To learn more: <a href="https://spaziogenesi.org/servizi#attestazione">the service page</a>
+      and the <a href="/changelog/">changelog</a>.
     </div>
 
     <div class="btn-row" style="margin-top:1.4rem;">
-      <button class="primary" id="ctaAttestaBtn" type="button">Attesta ora la tua opera</button>
+      <button class="primary" id="ctaAttestaBtn" type="button">Attest your work now</button>
     </div>
 
   </section>
@@ -1425,9 +1426,9 @@
 <!-- Microdonazioni: visibile solo quando PAYPAL_DONATE_URL è configurato (vedi JS) -->
 <div id="donaRow" style="display:none;">
   <a id="donaLink" class="dona" href="#" target="_blank" rel="noopener noreferrer">
-    ☕ Ti è stato utile? Sostieni il progetto con un caffè
+    ☕ Found this useful? Support the project with a coffee
   </a>
-  <p class="dona-nota">donazione libera via PayPal — il servizio resta gratuito per tutti</p>
+  <p class="dona-nota">free-will donation via PayPal — the service stays free for everyone</p>
 </div>
 
 <footer>
@@ -1440,33 +1441,33 @@
       </svg>
       <span>Spazio Genesi ETS</span>
     </div>
-    <a class="svc-footer" id="svcFooter" href="/status/" title="Apri la pagina di stato del servizio"><span class="svc-dot na"></span><span id="svcFooterText">Stato dei servizi…</span></a>
+    <a class="svc-footer" id="svcFooter" href="/status/" title="Open the service status page"><span class="svc-dot na"></span><span id="svcFooterText">Service status…</span></a>
 
-    <nav class="footer-cols" aria-label="Collegamenti del footer">
+    <nav class="footer-cols" aria-label="Footer links">
       <div class="footer-col">
-        <h3>Servizio</h3>
-        <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a>
-        <a href="https://t.me/SGAttestBot">Bot Telegram</a>
-        <a href="/changelog/">Cronologia dei miglioramenti</a>
-        <a href="/status/">Stato del servizio</a>
+        <h3>Service</h3>
+        <a href="https://spaziogenesi.org/servizi#attestazione">The service explained</a>
+        <a href="https://t.me/SGAttestBot">Telegram bot</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/status/">Service status</a>
       </div>
       <div class="footer-col">
-        <h3>Fasce e accesso</h3>
-        <a href="/condizioni/">Fasce e condizioni</a>
-        <a href="/professionale/">Fascia Professionale</a>
-        <a href="/profilo/">Area professionale</a>
+        <h3>Tiers &amp; access</h3>
+        <a href="/en/condizioni/">Tiers and terms</a>
+        <a href="/professionale/">Professional tier</a>
+        <a href="/profilo/">Professional area</a>
       </div>
       <div class="footer-col">
-        <h3>Fiducia</h3>
-        <a href="/privacy.html">Privacy</a>
-        <a href="/sicurezza/">Segnala una vulnerabilità</a>
-        <a href="https://trust.spaziogenesi.org">Come verificarci</a>
+        <h3>Trust</h3>
+        <a href="/en/privacy.html">Privacy</a>
+        <a href="/sicurezza/">Report a vulnerability</a>
+        <a href="https://trust.spaziogenesi.org">How to verify us</a>
       </div>
       <div class="footer-col">
-        <h3>Sviluppatori</h3>
-        <a href="/developer/">API &amp; server MCP</a>
-        <a href="/developer/cli/">Eseguibile CLI</a>
-        <a href="/integrazioni/">Vetrina Integrazioni</a>
+        <h3>Developers</h3>
+        <a href="/en/developer/">API &amp; MCP server</a>
+        <a href="/en/developer/cli/">CLI binary</a>
+        <a href="/integrazioni/">Integrations showcase</a>
       </div>
     </nav>
 
@@ -1474,7 +1475,7 @@
       <a href="https://trust.spaziogenesi.org"><img src="https://trust.spaziogenesi.org/badge.svg" alt="Genesis Trust Score" height="16" style="vertical-align:middle;"></a>
       <span>·</span>
       <span id="appVersion"></span>
-      <span>· realizzato da <a href="https://tangram.page">Tangram.page</a> · <a href="https://spaziogenesi.org/biografie/manuelavalloscuro/">Crediti Logo</a></span>
+      <span>· made by <a href="https://tangram.page">Tangram.page</a> · <a href="https://spaziogenesi.org/biografie/manuelavalloscuro/">Logo credits</a></span>
     </div>
   </div>
 </footer>

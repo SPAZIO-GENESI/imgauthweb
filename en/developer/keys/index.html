@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chiave API sviluppatori — Attestazione | Spazio Genesi</title>
-<meta name="description" content="Verifica la tua email con Google, Microsoft o LinkedIn e ottieni subito una chiave API per attestare via codice, senza registrazione.">
+<title>Developer API Key — Attestation | Spazio Genesi</title>
+<meta name="description" content="Verify your email with Google, Microsoft, or LinkedIn and get an API key right away to attest via code, with no registration.">
 <link rel="canonical" href="https://attestazione.spaziogenesi.org/developer/keys/">
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-<meta property="og:title" content="Chiave API sviluppatori — Attestazione | Spazio Genesi">
-<meta property="og:description" content="Verifica la tua email con Google, Microsoft o LinkedIn e ottieni subito una chiave API per attestare via codice, senza registrazione.">
+<meta property="og:title" content="Developer API Key — Attestation | Spazio Genesi">
+<meta property="og:description" content="Verify your email with Google, Microsoft, or LinkedIn and get an API key right away to attest via code, with no registration.">
 <meta property="og:image" content="https://attestazione.spaziogenesi.org/og.png">
 <meta property="og:url" content="https://attestazione.spaziogenesi.org/developer/keys/">
 <meta property="og:type" content="website">
@@ -22,9 +22,9 @@
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Attestazione", "item": "https://attestazione.spaziogenesi.org/" },
-    { "@type": "ListItem", "position": 2, "name": "Per sviluppatori e partner", "item": "https://attestazione.spaziogenesi.org/developer/" },
-    { "@type": "ListItem", "position": 3, "name": "Chiave API sviluppatori", "item": "https://attestazione.spaziogenesi.org/developer/keys/" }
+    { "@type": "ListItem", "position": 1, "name": "Attestation", "item": "https://attestazione.spaziogenesi.org/" },
+    { "@type": "ListItem", "position": 2, "name": "For developers and partners", "item": "https://attestazione.spaziogenesi.org/developer/" },
+    { "@type": "ListItem", "position": 3, "name": "Developer API key", "item": "https://attestazione.spaziogenesi.org/developer/keys/" }
   ]
 }
 </script>
@@ -112,22 +112,22 @@
   .sg-brandbar .lang:hover{ background:#FFFFFF; }
 </style>
 <div class="sg-brandbar">
-  <a class="svc" href="/" aria-label="Attestazione — home del servizio">
+  <a class="svc" href="/en/" aria-label="Attestation — service home">
     <svg viewBox="0 0 700 700" aria-hidden="true"><path fill="#8B6914" d="M0,0 L700,0 L700,196.81 L597.87,196.81 L597.87,102.13 L102.13,102.13 L102.13,597.87 L597.87,597.87 L597.87,503.19 L700,503.19 L700,700 L0,700 Z"/><circle fill="#211E15" cx="350" cy="350" r="153.19"/><rect fill="#211E15" x="490.53" y="291.49" width="209.44" height="117.03"/></svg>
-    <span>Attestazione</span>
+    <span>Attestation</span>
   </a>
   <div class="brandbar-right">
-    <a class="parent" href="https://spaziogenesi.org/" title="Spazio Genesi — l'ente dietro il servizio">
+    <a class="parent" href="https://spaziogenesi.org/" title="Spazio Genesi — the organization behind the service">
       <svg viewBox="0 0 580 481" aria-hidden="true"><g transform="translate(0,481) scale(0.1,-0.1)" fill="currentColor" stroke="none"><path d="M2175 4799 c-729 -75 -1378 -467 -1780 -1074 -82 -124 -203 -366 -252 -505 -100 -282 -137 -506 -137 -815 0 -222 6 -283 46 -497 l23 -118 1396 0 1397 0 26 -83 c37 -117 49 -216 43 -332 -24 -405 -299 -739 -698 -847 -120 -32 -328 -32 -448 0 -105 29 -210 76 -301 138 -77 51 -201 176 -240 242 l-25 41 -368 1 -368 0 63 -76 c142 -172 345 -355 533 -479 124 -82 366 -203 505 -252 281 -100 505 -137 815 -137 310 0 534 37 815 137 139 49 381 170 505 252 265 175 514 425 690 690 94 141 214 391 269 558 l49 147 534 0 533 0 0 565 0 565 -1944 0 -1943 0 -27 59 c-53 119 -70 203 -70 361 0 168 18 251 84 388 51 106 88 161 169 246 83 86 166 145 275 197 142 66 218 82 391 82 122 0 165 -4 228 -21 99 -27 232 -89 310 -146 74 -52 190 -172 232 -238 l30 -48 413 0 c226 0 412 2 412 5 0 14 -172 214 -256 299 -190 190 -374 323 -619 447 -232 117 -479 196 -735 234 -127 19 -452 27 -575 14z"/></g></svg>
-      <span>un servizio di Spazio Genesi ↗</span>
+      <span>A Spazio Genesi service ↗</span>
     </a>
     <a class="lang" href="/developer/keys/" hreflang="it" lang="it">IT</a>
   </div>
 </div>
 
 <header>
-  <h1>Chiave API per <span>sviluppatori</span></h1>
-  <p class="sub">Verifica la tua email per ottenere subito una chiave <code>sg_k_…</code>, da usare come bearer su <code>/api/hash</code> per saltare la verifica anti-bot (HMAC, marca temporale e limiti per-IP restano invariati).</p>
+  <h1>API key for <span>developers</span></h1>
+  <p class="sub">Verify your email to get a <code>sg_k_…</code> key right away, used as a bearer token on <code>/api/hash</code> to skip the anti-bot check (HMAC, timestamp, and per-IP limits remain unchanged).</p>
   <div class="divider"></div>
 </header>
 
@@ -136,49 +136,49 @@
   <div id="result"></div>
 
   <section class="blocco" id="introBlock">
-    <p><strong>Cosa salviamo:</strong> la tua email, il provider scelto e la data di emissione — solo per erogare la chiave, moderarne l'uso (avviso e revoca in caso di abuso) e, su tua richiesta, cancellarli. Non conserviamo il token del provider, non creiamo una sessione, non facciamo marketing. Dettagli nella <a href="/privacy.html">informativa privacy</a>.</p>
+    <p><strong>What we store:</strong> your email, the chosen provider, and the issue date — solely to issue the key, moderate its use (warning and revocation in case of abuse), and, at your request, delete them. We don't keep the provider's token, we don't create a session, we don't do marketing. Details in the <a href="/en/privacy.html">privacy policy</a>.</p>
     <div class="link-row">
-      <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=google">Continua con Google</a>
-      <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=microsoft">Continua con Microsoft</a>
-      <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=linkedin">Continua con LinkedIn</a>
+      <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=google">Continue with Google</a>
+      <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=microsoft">Continue with Microsoft</a>
+      <a class="provider-link" href="https://imgauth.spaziogenesi.org/api/dev/oauth/start?provider=linkedin">Continue with LinkedIn</a>
     </div>
-    <p style="margin-top:0.9rem;">Ti serve una quota da produzione? C'è la fascia <a href="/professionale/">Professionale</a> (200 attestazioni al mese). Per un accesso via convenzione scrivi a <a href="mailto:it@spaziogenesi.org">it@spaziogenesi.org</a>.</p>
+    <p style="margin-top:0.9rem;">Need a production-level quota? There's the <a href="/professionale/">Professional</a> tier (200 attestations a month). For access via a convention, write to <a href="mailto:it@spaziogenesi.org">it@spaziogenesi.org</a>.</p>
   </section>
 
   <div class="nota">
-    Preferisci non lasciare un'email? C'è anche il <a href="/developer/#accesso">device flow</a>, senza identità (24h, 20 attestazioni). La chiave self-service è pensata per sviluppo e test: per la produzione ci sono la fascia <a href="/professionale/">Professionale</a> e le convenzioni.
+    Would you rather not leave an email? There's also the <a href="/en/developer/#accesso">device flow</a>, with no identity required (24h, 20 attestations). The self-service key is meant for development and testing: for production there's the <a href="/professionale/">Professional</a> tier and conventions.
   </div>
 
 </main>
 
 <footer>
   <div class="footer-inner">
-    <a class="footer-back" href="/">← Torna al servizio di attestazione</a>
+    <a class="footer-back" href="/en/">← Back to the attestation service</a>
     <nav class="footer-cols" aria-label="Collegamenti del footer">
       <div class="footer-col">
-        <h3>Servizio</h3>
-        <a href="https://spaziogenesi.org/servizi#attestazione">Il servizio spiegato</a>
-        <a href="https://t.me/SGAttestBot">Bot Telegram</a>
-        <a href="/changelog/">Cronologia dei miglioramenti</a>
-        <a href="/status/">Stato del servizio</a>
+        <h3>Service</h3>
+        <a href="https://spaziogenesi.org/servizi#attestazione">How the service works</a>
+        <a href="https://t.me/SGAttestBot">Telegram bot</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/status/">Service status</a>
       </div>
       <div class="footer-col">
-        <h3>Fasce e accesso</h3>
-        <a href="/condizioni/">Fasce e condizioni</a>
-        <a href="/professionale/">Fascia Professionale</a>
-        <a href="/profilo/">Area professionale</a>
+        <h3>Tiers and access</h3>
+        <a href="/en/condizioni/">Tiers and terms</a>
+        <a href="/professionale/">Professional tier</a>
+        <a href="/profilo/">Professional area</a>
       </div>
       <div class="footer-col">
-        <h3>Fiducia</h3>
-        <a href="/privacy.html">Privacy</a>
-        <a href="/sicurezza/">Segnala una vulnerabilità</a>
-        <a href="https://trust.spaziogenesi.org">Come verificarci</a>
+        <h3>Trust</h3>
+        <a href="/en/privacy.html">Privacy</a>
+        <a href="/sicurezza/">Report a vulnerability</a>
+        <a href="https://trust.spaziogenesi.org">How to verify us</a>
       </div>
       <div class="footer-col">
-        <h3>Sviluppatori</h3>
-        <a href="/developer/">API &amp; server MCP</a>
-        <a href="/developer/cli/">Eseguibile CLI</a>
-        <a href="/integrazioni/">Vetrina Integrazioni</a>
+        <h3>Developers</h3>
+        <a href="/en/developer/">API &amp; MCP server</a>
+        <a href="/en/developer/cli/">CLI executable</a>
+        <a href="/integrazioni/">Integrations showcase</a>
       </div>
     </nav>
     <div class="footer-bottom">

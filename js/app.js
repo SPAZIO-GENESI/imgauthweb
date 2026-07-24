@@ -1043,7 +1043,7 @@
     }
     const checked = document.getElementById("svcChecked");
     if (checked) checked.textContent = st
-      ? t("svc.ultimoControllo", { ora: new Date().toLocaleTimeString("it-IT") })
+      ? t("svc.ultimoControllo", { ora: new Date().toLocaleTimeString(window.SG_I18N.lang === "en" ? "en-US" : "it-IT") })
       : t("svc.ultimoControlloIrraggiungibile");
 
     const fdot = document.querySelector("#svcFooter .svc-dot");
