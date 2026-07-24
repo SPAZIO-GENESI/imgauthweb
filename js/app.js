@@ -22,7 +22,13 @@
     if (tsRendered || !turnstileEnabled() || !window.turnstile) return;
     const el = document.getElementById("turnstileWidget");
     if (!el) return;
-    window.turnstile.render(el, { sitekey: TURNSTILE_SITEKEY, action: "genera-attestazione" });
+    // `language` esplicito (P41): senza, Turnstile usa "auto" = lingua del
+    // browser, quindi la challenge restava in italiano sulle pagine inglesi.
+    window.turnstile.render(el, {
+      sitekey: TURNSTILE_SITEKEY,
+      action: "genera-attestazione",
+      language: window.SG_I18N.lang,
+    });
     tsRendered = true;
   }
   // Chiamata da Turnstile quando l'API è pronta (vedi ?onload= nello <script>);
@@ -113,7 +119,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.31.1";
+  const APP_VERSION = "1.31.2";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
