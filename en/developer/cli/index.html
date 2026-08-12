@@ -213,6 +213,9 @@ sha256sum -c SHA256SUMS.txt --ignore-missing
 # Windows (PowerShell)
 (Get-FileHash .\sg-attest-windows-x64.exe -Algorithm SHA256).Hash</code></pre>
     <p>It makes sense to use the service's own tool to verify itself: <code>sg-attest attest</code> computes the fingerprint of any file, including this very executable.</p>
+    <p>The checksum answers "is the file intact?" — not "was it built from this source?". For that, every binary carries a <strong>build provenance attestation</strong> signed by the repo's CI (<a href="https://github.com/actions/attest-build-provenance" target="_blank" rel="noopener noreferrer">GitHub Artifact Attestations</a>, SLSA/in-toto format), recorded in a public transparency log:</p>
+    <pre><code>gh attestation verify sg-attest-linux-x64 --repo SPAZIO-GENESI/attest-mcp</code></pre>
+    <p>Requires the <a href="https://cli.github.com/" target="_blank" rel="noopener noreferrer">GitHub CLI</a> and an authenticated session (<code>gh auth login</code>, a free GitHub account is enough) — even for a public repository like this one: that's a limitation of the <code>gh</code> tool, not a secret about the verified data.</p>
   </section>
 
   <section class="blocco avviso">
