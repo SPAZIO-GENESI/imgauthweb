@@ -1,0 +1,13 @@
+# Aggiornamenti automatici delle GitHub Action usate nei workflow
+# (l'aggiornamento delle action stesse è spesso dimenticato, ed è un
+# vettore reale). Nessun ecosistema npm: imgauthweb non ha package.json
+# per design (HTML/CSS/JS puro, nessuno step di build). Triage settimanale:
+# vedi PRC-security-alert-triage nel registro gtf — voce A3 del piano P43,
+# parte 2.
+
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
