@@ -37,7 +37,7 @@
       { id:'s-admin', label:['/admin'], sub:'pannello credenziali', url:'https://imgauth.spaziogenesi.org/admin' },
       { id:'s-authart', label:['authart'], sub:'firma PDF · Azure', url:'https://sgart.azurewebsites.net' },
       { id:'s-trust', label:['Trust Center'], sub:'trust.spaziogenesi.org', url:'https://trust.spaziogenesi.org' },
-      { id:'s-whitepaper', label:['whitepaper'], sub:'documento tecnico', url:'https://trust.spaziogenesi.org/whitepaper.html' },
+      { id:'s-whitepaper', label:['whitepaper'], sub:'documento tecnico', url:'https://attestazione.trust.spaziogenesi.org/whitepaper.html' },
     ]},
     { key:'repo', title:'Repository (codice)', cat:'repo', perRow:5, nodes:[
       { id:'r-imgauthweb', label:['imgauthweb'], sub:'MIT · sito', url:'https://github.com/SPAZIO-GENESI/imgauthweb' },
