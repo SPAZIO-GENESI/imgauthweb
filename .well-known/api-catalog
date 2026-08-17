@@ -1,0 +1,59 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://imgauth.spaziogenesi.org",
+      "links": [
+        {
+          "rel": "service-desc",
+          "href": "https://imgauth.spaziogenesi.org/openapi.json",
+          "type": [{ "value": "application/json" }],
+          "title": [{ "value": "OpenAPI 3.0 description of the attestation API" }]
+        },
+        {
+          "rel": "service-doc",
+          "href": "https://attestazione.spaziogenesi.org/docs/",
+          "type": [{ "value": "text/html" }],
+          "title": [{ "value": "Interactive API documentation (Swagger UI)" }]
+        },
+        {
+          "rel": "status",
+          "href": "https://imgauth.spaziogenesi.org/api/status",
+          "type": [{ "value": "application/json" }],
+          "title": [{ "value": "Live service status of engine, archive, signer and anchor" }]
+        },
+        {
+          "rel": "describedby",
+          "href": "https://attestazione.trust.spaziogenesi.org/whitepaper-v1.0.pdf",
+          "type": [{ "value": "application/pdf" }],
+          "title": [{ "value": "Technical whitepaper: what the system guarantees, and what it does not" }]
+        },
+        {
+          "rel": "terms-of-service",
+          "href": "https://attestazione.spaziogenesi.org/condizioni/",
+          "type": [{ "value": "text/html" }]
+        },
+        {
+          "rel": "privacy-policy",
+          "href": "https://attestazione.spaziogenesi.org/privacy.html",
+          "type": [{ "value": "text/html" }]
+        }
+      ]
+    },
+    {
+      "anchor": "https://attest-mcp-remote.it-e3f.workers.dev/mcp",
+      "links": [
+        {
+          "rel": "service-desc",
+          "href": "https://attestazione.spaziogenesi.org/.well-known/mcp/server-card.json",
+          "type": [{ "value": "application/json" }],
+          "title": [{ "value": "MCP server card (streamable-http, no installation required)" }]
+        },
+        {
+          "rel": "service-doc",
+          "href": "https://attestazione.spaziogenesi.org/developer/",
+          "type": [{ "value": "text/html" }]
+        }
+      ]
+    }
+  ]
+}

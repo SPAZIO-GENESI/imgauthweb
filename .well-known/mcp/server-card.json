@@ -1,0 +1,23 @@
+{
+  "serverInfo": {
+    "name": "io.github.SPAZIO-GENESI/attest-mcp-remote",
+    "version": "1.0.0",
+    "description": "Zero-install remote MCP server for proof-of-existence file attestation."
+  },
+  "transport": {
+    "type": "streamable-http",
+    "endpoint": "https://attest-mcp-remote.it-e3f.workers.dev/mcp"
+  },
+  "capabilities": {
+    "tools": true,
+    "resources": false,
+    "prompts": false
+  },
+  "websiteUrl": "https://attestazione.spaziogenesi.org/developer/",
+  "repository": {
+    "url": "https://github.com/SPAZIO-GENESI/attest-mcp-remote",
+    "source": "github"
+  },
+  "documentation": "https://attestazione.spaziogenesi.org/.well-known/agent-skills/index.json",
+  "notes": "The file being attested never leaves the client: the agent computes the SHA-256 fingerprint locally and only that fingerprint is sent. Read-only tools need no credential; attesting requires a one-time human authorization (see /auth.md)."
+}

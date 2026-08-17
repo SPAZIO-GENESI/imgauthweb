@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "attest-a-file",
+      "type": "skill-md",
+      "description": "Create a timestamped, signed attestation proving a file existed in a given form at a given moment, without the file ever leaving the machine.",
+      "url": "https://attestazione.spaziogenesi.org/.well-known/agent-skills/attest-a-file/SKILL.md",
+      "digest": "sha256:df7592c6f7cea31503a2bbc99a8ff2a71e76df29b778e9b2451cc87d1773726f"
+    },
+    {
+      "name": "verify-an-attestation",
+      "type": "skill-md",
+      "description": "Check whether a file matches an attestation, whether the certificate signature is authentic, and whether the fingerprint is anchored to Bitcoin.",
+      "url": "https://attestazione.spaziogenesi.org/.well-known/agent-skills/verify-an-attestation/SKILL.md",
+      "digest": "sha256:9ba45c741edcb8fb6cd853539696ef629f3465eeb27bc009981ee852549c20bb"
+    }
+  ]
+}

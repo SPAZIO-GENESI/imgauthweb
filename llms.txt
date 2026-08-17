@@ -1,0 +1,50 @@
+# Spazio Genesi — Digital Work Attestation
+
+> A free, open-source service that proves a digital file existed in a given form
+> at a given moment. The work never leaves the user's device: its SHA-256
+> fingerprint is computed locally and only that fingerprint is sent. Each
+> attestation carries three independent time anchors — an HMAC signature, an RFC
+> 3161 timestamp from an AATL-trusted authority, and a Bitcoin anchor via
+> OpenTimestamps — and results in a signed PDF certificate plus a permanent
+> public verification page. Run by Spazio Genesi ETS, a non-profit in Italy.
+> Verification is always free and needs no account. It is not a qualified eIDAS
+> trust service, and it does not prove authorship — only existence in time.
+
+## Start here
+
+- [Service, in English](https://attestazione.spaziogenesi.org/en/): what it does, how to use it from a browser.
+- [Technical whitepaper (PDF)](https://attestazione.trust.spaziogenesi.org/whitepaper-v1.0.pdf): threat model, cryptographic foundations, declared limits, eIDAS positioning, C2PA comparison.
+- [Tiers, quotas and retention](https://attestazione.spaziogenesi.org/en/condizioni/): what is guaranteed, for how long, at which tier.
+- [Privacy notice](https://attestazione.spaziogenesi.org/en/privacy.html) (courtesy translation; the Italian version prevails).
+
+## For agents and programs
+
+- [Agent skills index](https://attestazione.spaziogenesi.org/.well-known/agent-skills/index.json): machine-readable skill discovery.
+- [Skill: attest a file](https://attestazione.spaziogenesi.org/.well-known/agent-skills/attest-a-file/SKILL.md): the full attestation flow, including the step that is deliberately not automatable.
+- [Skill: verify an attestation](https://attestazione.spaziogenesi.org/.well-known/agent-skills/verify-an-attestation/SKILL.md): the three independent checks, and how not to confuse them.
+- [Credentials](https://attestazione.spaziogenesi.org/auth.md): device flow and API keys, and what this service deliberately does not implement.
+- [API catalog](https://attestazione.spaziogenesi.org/.well-known/api-catalog): RFC 9727 link set.
+- [MCP server card](https://attestazione.spaziogenesi.org/.well-known/mcp/server-card.json): remote MCP server, no installation.
+
+## For developers
+
+- [OpenAPI description](https://imgauth.spaziogenesi.org/openapi.json): the machine-readable source of truth for the API.
+- [Interactive API documentation](https://attestazione.spaziogenesi.org/docs/): Swagger UI, self-hosted.
+- [Developer entry point](https://attestazione.spaziogenesi.org/en/developer/): API keys, MCP servers, which credential works with which client.
+- [Command-line tool](https://attestazione.spaziogenesi.org/en/developer/cli/): `sg-attest`, via npm or as a standalone binary.
+- [Live service status](https://imgauth.spaziogenesi.org/api/status): engine, archive, signer and anchor.
+
+## Trust and transparency
+
+- [Trust Center](https://attestazione.trust.spaziogenesi.org/): public register of principles, controls, evidence, risks and decisions, with an openly computed maturity score.
+- [Security policy](https://attestazione.spaziogenesi.org/sicurezza/): scope, how to report a vulnerability, safe harbour.
+- [Service status page](https://attestazione.spaziogenesi.org/status/): 90-day history, time-weighted uptime.
+- [Changelog](https://attestazione.spaziogenesi.org/changelog/): what changed, in plain language.
+
+## Source code
+
+- [imgauth](https://github.com/SPAZIO-GENESI/imgauth) — attestation engine (AGPL-3.0).
+- [imgauthweb](https://github.com/SPAZIO-GENESI/imgauthweb) — web interface (MIT).
+- [attest-mcp](https://github.com/SPAZIO-GENESI/attest-mcp) — MCP server and `sg-attest` CLI (MIT).
+- [attest-mcp-remote](https://github.com/SPAZIO-GENESI/attest-mcp-remote) — remote MCP server (MIT).
+- [attest-action](https://github.com/SPAZIO-GENESI/attest-action) — GitHub Action (MIT).

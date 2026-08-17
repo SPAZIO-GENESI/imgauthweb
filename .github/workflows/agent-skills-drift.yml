@@ -1,0 +1,23 @@
+# P50 — guardia anti-drift fra i SKILL.md e i digest dichiarati in
+# /.well-known/agent-skills/index.json. Un indice che dichiara un digest
+# sbagliato è peggio di un indice assente: un agente che verifica l'integrità
+# scarta la skill in silenzio. Stessa medicina della guardia i18n e di quella
+# sulla versione di openapi.json.
+name: agent skills drift check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Minima per default: solo un controllo di sola lettura. Scorecard/A3-parte4.
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: node scripts/check-agent-skills.mjs
