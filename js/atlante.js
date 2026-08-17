@@ -34,7 +34,7 @@
       { id:'s-imgauth', label:['imgauth'], sub:'motore · API', url:'https://imgauth.spaziogenesi.org/openapi.json' },
       { id:'s-cpage', label:['/c/<hash>'], sub:'certificato pubblico', url:'https://attestazione.spaziogenesi.org/c/898ec96815e6bee1f85f93651fb64b6d1ad289510f4ac2fd9fbaa92fe01de452' },
       { id:'s-agentauth', label:['/agent/','authorize'], sub:'device flow MCP', locked:true },
-      { id:'s-admin', label:['/admin'], sub:'pannello credenziali', url:'https://imgauth.spaziogenesi.org/admin' },
+      { id:'s-admin', label:['/admin'], sub:'chiavi · convenzioni · pro · integrazioni', url:'https://imgauth.spaziogenesi.org/admin', note:'gestisce chiavi API, convenzioni, abbonamenti Professionale e integrazioni partner; la scheda Manutenzione mostra (sola lettura) lo stato dei processi ricorrenti del registro GTF; protetto da Cloudflare Access più un secret condiviso applicativo' },
       { id:'s-authart', label:['authart'], sub:'firma PDF · Azure', url:'https://sgart.azurewebsites.net' },
       { id:'s-trust', label:['Trust Center'], sub:'trust.spaziogenesi.org', url:'https://trust.spaziogenesi.org' },
       { id:'s-whitepaper', label:['whitepaper'], sub:'documento tecnico', url:'https://attestazione.trust.spaziogenesi.org/whitepaper.html' },
@@ -63,6 +63,7 @@
       { id:'i-telegram', label:['Telegram'], sub:'Bot API', url:'https://core.telegram.org/bots/api' },
       { id:'i-mcpregistry', label:['MCP Registry'], sub:'server pubblici', url:'https://registry.modelcontextprotocol.io/v0/servers?search=io.github.SPAZIO-GENESI/attest-mcp' },
       { id:'i-npm', label:['npm'], sub:'registro pacchetti', url:'https://www.npmjs.com/package/@spazio-genesi/attest-mcp' },
+      { id:'i-cfaccess', label:['Cloudflare','Access'], sub:'Zero Trust · login', url:'https://spaziogenesi.cloudflareaccess.com' },
     ]},
   ];
 
@@ -86,7 +87,8 @@
     ['s-professionale','s-imgauth','call',null],
     ['s-docs','s-imgauth','call',null],
     ['s-agentauth','s-imgauth','call',null],
-    ['s-admin','s-imgauth','call',null],
+    ['s-admin','s-imgauth','call','chiavi · convenzioni · pro · integrazioni'],
+    ['s-admin','s-trust','call','legge stato manutenzioni (GTF)'],
     ['s-imgauth','i-stripe','call','abbonamenti'],
     ['s-imgauth','i-oauth','call','verifica email'],
     // deploy — repo -> live surface
@@ -108,6 +110,8 @@
     ['i-github','i-mcpregistry','host','OIDC publish'],
     ['r-attestmcp','i-npm','host','pubblica'],
     ['i-cloudflare','i-backblaze','host','backup notturno'],
+    // guard — access-control gates in front of a resource
+    ['i-cfaccess','s-admin','guard','autentica prima del Worker'],
     // govern — GTF registers evidence about the other repos
     ['r-gtf','r-imgauth','govern','registra evidenze'],
     ['r-gtf','r-imgauthweb','govern',null],
@@ -271,7 +275,8 @@
       wrap.setAttribute('aria-label', baseName + ' — mostra le connessioni dirette');
 
       const title = el('title', {});
-      title.textContent = baseName + (n.locked ? ' — interno, senza link diretto' : ' — clic per le connessioni, icona ↗ per aprire');
+      title.textContent = baseName + (n.note ? ' — ' + n.note : '') +
+        (n.locked ? ' — interno, senza link diretto' : ' — clic per le connessioni, icona ↗ per aprire');
       wrap.appendChild(title);
 
       wrap.appendChild(el('rect', { class:'box', width:n.w, height:n.h, rx:11 }));

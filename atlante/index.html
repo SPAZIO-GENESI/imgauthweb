@@ -268,11 +268,12 @@
   .edge-host{ stroke:var(--text-dim); stroke-width:1.3; opacity:.42; stroke-dasharray:1 4; }
   .edge-govern{ stroke:var(--text-dim); stroke-width:1.3; opacity:.5; stroke-dasharray:7 4; }
   .edge-own{ stroke:var(--text-dim); stroke-width:1.3; opacity:.42; stroke-dasharray:1 5; }
+  .edge-guard{ stroke:var(--cat-infra); stroke-width:1.6; opacity:.6; stroke-dasharray:2 3; }
   .edge.dim{ opacity:.05; }
   .edge.lit{ opacity:1; }
   .edge.lit.edge-flow{ stroke-width:4.2; }
   .edge.lit.edge-call{ stroke-width:2.4; }
-  .edge.lit.edge-deploy, .edge.lit.edge-host, .edge.lit.edge-govern, .edge.lit.edge-own{ stroke-width:2.1; }
+  .edge.lit.edge-deploy, .edge.lit.edge-host, .edge.lit.edge-govern, .edge.lit.edge-own, .edge.lit.edge-guard{ stroke-width:2.1; }
   .elabel-bg{ fill:var(--paper); opacity:.92; transition:opacity .15s ease; }
   .elabel{
     font-family:var(--font-mono);
@@ -337,6 +338,7 @@
   .eline.host{ border-color:var(--text-dim); border-top-style:dotted; }
   .eline.govern{ border-color:var(--text-dim); border-top-style:dashed; }
   .eline.own{ border-color:var(--text-dim); border-top-style:dotted; }
+  .eline.guard{ border-color:var(--cat-infra); border-top-style:dotted; }
   .legend .note{ margin-top:10px; color:var(--text-dim); line-height:1.45; }
   .legend .note b{ color:var(--text); font-weight:600; }
 
@@ -350,7 +352,7 @@
   <header class="toolbar">
     <div class="brand">
       <h1>Atlante Attestazione</h1>
-      <p>Repository, pagine, canali, servizi e persone del sistema di attestazione — 50 nodi, aggiornato al 13 agosto 2026.</p>
+      <p>Repository, pagine, canali, servizi e persone del sistema di attestazione — 51 nodi, aggiornato al 17 agosto 2026.</p>
     </div>
     <div class="controls">
       <div class="search-wrap">
@@ -396,6 +398,7 @@
       <div class="elrow"><span class="eline host"></span>ospitato su</div>
       <div class="elrow"><span class="eline govern"></span>governance GTF</div>
       <div class="elrow"><span class="eline own"></span>persona → risorsa</div>
+      <div class="elrow"><span class="eline guard"></span>controllo d'accesso</div>
       <div class="note">Bordo <b>tratteggiato</b> sul riquadro = risorsa interna o privata, senza link diretto.</div>
     </div>
   </main>
