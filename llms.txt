@@ -17,6 +17,18 @@
 - [Tiers, quotas and retention](https://attestazione.spaziogenesi.org/en/condizioni/): what is guaranteed, for how long, at which tier.
 - [Privacy notice](https://attestazione.spaziogenesi.org/en/privacy.html) (courtesy translation; the Italian version prevails).
 
+## Markdown instead of HTML
+
+Requesting the home page with `Accept: text/markdown` returns a markdown
+rendition instead of HTML, at the same URL. The rendition is generated from the
+page, never written by hand, and a CI guard fails if the two drift apart. Direct
+links, if you prefer them: [Italian home as markdown](https://attestazione.spaziogenesi.org/index.md) ·
+[English home as markdown](https://attestazione.spaziogenesi.org/en/index.md).
+
+Note that the home page is an interactive application: its controls have no
+markdown equivalent, so for programmatic use the resources listed below are more
+useful than any rendition of the page.
+
 ## For agents and programs
 
 - [Agent skills index](https://attestazione.spaziogenesi.org/.well-known/agent-skills/index.json): machine-readable skill discovery.

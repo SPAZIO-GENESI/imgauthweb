@@ -1,0 +1,23 @@
+# P50 — guardia anti-divergenza fra le home HTML e i loro gemelli Markdown,
+# serviti agli agenti che chiedono `Accept: text/markdown` (una Rewrite Rule
+# Cloudflare riscrive il percorso a index.md). Un gemello fermo a una versione
+# vecchia della pagina racconterebbe agli agenti un servizio che non esiste più:
+# stessa medicina della guardia i18n e di quella sui digest delle agent skills.
+name: markdown twins drift check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Minima per default: solo un controllo di sola lettura. Scorecard/A3-parte4.
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: node scripts/build-markdown-twins.mjs --check
