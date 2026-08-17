@@ -1,7 +1,7 @@
 {
   "_comment": "P41 — coppie IT/EN sorvegliate contro la divergenza (CLAUDE.md § P41, D2). it_sha256 è lo SHA-256 del file italiano al momento in cui la traduzione EN corrispondente è stata allineata. .github/workflows/i18n-drift.yml fallisce se il file italiano cambia senza che it_sha256 venga aggiornato: chi tocca solo l'italiano deve decidere esplicitamente se tradurre o ri-allineare l'hash.",
   "pairs": [
-    { "it": "index.html",                "en": "en/index.html",                "it_sha256": "a3cc27269fd007eb95a41a7bf3f1167dcf44abee1d24bdaf68ac90f624331dc0" },
+    { "it": "index.html",                "en": "en/index.html",                "it_sha256": "f9f379a0a8bba93f0a3dcbf0c1d4379d80663cdfdfaa10d00d72c5df402f9073" },
     { "it": "condizioni/index.html",     "en": "en/condizioni/index.html",     "it_sha256": "18f2281540e1b4fd71af9fe1cde68bfb47ea60cd98b7300484584cba35567e4d" },
     { "it": "developer/index.html",      "en": "en/developer/index.html",      "it_sha256": "d85fd482a98127c15c34bffaad78336c2b5f26fcd61b7a6850214529c9edc594" },
     { "it": "developer/keys/index.html", "en": "en/developer/keys/index.html", "it_sha256": "508ed88190e119d3c8b0c8bbbe6ba794effa8ac67698de86eba1890538d9b971" },
