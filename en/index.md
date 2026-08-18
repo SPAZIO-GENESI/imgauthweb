@@ -23,7 +23,7 @@ The service provides cryptographic attestation of the digital
 fingerprint (hash) of computer files. It doesn't constitute copyright registration
 or legal certification of ownership of the work.
 
-Attesting regularly? There's the [Professional tier](https://attestazione.spaziogenesi.org/professionale/):
+Attesting regularly? There's the [Professional tier](https://attestazione.spaziogenesi.org/en/professionale/):
 200 attestations a month and 5-year custody — on promotion at €20 a year until the end of 2026.
 
 You can install this page as an app: from your browser menu choose
