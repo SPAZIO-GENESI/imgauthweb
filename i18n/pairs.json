@@ -1,13 +1,45 @@
 {
   "_comment": "P41 — coppie IT/EN sorvegliate contro la divergenza (CLAUDE.md § P41, D2). it_sha256 è lo SHA-256 del file italiano al momento in cui la traduzione EN corrispondente è stata allineata. .github/workflows/i18n-drift.yml fallisce se il file italiano cambia senza che it_sha256 venga aggiornato: chi tocca solo l'italiano deve decidere esplicitamente se tradurre o ri-allineare l'hash.",
   "pairs": [
-    { "it": "index.html",                "en": "en/index.html",                "it_sha256": "f9f379a0a8bba93f0a3dcbf0c1d4379d80663cdfdfaa10d00d72c5df402f9073" },
-    { "it": "condizioni/index.html",     "en": "en/condizioni/index.html",     "it_sha256": "18f2281540e1b4fd71af9fe1cde68bfb47ea60cd98b7300484584cba35567e4d" },
-    { "it": "developer/index.html",      "en": "en/developer/index.html",      "it_sha256": "d85fd482a98127c15c34bffaad78336c2b5f26fcd61b7a6850214529c9edc594" },
-    { "it": "developer/keys/index.html", "en": "en/developer/keys/index.html", "it_sha256": "508ed88190e119d3c8b0c8bbbe6ba794effa8ac67698de86eba1890538d9b971" },
-    { "it": "developer/cli/index.html",  "en": "en/developer/cli/index.html",  "it_sha256": "2a64eb9fafb23a88d884d93379d5b6a14471384858602b1a81399633bf1928ac" },
-    { "it": "privacy.html",              "en": "en/privacy.html",              "it_sha256": "4221642f01d1f68601a3d5b1bd98c7895603c3fa92f2f8c2a055e23769e72724" },
-    { "it": "professionale/index.html",  "en": "en/professionale/index.html",  "it_sha256": "4624aeea5bad037948eda10f9d0c3583abdef0749d11482b1238e34f0a561fdb" },
-    { "it": "profilo/index.html",        "en": "en/profilo/index.html",        "it_sha256": "709690224bbff57292ad86e757e932851e8b45304c0f0dfc67a3e5d534a57dbc" }
+    {
+      "it": "index.html",
+      "en": "en/index.html",
+      "it_sha256": "5ce2d6c4e1085de491912a32f19e40d8b563657fbb53adc507464dc87163dd07"
+    },
+    {
+      "it": "condizioni/index.html",
+      "en": "en/condizioni/index.html",
+      "it_sha256": "088cd1c059b204a127c6f6009df3fd406dce111b29e9241a4d9482eed501fdcd"
+    },
+    {
+      "it": "developer/index.html",
+      "en": "en/developer/index.html",
+      "it_sha256": "a8fc462d3e21266f7558410c8ea0c5ea09c301dc893bdc54adc8442cd3637de1"
+    },
+    {
+      "it": "developer/keys/index.html",
+      "en": "en/developer/keys/index.html",
+      "it_sha256": "3d070c4b104b09495109374e3bea639ffa1a4bfc54a88ff3a45fd4be4f1a5dca"
+    },
+    {
+      "it": "developer/cli/index.html",
+      "en": "en/developer/cli/index.html",
+      "it_sha256": "848c1e231868f925ef39ad017818799602c8138fd9814e7d3c22b5d468f9b8fe"
+    },
+    {
+      "it": "privacy.html",
+      "en": "en/privacy.html",
+      "it_sha256": "1dc1886be6cefe6379b1bf3ee0a07afbae87b620086d25f108f9bc074d6998b4"
+    },
+    {
+      "it": "professionale/index.html",
+      "en": "en/professionale/index.html",
+      "it_sha256": "300aa00ca0319c8a8c67ad323a5b677a50925058a2eb2e72c47c1429e11c8787"
+    },
+    {
+      "it": "profilo/index.html",
+      "en": "en/profilo/index.html",
+      "it_sha256": "7880f380c283e5c7b1c21a42cb5721488ddf6be0465fe5a6e914cd7c1e152a27"
+    }
   ]
 }
