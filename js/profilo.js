@@ -4,6 +4,11 @@
   // Worker: X-SG-Voucher in Access-Control-Allow-Headers, preflight gestito).
   var API_BASE = "https://imgauth.spaziogenesi.org";
 
+  // P48: stringhe dinamiche (stato, log, messaggi) da js/i18n.js — la
+  // cornice HTML della pagina resta comunque tradotta a parte (en/profilo/).
+  var t = window.SG_I18N.t;
+  var DATE_LOCALE = window.SG_I18N.lang === "en" ? "en-US" : "it-IT";
+
   var voucherKey = "sg_pro_voucher";
 
   function getVoucher() { return sessionStorage.getItem(voucherKey) || ""; }
@@ -48,15 +53,15 @@
 
   function fmtDate(ms) {
     if (!ms) return "—";
-    try { return new Date(ms).toLocaleDateString("it-IT", { year: "numeric", month: "long", day: "numeric" }); } catch (e) { return String(ms); }
+    try { return new Date(ms).toLocaleDateString(DATE_LOCALE, { year: "numeric", month: "long", day: "numeric" }); } catch (e) { return String(ms); }
   }
   function fmtDateTime(ms) {
     if (!ms) return "—";
-    try { return new Date(ms).toLocaleString("it-IT", { dateStyle: "short", timeStyle: "short" }); } catch (e) { return String(ms); }
+    try { return new Date(ms).toLocaleString(DATE_LOCALE, { dateStyle: "short", timeStyle: "short" }); } catch (e) { return String(ms); }
   }
   function fmtEur(cents) {
     if (cents == null) return "—";
-    return (cents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" });
+    return (cents / 100).toLocaleString(DATE_LOCALE, { style: "currency", currency: "EUR" });
   }
   function escHtml(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -64,8 +69,8 @@
     });
   }
 
-  var EVENT_LABELS = { created: "Attivazione", renewed: "Rinnovo", payment_failed: "Pagamento non riuscito", canceled: "Cessazione", cancel_scheduled: "Cessazione programmata" };
-  var CHANNEL_LABELS = { web: "Sito", api: "API o agente con chiave", mcp: "MCP (sessione)", telegram: "Bot Telegram" };
+  var EVENT_LABELS = { created: t("profilo.event.created"), renewed: t("profilo.event.renewed"), payment_failed: t("profilo.event.paymentFailed"), canceled: t("profilo.event.canceled"), cancel_scheduled: t("profilo.event.cancelScheduled") };
+  var CHANNEL_LABELS = { web: t("profilo.channel.web"), api: t("profilo.channel.api"), mcp: t("profilo.channel.mcp"), telegram: t("profilo.channel.telegram") };
 
   var certsPage = 1;
 
@@ -82,8 +87,8 @@
     if (!data.subscription) {
       var pricing = data.pricing;
       var priceText = pricing
-        ? "Abbonamento annuale: " + fmtEur(pricing.amount_cents) + "."
-        : "Nessun listino attivo al momento: riprova più tardi.";
+        ? t("profilo.price.abbonamentoAnnuale", { price: fmtEur(pricing.amount_cents) })
+        : t("profilo.price.nessunListino");
       if (data.contract && data.contract.fascia === "convenzione") {
         showState("convention");
         loadIntegration();
@@ -113,21 +118,21 @@
     }
     document.getElementById("pastDueBanner").style.display = sub.status === "past_due" ? "" : "none";
     document.getElementById("cancelScheduledBanner").style.display = sub.cancel_at_period_end ? "" : "none";
-    document.getElementById("subStatus").textContent = sub.status === "past_due" ? "In tolleranza (pagamento da confermare)" : "Attivo";
+    document.getElementById("subStatus").textContent = sub.status === "past_due" ? t("profilo.sub.inTolleranza") : t("profilo.sub.attivo");
     document.getElementById("subPeriodEnd").textContent = fmtDate(sub.period_end);
-    document.getElementById("subPrice").textContent = fmtEur(sub.price_cents) + " / anno";
+    document.getElementById("subPrice").textContent = fmtEur(sub.price_cents) + t("profilo.price.perAnno");
 
     var used = data.usage.used, quota = data.usage.quota;
-    document.getElementById("usageText").textContent = used + " / " + quota + " attestazioni questo mese (" + data.usage.month + ")";
+    document.getElementById("usageText").textContent = t("profilo.usage.text", { used: used, quota: quota, month: data.usage.month });
     document.getElementById("usageBar").style.width = Math.min(100, Math.round((used / quota) * 100)) + "%";
 
     var evBody = document.getElementById("eventsBody");
     evBody.innerHTML = data.events.map(function (e) {
       var detail = "";
-      if (e.detail && e.detail.period_end) detail = "nuova scadenza " + fmtDate(e.detail.period_end);
+      if (e.detail && e.detail.period_end) detail = t("profilo.events.nuovaScadenza", { date: fmtDate(e.detail.period_end) });
       else if (e.detail && e.detail.amount_cents) detail = fmtEur(e.detail.amount_cents);
       return "<tr><td>" + fmtDateTime(e.ts) + "</td><td>" + escHtml(EVENT_LABELS[e.type] || e.type) + "</td><td>" + escHtml(detail) + "</td></tr>";
-    }).join("") || '<tr><td colspan="3">Nessun evento.</td></tr>';
+    }).join("") || "<tr><td colspan=\"3\">" + escHtml(t("profilo.events.nessunEvento")) + "</td></tr>";
 
     document.getElementById("segmentSelect").value = (data.profile && data.profile.segment) || "";
     document.getElementById("regionSelect").value = (data.profile && data.profile.region) || "";
@@ -140,10 +145,10 @@
 
   // ── P28: candidatura vetrina Integrazioni ─────────────────────────────
   var INTEGRATION_STATUS_LABELS = {
-    pending: "In attesa di revisione da parte del gestore.",
-    approved: "Pubblicata nella vetrina Integrazioni.",
-    rejected: "Non approvata. Puoi modificarla e ricandidarla.",
-    removed: "Candidatura ritirata. Puoi ricandidarla in ogni momento.",
+    pending: t("profilo.integration.status.pending"),
+    approved: t("profilo.integration.status.approved"),
+    rejected: t("profilo.integration.status.rejected"),
+    removed: t("profilo.integration.status.removed"),
   };
 
   function renderIntegration(data) {
@@ -167,10 +172,11 @@
       if (integ.status === "approved") {
         var badgeUrl = API_BASE + "/api/badge/integration?id=" + integ.id;
         var pageUrl = "https://attestazione.spaziogenesi.org/integrazioni/";
+        var badgeAlt = t("profilo.integration.badgeAlt");
         document.getElementById("intBadgeHtml").value =
-          '<a href="' + pageUrl + '"><img src="' + badgeUrl + '" alt="Funziona con Attestazione Spazio Genesi"></a>';
+          '<a href="' + pageUrl + '"><img src="' + badgeUrl + '" alt="' + badgeAlt + '"></a>';
         document.getElementById("intBadgeMd").value =
-          '[![Funziona con Attestazione Spazio Genesi](' + badgeUrl + ')](' + pageUrl + ')';
+          '[![' + badgeAlt + '](' + badgeUrl + ')](' + pageUrl + ')';
         badgeSection.style.display = "";
       } else {
         badgeSection.style.display = "none";
@@ -204,19 +210,19 @@
       description: document.getElementById("intDescription").value.trim(),
     };
     if (!payload.app_name || !payload.url || !payload.description) {
-      msg.textContent = "Compila nome, URL e descrizione."; msg.className = "msg err"; return;
+      msg.textContent = t("profilo.integration.compilaCampi"); msg.className = "msg err"; return;
     }
-    msg.textContent = "Invio…"; msg.className = "msg";
+    msg.textContent = t("profilo.integration.invio"); msg.className = "msg";
     api("/api/pro/integration", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
-      .then(function () { msg.textContent = "Candidatura inviata: in attesa di revisione."; msg.className = "msg ok"; loadIntegration(); })
+      .then(function () { msg.textContent = t("profilo.integration.inviata"); msg.className = "msg ok"; loadIntegration(); })
       .catch(function (e) { msg.textContent = e.message; msg.className = "msg err"; });
   });
 
   document.getElementById("intWithdrawBtn").addEventListener("click", function () {
-    if (!confirm("Ritirare la candidatura? Sparirà dalla vetrina se pubblicata.")) return;
+    if (!confirm(t("profilo.integration.confermaRitiro"))) return;
     var msg = document.getElementById("intMsg");
     api("/api/pro/integration", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ withdraw: true }) })
-      .then(function () { msg.textContent = "Candidatura ritirata."; msg.className = "msg ok"; loadIntegration(); })
+      .then(function () { msg.textContent = t("profilo.integration.ritirata"); msg.className = "msg ok"; loadIntegration(); })
       .catch(function (e) { msg.textContent = e.message; msg.className = "msg err"; });
   });
 
@@ -224,12 +230,12 @@
     var msg = document.getElementById("intLogoMsg");
     var input = document.getElementById("intLogoInput");
     var file = input.files && input.files[0];
-    if (!file) { msg.textContent = "Scegli un file."; msg.className = "msg err"; return; }
+    if (!file) { msg.textContent = t("profilo.integration.scegliFile"); msg.className = "msg err"; return; }
     var fd = new FormData();
     fd.append("logo", file);
-    msg.textContent = "Caricamento…"; msg.className = "msg";
+    msg.textContent = t("profilo.integration.caricamento"); msg.className = "msg";
     api("/api/pro/integration/logo", { method: "POST", body: fd })
-      .then(function () { msg.textContent = "Logo caricato: in attesa di revisione."; msg.className = "msg ok"; input.value = ""; loadIntegration(); })
+      .then(function () { msg.textContent = t("profilo.integration.logoCaricato"); msg.className = "msg ok"; input.value = ""; loadIntegration(); })
       .catch(function (e) { msg.textContent = e.message; msg.className = "msg err"; });
   });
 
@@ -241,9 +247,9 @@
         var short = c.sha256.slice(0, 12) + "…";
         return "<tr><td>" + fmtDateTime(c.ts) + "</td><td class=\"fingerprint\">" + escHtml(short) + "</td><td>" +
           escHtml(CHANNEL_LABELS[c.channel] || c.channel || "—") +
-          "</td><td><a href=\"https://attestazione.spaziogenesi.org/c/" + c.sha256 + "\" target=\"_blank\" rel=\"noopener\">verifica</a></td></tr>";
-      }).join("") || '<tr><td colspan="4">Nessun certificato in questa fascia.</td></tr>';
-      document.getElementById("certsPageInfo").textContent = "Pagina " + data.page + " di " + Math.max(1, Math.ceil(data.total / data.per_page));
+          "</td><td><a href=\"https://attestazione.spaziogenesi.org/c/" + c.sha256 + "\" target=\"_blank\" rel=\"noopener\">" + escHtml(t("profilo.certs.verifica")) + "</a></td></tr>";
+      }).join("") || "<tr><td colspan=\"4\">" + escHtml(t("profilo.certs.nessunCertificato")) + "</td></tr>";
+      document.getElementById("certsPageInfo").textContent = t("profilo.certs.pagina", { page: data.page, total: Math.max(1, Math.ceil(data.total / data.per_page)) });
       document.getElementById("certsPrevBtn").disabled = data.page <= 1;
       document.getElementById("certsNextBtn").disabled = data.page * data.per_page >= data.total;
     }).catch(function () {});
@@ -257,7 +263,7 @@
 
   function doCheckout(discountInputId, msgId) {
     var msg = document.getElementById(msgId);
-    msg.textContent = "Attendere…"; msg.className = "msg";
+    msg.textContent = t("profilo.common.attendere"); msg.className = "msg";
     var code = document.getElementById(discountInputId).value.trim();
     api("/api/pro/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(code ? { discount_code: code } : {}) })
       .then(function (data) { location.href = data.url; })
@@ -268,7 +274,7 @@
 
   document.getElementById("portalBtn").addEventListener("click", function () {
     var msg = document.getElementById("portalMsg");
-    msg.textContent = "Attendere…"; msg.className = "msg";
+    msg.textContent = t("profilo.common.attendere"); msg.className = "msg";
     api("/api/pro/portal", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })
       .then(function (data) { location.href = data.url; })
       .catch(function (e) { msg.textContent = e.message; msg.className = "msg err"; });
@@ -296,18 +302,18 @@
     var os = document.getElementById("devOs").value;
     var environment = document.getElementById("devEnvironment").value.trim();
     var consent = document.getElementById("devProfileConsent").checked;
-    if ((appName || os || environment) && !consent) { msg.textContent = "Serve il consenso per salvare questi dati."; msg.className = "msg err"; return; }
-    msg.textContent = "Salvataggio…"; msg.className = "msg";
+    if ((appName || os || environment) && !consent) { msg.textContent = t("profilo.common.serveConsenso"); msg.className = "msg err"; return; }
+    msg.textContent = t("profilo.common.salvataggio"); msg.className = "msg";
     api("/api/pro/dev-profile", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ app_name: appName || null, os: os || null, environment: environment || null, consent: consent }),
     })
-      .then(function () { msg.textContent = "Salvato."; msg.className = "msg ok"; })
+      .then(function () { msg.textContent = t("profilo.common.salvato"); msg.className = "msg ok"; })
       .catch(function (e) { msg.textContent = e.message; msg.className = "msg err"; });
   });
 
   document.getElementById("clearDevProfileBtn").addEventListener("click", function () {
-    if (!confirm("Rimuovere i dati del tuo progetto?")) return;
+    if (!confirm(t("profilo.dev.confermaRimuovi"))) return;
     var msg = document.getElementById("devProfileMsg");
     api("/api/pro/dev-profile", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clear: true }) })
       .then(function () {
@@ -315,7 +321,7 @@
         document.getElementById("devOs").value = "";
         document.getElementById("devEnvironment").value = "";
         document.getElementById("devProfileConsent").checked = false;
-        msg.textContent = "Rimosso."; msg.className = "msg ok";
+        msg.textContent = t("profilo.common.rimosso"); msg.className = "msg ok";
       })
       .catch(function (e) { msg.textContent = e.message; msg.className = "msg err"; });
   });
@@ -325,25 +331,25 @@
     var segment = document.getElementById("segmentSelect").value;
     var region = document.getElementById("regionSelect").value;
     var consent = document.getElementById("profileConsent").checked;
-    if ((segment || region) && !consent) { msg.textContent = "Serve il consenso per salvare questi dati."; msg.className = "msg err"; return; }
-    msg.textContent = "Salvataggio…"; msg.className = "msg";
+    if ((segment || region) && !consent) { msg.textContent = t("profilo.common.serveConsenso"); msg.className = "msg err"; return; }
+    msg.textContent = t("profilo.common.salvataggio"); msg.className = "msg";
     api("/api/pro/profile", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ segment: segment || null, region: region || null, consent: consent }),
     })
-      .then(function () { msg.textContent = "Salvato."; msg.className = "msg ok"; })
+      .then(function () { msg.textContent = t("profilo.common.salvato"); msg.className = "msg ok"; })
       .catch(function (e) { msg.textContent = e.message; msg.className = "msg err"; });
   });
 
   document.getElementById("clearProfileBtn").addEventListener("click", function () {
-    if (!confirm("Rimuovere segmento e regione salvati?")) return;
+    if (!confirm(t("profilo.profile.confermaRimuovi"))) return;
     var msg = document.getElementById("profileMsg");
     api("/api/pro/profile", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clear: true }) })
       .then(function () {
         document.getElementById("segmentSelect").value = "";
         document.getElementById("regionSelect").value = "";
         document.getElementById("profileConsent").checked = false;
-        msg.textContent = "Rimosso."; msg.className = "msg ok";
+        msg.textContent = t("profilo.common.rimosso"); msg.className = "msg ok";
       })
       .catch(function (e) { msg.textContent = e.message; msg.className = "msg err"; });
   });

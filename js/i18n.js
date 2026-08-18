@@ -108,7 +108,57 @@
       "svc.operativi":               "Servizi operativi",
       "svc.nonDisponibile":          "Stato dei servizi non disponibile",
       "svc.disservizioParziale":     "Disservizio parziale in corso",
-      "svc.operativoRallentato":     "Servizi operativi (un componente rallentato)"
+      "svc.operativoRallentato":     "Servizi operativi (un componente rallentato)",
+
+      "profilo.event.created":         "Attivazione",
+      "profilo.event.renewed":         "Rinnovo",
+      "profilo.event.paymentFailed":   "Pagamento non riuscito",
+      "profilo.event.canceled":        "Cessazione",
+      "profilo.event.cancelScheduled": "Cessazione programmata",
+
+      "profilo.channel.web":      "Sito",
+      "profilo.channel.api":      "API o agente con chiave",
+      "profilo.channel.mcp":      "MCP (sessione)",
+      "profilo.channel.telegram": "Bot Telegram",
+
+      "profilo.price.abbonamentoAnnuale": "Abbonamento annuale: {price}.",
+      "profilo.price.nessunListino":      "Nessun listino attivo al momento: riprova più tardi.",
+      "profilo.price.perAnno":            " / anno",
+
+      "profilo.sub.inTolleranza": "In tolleranza (pagamento da confermare)",
+      "profilo.sub.attivo":       "Attivo",
+
+      "profilo.usage.text":            "{used} / {quota} attestazioni questo mese ({month})",
+      "profilo.events.nessunEvento":    "Nessun evento.",
+      "profilo.events.nuovaScadenza":   "nuova scadenza {date}",
+
+      "profilo.integration.status.pending":  "In attesa di revisione da parte del gestore.",
+      "profilo.integration.status.approved": "Pubblicata nella vetrina Integrazioni.",
+      "profilo.integration.status.rejected": "Non approvata. Puoi modificarla e ricandidarla.",
+      "profilo.integration.status.removed":  "Candidatura ritirata. Puoi ricandidarla in ogni momento.",
+
+      "profilo.integration.compilaCampi": "Compila nome, URL e descrizione.",
+      "profilo.integration.invio":        "Invio…",
+      "profilo.integration.inviata":      "Candidatura inviata: in attesa di revisione.",
+      "profilo.integration.confermaRitiro": "Ritirare la candidatura? Sparirà dalla vetrina se pubblicata.",
+      "profilo.integration.ritirata":     "Candidatura ritirata.",
+      "profilo.integration.scegliFile":   "Scegli un file.",
+      "profilo.integration.caricamento":  "Caricamento…",
+      "profilo.integration.logoCaricato": "Logo caricato: in attesa di revisione.",
+      "profilo.integration.badgeAlt":     "Funziona con Attestazione Spazio Genesi",
+
+      "profilo.certs.verifica":          "verifica",
+      "profilo.certs.nessunCertificato": "Nessun certificato in questa fascia.",
+      "profilo.certs.pagina":            "Pagina {page} di {total}",
+
+      "profilo.common.attendere":     "Attendere…",
+      "profilo.common.salvataggio":   "Salvataggio…",
+      "profilo.common.salvato":       "Salvato.",
+      "profilo.common.rimosso":       "Rimosso.",
+      "profilo.common.serveConsenso": "Serve il consenso per salvare questi dati.",
+
+      "profilo.dev.confermaRimuovi":     "Rimuovere i dati del tuo progetto?",
+      "profilo.profile.confermaRimuovi": "Rimuovere segmento e regione salvati?"
     },
     en: {
       "footer.interfaccia":        "interface v{v}",
@@ -214,7 +264,57 @@
       "svc.operativi":               "Services operational",
       "svc.nonDisponibile":          "Service status unavailable",
       "svc.disservizioParziale":     "Partial service disruption",
-      "svc.operativoRallentato":     "Services operational (one component slowed down)"
+      "svc.operativoRallentato":     "Services operational (one component slowed down)",
+
+      "profilo.event.created":         "Activation",
+      "profilo.event.renewed":         "Renewal",
+      "profilo.event.paymentFailed":   "Payment failed",
+      "profilo.event.canceled":        "Cancellation",
+      "profilo.event.cancelScheduled": "Cancellation scheduled",
+
+      "profilo.channel.web":      "Website",
+      "profilo.channel.api":      "API or agent with a key",
+      "profilo.channel.mcp":      "MCP (session)",
+      "profilo.channel.telegram": "Telegram bot",
+
+      "profilo.price.abbonamentoAnnuale": "Annual subscription: {price}.",
+      "profilo.price.nessunListino":      "No active price list right now: try again later.",
+      "profilo.price.perAnno":            " / year",
+
+      "profilo.sub.inTolleranza": "Grace period (payment to be confirmed)",
+      "profilo.sub.attivo":       "Active",
+
+      "profilo.usage.text":            "{used} / {quota} attestations this month ({month})",
+      "profilo.events.nessunEvento":    "No events.",
+      "profilo.events.nuovaScadenza":   "new expiry {date}",
+
+      "profilo.integration.status.pending":  "Awaiting review by the maintainer.",
+      "profilo.integration.status.approved": "Published in the Integrations showcase.",
+      "profilo.integration.status.rejected": "Not approved. You can edit it and resubmit.",
+      "profilo.integration.status.removed":  "Submission withdrawn. You can resubmit any time.",
+
+      "profilo.integration.compilaCampi": "Fill in the name, URL, and description.",
+      "profilo.integration.invio":        "Sending…",
+      "profilo.integration.inviata":      "Submission sent: awaiting review.",
+      "profilo.integration.confermaRitiro": "Withdraw the submission? It will disappear from the showcase if published.",
+      "profilo.integration.ritirata":     "Submission withdrawn.",
+      "profilo.integration.scegliFile":   "Choose a file.",
+      "profilo.integration.caricamento":  "Uploading…",
+      "profilo.integration.logoCaricato": "Logo uploaded: awaiting review.",
+      "profilo.integration.badgeAlt":     "Works with Attestation by Spazio Genesi",
+
+      "profilo.certs.verifica":          "verify",
+      "profilo.certs.nessunCertificato": "No certificates in this tier.",
+      "profilo.certs.pagina":            "Page {page} of {total}",
+
+      "profilo.common.attendere":     "Please wait…",
+      "profilo.common.salvataggio":   "Saving…",
+      "profilo.common.salvato":       "Saved.",
+      "profilo.common.rimosso":       "Removed.",
+      "profilo.common.serveConsenso": "Consent is required to save this data.",
+
+      "profilo.dev.confermaRimuovi":     "Remove your project's data?",
+      "profilo.profile.confermaRimuovi": "Remove the saved segment and region?"
     }
   };
 
