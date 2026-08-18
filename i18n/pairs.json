@@ -6,6 +6,8 @@
     { "it": "developer/index.html",      "en": "en/developer/index.html",      "it_sha256": "d85fd482a98127c15c34bffaad78336c2b5f26fcd61b7a6850214529c9edc594" },
     { "it": "developer/keys/index.html", "en": "en/developer/keys/index.html", "it_sha256": "508ed88190e119d3c8b0c8bbbe6ba794effa8ac67698de86eba1890538d9b971" },
     { "it": "developer/cli/index.html",  "en": "en/developer/cli/index.html",  "it_sha256": "2a64eb9fafb23a88d884d93379d5b6a14471384858602b1a81399633bf1928ac" },
-    { "it": "privacy.html",              "en": "en/privacy.html",              "it_sha256": "4221642f01d1f68601a3d5b1bd98c7895603c3fa92f2f8c2a055e23769e72724" }
+    { "it": "privacy.html",              "en": "en/privacy.html",              "it_sha256": "4221642f01d1f68601a3d5b1bd98c7895603c3fa92f2f8c2a055e23769e72724" },
+    { "it": "professionale/index.html",  "en": "en/professionale/index.html",  "it_sha256": "4624aeea5bad037948eda10f9d0c3583abdef0749d11482b1238e34f0a561fdb" },
+    { "it": "profilo/index.html",        "en": "en/profilo/index.html",        "it_sha256": "709690224bbff57292ad86e757e932851e8b45304c0f0dfc67a3e5d534a57dbc" }
   ]
 }
