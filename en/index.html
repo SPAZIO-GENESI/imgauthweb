@@ -73,7 +73,7 @@
     {
       "@type": "HowTo",
       "name": "How to attest a digital work",
-      "description": "Three steps to get a certificate with a certain date for a file, computing the fingerprint directly in your browser.",
+      "description": "Three steps to get a certificate with a third-party attested date for a file, computing the fingerprint directly in your browser.",
       "step": [
         {
           "@type": "HowToStep",
@@ -1247,7 +1247,7 @@
 
     <p>
       This service generates the <em>digital fingerprint</em> of your work — any file,
-      up to 1&nbsp;GB — and ties it to a certain date with a signed PDF certificate.
+      up to 1&nbsp;GB — and ties it to a third-party attested date with a signed PDF certificate.
       The fingerprint is computed <strong>directly in your browser</strong>: the file
       never leaves your device. By keeping the attestation you'll always be able to
       prove that exactly that file existed, unchanged, at that moment: useful before
@@ -1301,13 +1301,17 @@
       </details>
 
       <details class="g">
-        <summary><span class="segno">+</span><span><span class="titolo">A certain date, guaranteed by a third party</span><br>
-          <span class="breve">The issuance date is certified by an independent authority recognized by Adobe.</span></span></summary>
+        <summary><span class="segno">+</span><span><span class="titolo">A date attested by a third party</span><br>
+          <span class="breve">The issuance date is attested by an independent authority recognized by Adobe.</span></span></summary>
         <div class="corpo">
           <p>The PDF certificate includes a <strong>timestamp</strong> issued by DigiCert, an authority
           on Adobe's trust list: we don't declare the date ourselves — a third party attests it.</p>
           <p><strong>How to verify it:</strong> open the PDF in Adobe Acrobat → Signatures panel →
           "The signature includes an embedded timestamp."</p>
+          <p><strong>How far it goes.</strong> This timestamp is recognized by PDF readers, but it is
+          not a <em>qualified</em> timestamp under the European eIDAS Regulation: the date is attested
+          by a third party and verifiable by anyone, and it does not carry the presumption of accuracy
+          that the law reserves for qualified timestamps. We are working to adopt one.</p>
           <div class="badge-row">
             <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-8 8.5-4.5-1-8-3.5-8-8.5V6l8-3 8 3z"/><path d="m9 12 2 2 4-4"/></svg>DigiCert · Timestamp Authority</span>
             <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Adobe Approved Trust List</span>

@@ -219,7 +219,7 @@ certificato PDF firmato, identico all'originale.
 Recupera il certificato dall'archivio
 
 Questo servizio genera l'*impronta digitale* della tua opera — qualsiasi file,
-fino a 1 GB — e la lega a una data certa con un certificato PDF firmato.
+fino a 1 GB — e la lega a una data attestata da terzi, con un certificato PDF firmato.
 L'impronta si calcola **direttamente nel tuo browser**: il file non
 lascia mai il tuo dispositivo. Conservando l'attestazione potrai sempre provare
 che quel preciso file esisteva, immutato, in quel momento: utile prima di
@@ -265,15 +265,20 @@ ricevono e attestano soltanto l'impronta. Vale sia per l'attestazione sia per la
 chiunque può controllare che il file non venga inviato (per esempio osservando il traffico
 di rete del browser durante l'attestazione).
 
-**+Data certa, garantita da terzi
+**+Data attestata da terzi
 
-La data di emissione è certificata da un'autorità indipendente riconosciuta da Adobe.**
+La data di emissione è attestata da un'autorità indipendente riconosciuta da Adobe.**
 
 Il certificato PDF include una **marca temporale** emessa da DigiCert, autorità
 presente nella lista di fiducia di Adobe: la data non la dichiariamo noi, la attesta una terza parte.
 
 **Come si verifica:** apri il PDF in Adobe Acrobat → pannello Firme →
 "La firma include una marca temporale incorporata".
+
+**Fin dove arriva.** Questa marca è riconosciuta dai lettori PDF, ma non è
+una marca temporale *qualificata* ai sensi del regolamento europeo eIDAS: la data è
+attestata da un terzo e verificabile da chiunque, e non gode della presunzione di esattezza
+che la legge riserva alle marche qualificate. Stiamo lavorando per adottarne una.
 
 DigiCert · Timestamp Authority
 Adobe Approved Trust List

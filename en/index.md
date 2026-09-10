@@ -219,7 +219,7 @@ identical to the original.
 Retrieve the certificate from the archive
 
 This service generates the *digital fingerprint* of your work — any file,
-up to 1 GB — and ties it to a certain date with a signed PDF certificate.
+up to 1 GB — and ties it to a third-party attested date with a signed PDF certificate.
 The fingerprint is computed **directly in your browser**: the file
 never leaves your device. By keeping the attestation you'll always be able to
 prove that exactly that file existed, unchanged, at that moment: useful before
@@ -265,15 +265,20 @@ receive and attest only the fingerprint. This holds for both attestation and ver
 anyone can check that the file is never sent (for example by watching the browser's
 network traffic during attestation).
 
-**+A certain date, guaranteed by a third party
+**+A date attested by a third party
 
-The issuance date is certified by an independent authority recognized by Adobe.**
+The issuance date is attested by an independent authority recognized by Adobe.**
 
 The PDF certificate includes a **timestamp** issued by DigiCert, an authority
 on Adobe's trust list: we don't declare the date ourselves — a third party attests it.
 
 **How to verify it:** open the PDF in Adobe Acrobat → Signatures panel →
 "The signature includes an embedded timestamp."
+
+**How far it goes.** This timestamp is recognized by PDF readers, but it is
+not a *qualified* timestamp under the European eIDAS Regulation: the date is attested
+by a third party and verifiable by anyone, and it does not carry the presumption of accuracy
+that the law reserves for qualified timestamps. We are working to adopt one.
 
 DigiCert · Timestamp Authority
 Adobe Approved Trust List
