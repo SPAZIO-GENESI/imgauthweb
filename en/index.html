@@ -462,6 +462,7 @@
   details.opz summary:hover{ color:var(--ink); }
   .opz-nota{ font-size:0.75rem; color:var(--ink-3); margin-top:0.6rem; line-height:1.55; }
   .opz-griglia{ margin-top:0.8rem; display:grid; gap:0.7rem; }
+  .opz-riserva{ margin-top:0.9rem; padding-top:0.9rem; border-top:1px solid var(--linea); }
 
   details.tecnici summary{
     cursor:pointer; font-size:0.8rem; color:var(--ink-2); list-style:none; min-height:28px;
@@ -937,6 +938,22 @@
           <input id="metaNote" class="campo" type="text" maxlength="300" placeholder="e.g. technique, client, context">
         </div>
       </div>
+      <div class="opz-riserva">
+        <label class="field-label" for="metaRiserva">AI training rights reservation</label>
+        <select id="metaRiserva" class="campo">
+          <option value="">No declaration</option>
+          <option value="notAllowed">I do not consent to using this work to train AI systems</option>
+          <option value="constrained">I consent only under conditions to be agreed</option>
+          <option value="allowed">I consent</option>
+        </select>
+        <p class="opz-nota">
+          The declaration is recorded together with the attestation, with the same date and
+          the same signature, and stays available to anyone who knows the file's fingerprint —
+          even if the circulating file has lost its metadata. <strong>What it does not do:</strong>
+          it does not prevent anyone from using the work. It makes unauthorised use provable, and
+          removes the other party's "I couldn't have known" defence.
+        </p>
+      </div>
     </details>
 
     <div class="passo"><span class="n">3</span><h2>Generate the attestation</h2></div>
@@ -999,6 +1016,7 @@
           <tr id="rowAutore" style="display:none;"><td>Author (declared)</td><td id="rAutore"></td></tr>
           <tr id="rowAnno" style="display:none;"><td>Year/version</td><td id="rAnno"></td></tr>
           <tr id="rowNote" style="display:none;"><td>Notes (declared)</td><td id="rNote"></td></tr>
+          <tr id="rowRiserva" style="display:none;"><td>Rights reservation</td><td id="rRiserva"></td></tr>
           <tr><td>Date and time</td><td id="rTimestamp"></td></tr>
           <tr><td>Issued by</td><td id="rIssuer"></td></tr>
         </table>
@@ -1141,6 +1159,12 @@
                 <input id="vMetaAutore" class="campo" type="text" maxlength="100" placeholder="Author / pseudonym" aria-label="Author or pseudonym declared on the certificate">
                 <input id="vMetaAnno" class="campo" type="text" maxlength="50" placeholder="Year or version" aria-label="Year or version declared on the certificate">
                 <input id="vMetaNote" class="campo" type="text" maxlength="300" placeholder="Notes" aria-label="Notes declared on the certificate">
+                <select id="vMetaRiserva" class="campo" aria-label="Rights reservation declared on the certificate">
+                  <option value="">No rights reservation declared</option>
+                  <option value="notAllowed">Reservation: I do not consent</option>
+                  <option value="constrained">Reservation: I consent under conditions</option>
+                  <option value="allowed">Reservation: I consent</option>
+                </select>
               </div>
             </details>
           </details>

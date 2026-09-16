@@ -62,6 +62,14 @@ Year or version
 
 Notes
 
+AI training rights reservation
+
+The declaration is recorded together with the attestation, with the same date and
+the same signature, and stays available to anyone who knows the file's fingerprint —
+even if the circulating file has lost its metadata. **What it does not do:**
+it does not prevent anyone from using the work. It makes unauthorised use provable, and
+removes the other party's "I couldn't have known" defence.
+
 ## Generate the attestation
 
 **Have an agreement or a Professional subscription? Sign in with your email**
@@ -95,6 +103,8 @@ Author (declared)
 Year/version
 
 Notes (declared)
+
+Rights reservation
 
 Date and time
 

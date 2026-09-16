@@ -62,6 +62,14 @@ Anno o versione
 
 Note
 
+Riserva dei diritti sull'addestramento AI
+
+La dichiarazione viene registrata insieme all'attestazione, con la stessa data e la
+stessa firma, e resta consultabile da chiunque conosca l'impronta del file — anche se
+il file che circola ha perso i suoi metadati. **Cosa non fa:** non impedisce
+a nessuno di usare l'opera. Rende l'uso non autorizzato dimostrabile, e toglie all'altra
+parte la difesa del «non potevo saperlo».
+
 ## Genera l'attestazione
 
 **Hai una convenzione o un abbonamento Professionale? Accedi con la tua email**
@@ -95,6 +103,8 @@ Autore (dichiarato)
 Anno/versione
 
 Note (dichiarate)
+
+Riserva dei diritti
 
 Data e ora
 

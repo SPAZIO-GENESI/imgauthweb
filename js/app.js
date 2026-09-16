@@ -119,7 +119,7 @@
 
   // Versione dell'interfaccia: sorgente di verità unica (vedi CLAUDE.md › Versioning).
   // Il footer mostra "interfaccia vX.Y.Z" e affianca la versione del motore letta da /ping.
-  const APP_VERSION = "1.35.0";
+  const APP_VERSION = "1.36.0";
 
   // Microdonazioni PayPal: incolla qui l'URL del bottone Donazioni
   // (es. "https://www.paypal.com/donate/?hosted_button_id=XXXXXXXX").
@@ -188,6 +188,14 @@
     if (b < 1024) return b + " B";
     if (b < 1048576) return (b/1024).toFixed(1) + " KB";
     return (b/1048576).toFixed(2) + " MB";
+  }
+
+  // Riserva dei diritti sull'addestramento AI (P55 §F3): valore in parole
+  // piane, per la tabella risultato e per il .txt scaricabile. Vuoto per
+  // qualunque valore diverso dai tre ammessi (mai un errore).
+  function riservaLabel(v) {
+    const key = { notAllowed: "txt.riservaNotAllowed", constrained: "txt.riservaConstrained", allowed: "txt.riservaAllowed" }[v];
+    return key ? t(key) : "";
   }
 
   // Data leggibile dell'attestazione (P41). Il Worker restituisce sempre
@@ -333,6 +341,9 @@
           autore: document.getElementById("metaAutore").value,
           anno:   document.getElementById("metaAnno").value,
           note:   document.getElementById("metaNote").value,
+          // Riserva dei diritti sull'addestramento AI (P55 §F3): facoltativa,
+          // normalizzata e vincolata dal server come gli altri campi dichiarati.
+          riserva: document.getElementById("metaRiserva").value,
           // Lingua della pagina da cui si sta attestando (P41): qui vale solo per
           // gli eventuali messaggi d'errore del Worker. NON entra nella firma HMAC.
           lang:   window.SG_I18N.lang
@@ -362,6 +373,7 @@
       document.getElementById("vMetaAutore").value = d.autore || "";
       document.getElementById("vMetaAnno").value   = d.anno   || "";
       document.getElementById("vMetaNote").value   = d.note   || "";
+      document.getElementById("vMetaRiserva").value = d.riserva || "";
 
       // Righe "dichiarato" nella tabella risultato: visibili solo se compilate
       const metaRows = [["rowTitolo","rTitolo",d.titolo], ["rowAutore","rAutore",d.autore], ["rowAnno","rAnno",d.anno], ["rowNote","rNote",d.note]];
@@ -369,6 +381,9 @@
         document.getElementById(rowId).style.display = val ? "" : "none";
         document.getElementById(cellId).textContent = val || "";
       }
+      // Riserva dei diritti (P55 §F3): riga a sé, valore in parole piane.
+      document.getElementById("rowRiserva").style.display = d.riserva ? "" : "none";
+      document.getElementById("rRiserva").textContent = riservaLabel(d.riserva);
 
       document.getElementById("rHash").textContent        = d.sha256;
       document.getElementById("rFilename").textContent    = d.opera;
@@ -507,6 +522,7 @@
       [t("txt.labelAutore"), lastData.autore],
       [t("txt.labelAnno"), lastData.anno],
       [t("txt.labelNote"), lastData.note],
+      [t("txt.labelRiserva"), riservaLabel(lastData.riserva)],
     ].filter(([, v]) => v);
     if (declared.length) {
       lines.push("", t("txt.datiDichiaratiTitolo"));
@@ -693,7 +709,7 @@
       }
     }
     const tight = lines.join("\n").replace(/\s+/g, "");
-    const out = { hash:"", attestazione:"", hmac:"", titolo:"", autore:"", anno:"", note:"" };
+    const out = { hash:"", attestazione:"", hmac:"", titolo:"", autore:"", anno:"", note:"", riserva:"" };
 
     const att = tight.match(/SHA-256:([0-9a-f]{64})@(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)/i);
     if (att) { out.hash = att[1].toLowerCase(); out.attestazione = "SHA-256:" + out.hash + "@" + att[2]; }
@@ -725,6 +741,24 @@
         if (v) out[k] = v;
       }
     }
+
+    // Riserva dei diritti (P55 §F3): blocco separato ("Riserva dei diritti" /
+    // "Rights reservation"), riga "Riserva: <valore in parole piane>" /
+    // "Reservation: <…>". Il valore è prosa, non un codice: lo riconosciamo
+    // per confronto contro le tre formulazioni note (IT/EN) — nessun errore
+    // se non corrisponde, la riserva resta semplicemente vuota.
+    const riservaLine = lines.map(l => l.trim()).find(l => /^(Riserva|Reservation):/i.test(l));
+    if (riservaLine) {
+      const val = riservaLine.replace(/^(Riserva|Reservation):\s*/i, "").toLowerCase();
+      const KNOWN = {
+        notAllowed:  ["non acconsente all'uso", "does not consent to the use"],
+        constrained: ["acconsente solo a condizioni", "consents only under conditions"],
+        allowed:     ["l'autore acconsente", "the author consents"],
+      };
+      for (const [code, needles] of Object.entries(KNOWN)) {
+        if (needles.some(n => val.includes(n.toLowerCase()))) { out.riserva = code; break; }
+      }
+    }
     return out;
   }
 
@@ -736,6 +770,7 @@
     document.getElementById("vMetaAutore").value = f.autore || "";
     document.getElementById("vMetaAnno").value   = f.anno   || "";
     document.getElementById("vMetaNote").value   = f.note   || "";
+    document.getElementById("vMetaRiserva").value = f.riserva || "";
     updateVerifyBtnState();
     updateRecoverState();
   }
@@ -759,7 +794,7 @@
       applyCertFields(f2);
       const bits = [t("cert.bitImpronta")];
       if (f2.hmac) bits.push(t("cert.bitFirma"));
-      const meta = [f2.titolo && t("cert.campoTitolo"), f2.autore && t("cert.campoAutore"), f2.anno && t("cert.campoAnno"), f2.note && t("cert.campoNote")].filter(Boolean);
+      const meta = [f2.titolo && t("cert.campoTitolo"), f2.autore && t("cert.campoAutore"), f2.anno && t("cert.campoAnno"), f2.note && t("cert.campoNote"), f2.riserva && t("cert.campoRiserva")].filter(Boolean);
       if (meta.length) bits.push(t("cert.bitDatiDichiarati", { campi: meta.join(", ") }));
       certReadBox.style.color = "#1e7e34";
       certReadBox.innerHTML = t("cert.lettoOk", { bits: bits.join(", ") });
@@ -880,7 +915,7 @@
         fd.append("hmac", verifyHmacInput.value.trim());
         // Dati dichiarati: se il certificato li riportava, la firma HMAC li copre
         // e devono essere forniti identici perché la verifica riesca.
-        for (const [field, id] of [["titolo","vMetaTitolo"], ["autore","vMetaAutore"], ["anno","vMetaAnno"], ["note","vMetaNote"]]) {
+        for (const [field, id] of [["titolo","vMetaTitolo"], ["autore","vMetaAutore"], ["anno","vMetaAnno"], ["note","vMetaNote"], ["riserva","vMetaRiserva"]]) {
           const v = document.getElementById(id).value.trim();
           if (v) { fd.append(field, v); hasMeta = true; }
         }

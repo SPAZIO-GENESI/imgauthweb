@@ -462,6 +462,7 @@
   details.opz summary:hover{ color:var(--ink); }
   .opz-nota{ font-size:0.75rem; color:var(--ink-3); margin-top:0.6rem; line-height:1.55; }
   .opz-griglia{ margin-top:0.8rem; display:grid; gap:0.7rem; }
+  .opz-riserva{ margin-top:0.9rem; padding-top:0.9rem; border-top:1px solid var(--linea); }
 
   details.tecnici summary{
     cursor:pointer; font-size:0.8rem; color:var(--ink-2); list-style:none; min-height:28px;
@@ -937,6 +938,22 @@
           <input id="metaNote" class="campo" type="text" maxlength="300" placeholder="es. tecnica, committente, contesto">
         </div>
       </div>
+      <div class="opz-riserva">
+        <label class="field-label" for="metaRiserva">Riserva dei diritti sull'addestramento AI</label>
+        <select id="metaRiserva" class="campo">
+          <option value="">Nessuna dichiarazione</option>
+          <option value="notAllowed">Non acconsento all'uso per addestrare sistemi di AI</option>
+          <option value="constrained">Acconsento solo a condizioni da concordare</option>
+          <option value="allowed">Acconsento</option>
+        </select>
+        <p class="opz-nota">
+          La dichiarazione viene registrata insieme all'attestazione, con la stessa data e la
+          stessa firma, e resta consultabile da chiunque conosca l'impronta del file — anche se
+          il file che circola ha perso i suoi metadati. <strong>Cosa non fa:</strong> non impedisce
+          a nessuno di usare l'opera. Rende l'uso non autorizzato dimostrabile, e toglie all'altra
+          parte la difesa del «non potevo saperlo».
+        </p>
+      </div>
     </details>
 
     <div class="passo"><span class="n">3</span><h2>Genera l'attestazione</h2></div>
@@ -999,6 +1016,7 @@
           <tr id="rowAutore" style="display:none;"><td>Autore (dichiarato)</td><td id="rAutore"></td></tr>
           <tr id="rowAnno" style="display:none;"><td>Anno/versione</td><td id="rAnno"></td></tr>
           <tr id="rowNote" style="display:none;"><td>Note (dichiarate)</td><td id="rNote"></td></tr>
+          <tr id="rowRiserva" style="display:none;"><td>Riserva dei diritti</td><td id="rRiserva"></td></tr>
           <tr><td>Data e ora</td><td id="rTimestamp"></td></tr>
           <tr><td>Emesso da</td><td id="rIssuer"></td></tr>
         </table>
@@ -1141,6 +1159,12 @@
                 <input id="vMetaAutore" class="campo" type="text" maxlength="100" placeholder="Autore / pseudonimo" aria-label="Autore o pseudonimo dichiarato sul certificato">
                 <input id="vMetaAnno" class="campo" type="text" maxlength="50" placeholder="Anno o versione" aria-label="Anno o versione dichiarati sul certificato">
                 <input id="vMetaNote" class="campo" type="text" maxlength="300" placeholder="Note" aria-label="Note dichiarate sul certificato">
+                <select id="vMetaRiserva" class="campo" aria-label="Riserva dei diritti dichiarata sul certificato">
+                  <option value="">Nessuna riserva dichiarata</option>
+                  <option value="notAllowed">Riserva: non acconsento</option>
+                  <option value="constrained">Riserva: acconsento a condizioni</option>
+                  <option value="allowed">Riserva: acconsento</option>
+                </select>
               </div>
             </details>
           </details>
